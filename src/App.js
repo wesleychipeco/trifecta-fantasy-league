@@ -8,27 +8,33 @@ import TopNav from "./TopNav";
 import SecondScreen from "./SecondScreen";
 import UserScreen from "./UserScreen";
 import DasModalScreen from "./DasModalScreen";
+import BaseballStandings from "./BaseballStandings";
 
 const routeMap = {
   Home: {
     component: HomeScreen,
     path: "/",
-    exact: true
+    exact: true,
+  },
+  BaseballStandings: {
+    component: BaseballStandings,
+    path: "/standings/baseball",
+    exact: true,
   },
   Second: {
     component: SecondScreen,
-    path: "/second"
+    path: "/second",
   },
   User: {
     component: UserScreen,
     path: "/user/:name?",
-    exact: true
+    exact: true,
   },
   DasModal: {
     component: DasModalScreen,
     path: "*/dasmodal",
-    modal: true
-  }
+    modal: true,
+  },
 };
 
 class App extends Component {
