@@ -6,14 +6,12 @@ import { BrowserRouter as Router } from "react-router-dom";
 import registerServiceWorker from "./registerServiceWorker";
 import { Provider } from "react-redux";
 import store from "./store";
-import BaseballStandings from "./BaseballStandings";
 
 ReactDOM.render(
   <Provider store={store}>
-    <BaseballStandings />
-    {/* <Router>
+    <Router>
       <App />
-    </Router> */}
+    </Router>
   </Provider>,
   document.getElementById("root")
 );
