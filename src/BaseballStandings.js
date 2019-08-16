@@ -11,18 +11,15 @@ import {
 
 const BaseballStandings = props => {
   const handleScrapeRequest = () => {
-    props.setLastScraped(new Date());
+    props.setLastScraped(format(new Date(), "M/D/YY h:m:s"));
   };
 
   const { navigation } = props;
 
-  console.log("props", props.lastScraped);
-  console.log("props", format(props.lastScraped, "M/D/YY h:m:s"));
-
   return (
     <View style={styles.container}>
       <Text style={styles.welcome}>Baseball Standings!</Text>
-      <Text>{format(props.lastScraped, "M/D/YY h:m:s")}</Text>
+      <Text>{props.lastScraped}</Text>
       <Button title="Scrape!" onPress={handleScrapeRequest} />
       <Button
         title="User #1"
