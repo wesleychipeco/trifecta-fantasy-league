@@ -1,13 +1,17 @@
 import { getStateSlice } from "../reduxUtils";
 import {
-  SCRAPE_BASEBALL_STANDINGS,
+  SCRAPE_BASEBALL_STANDINGS_START,
+  SCRAPE_BASEBALL_STANDINGS_SUCCESS,
+  SCRAPE_BASEBALL_STANDINGS_FAILED,
   SET_LAST_SCRAPED,
 } from "./baseballStandingsActionTypes";
 
 const BASEBALL_STANDINGS_STATE_PATH = "baseballStandings";
 
 const initialState = {
-  baseballStandings: {},
+  baseballStandingsLoading: false,
+  baseballStandingsSuccess: false,
+  baseballStandings: "hey",
   lastScraped: "",
 };
 
@@ -15,10 +19,25 @@ const baseballStandingsReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case SCRAPE_BASEBALL_STANDINGS: {
+    case SCRAPE_BASEBALL_STANDINGS_START:
       return {
         ...state,
+        baseballStandingsLoading: true,
+        baseballStandingsSuccess: false,
+      };
+    case SCRAPE_BASEBALL_STANDINGS_SUCCESS: {
+      return {
+        ...state,
+        baseballStandingsLoading: false,
+        baseballStandingsSuccess: true,
         baseballStandings: payload,
+      };
+    }
+    case SCRAPE_BASEBALL_STANDINGS_FAILED: {
+      return {
+        ...state,
+        baseballStandingsLoading: false,
+        baseballStandingsSuccess: false,
       };
     }
     case SET_LAST_SCRAPED: {

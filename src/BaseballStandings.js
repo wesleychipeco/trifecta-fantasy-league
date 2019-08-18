@@ -1,17 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
-import { format } from "date-fns";
 
 import { getBaseballStandingsStateSelectors } from "./store/standings/baseballStandingsReducer";
-import {
-  scrapeBaseballStandings,
-  setLastScraped,
-} from "./store/standings/baseballStandingsActions";
+import { scrapeBaseballStandings } from "./store/standings/baseballStandingsActions";
 
 const BaseballStandings = props => {
   const handleScrapeRequest = () => {
-    props.setLastScraped(format(new Date(), "M/D/YY h:m:s"));
+    props.scrapeBaseballStandings("I'm a changed man");
   };
 
   const { navigation } = props;
@@ -20,6 +16,7 @@ const BaseballStandings = props => {
     <View style={styles.container}>
       <Text style={styles.welcome}>Baseball Standings!</Text>
       <Text>{props.lastScraped}</Text>
+      <Text>{props.baseballStandings}</Text>
       <Button title="Scrape!" onPress={handleScrapeRequest} />
       <Button
         title="User #1"
@@ -72,7 +69,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   scrapeBaseballStandings,
-  setLastScraped,
 };
 
 export default connect(
