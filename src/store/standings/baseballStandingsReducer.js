@@ -12,7 +12,7 @@ const initialState = {
   baseballStandingsLoading: false,
   baseballStandingsSuccess: false,
   baseballStandings: "hey",
-  lastScraped: "",
+  lastScraped: "date",
 };
 
 const baseballStandingsReducer = (state = initialState, action) => {

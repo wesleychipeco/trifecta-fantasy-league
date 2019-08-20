@@ -25,8 +25,9 @@ const scrapeBaseballStandings = () => {
     dispatch(actions.scrapeBaseballStandingsStart);
 
     if (baseballStandings) {
-      dispatch(actions.scrapeBaseballStandingsSuccess(baseballStandings));
+      console.log("here");
       dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:m:s")));
+      dispatch(actions.scrapeBaseballStandingsSuccess(baseballStandings));
     } else {
       dispatch(actions.scrapeBaseballStandingsFailed);
     }
