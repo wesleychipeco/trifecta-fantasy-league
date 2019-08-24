@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
-import request from "request";
 
 import { getBaseballStandingsStateSelectors } from "./store/standings/baseballStandingsReducer";
 import { scrapeBaseballStandings } from "./store/standings/baseballStandingsActions";

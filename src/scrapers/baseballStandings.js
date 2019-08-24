@@ -1,5 +1,3 @@
-import cheerio from "cheerio";
-import request from "request";
 import axios from "axios";
 
 const baseballStandingsScraper = () => {
