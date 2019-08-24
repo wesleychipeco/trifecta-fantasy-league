@@ -20,13 +20,11 @@ const actions = {
 const scrapeBaseballStandings = () => {
   return async function(dispatch) {
     const baseballStandings = await baseballStandingsScraper();
-    console.log("BASEBALL STANDINGS", baseballStandings);
 
     dispatch(actions.scrapeBaseballStandingsStart);
 
     if (baseballStandings) {
-      console.log("here");
-      dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:m:s")));
+      dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
       dispatch(actions.scrapeBaseballStandingsSuccess(baseballStandings));
     } else {
       dispatch(actions.scrapeBaseballStandingsFailed);

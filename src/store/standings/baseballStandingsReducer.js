@@ -11,7 +11,7 @@ const BASEBALL_STANDINGS_STATE_PATH = "baseballStandings";
 const initialState = {
   baseballStandingsLoading: false,
   baseballStandingsSuccess: false,
-  baseballStandings: "hey",
+  baseballStandings: [],
   lastScraped: "date",
 };
 

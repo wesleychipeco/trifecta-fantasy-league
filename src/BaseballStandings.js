@@ -9,29 +9,50 @@ import { scrapeBaseballStandings } from "./store/standings/baseballStandingsActi
 const BaseballStandings = props => {
   const handleScrapeRequest = () => {
     console.log("hey");
-    // fetch(
-    //   "https://cors-anywhere.herokuapp.com/https://fantasy.espn.com/baseball/league/standings?leagueId=109364",
-    //   {
-    //     headers: {
-    //       "Allow-Access-Control-Origin": "localhost:3000",
-    //     },
-    //   }
-    // ).then(response => {
-    //   console.log(response);
-    // });
 
     props.scrapeBaseballStandings();
   };
 
-  const { navigation } = props;
+  const renderStandings = (team, index) => {
+    return (
+      <View
+        key={index}
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          alignSelf: "stretch",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text>{team.teamName}</Text>
+        <Text>{team.wins}</Text>
+        <Text>{team.losses}</Text>
+        <Text>{team.ties}</Text>
+        <Text>{team.winPer}</Text>
+      </View>
+    );
+  };
+
+  const { navigation, baseballStandings } = props;
+
+  console.log("BASEBALL STANDINGS", baseballStandings);
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcome}>Baseball Standings!</Text>
       <Text>{props.lastScraped}</Text>
-      <Text>{props.baseballStandings}</Text>
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+
+          alignItems: "center",
+        }}
+      >
+        {baseballStandings.map((team, index) => renderStandings(team, index))}
+      </View>
       <Button title="Scrape!" onPress={handleScrapeRequest} />
-      {/* <Button
+      <Button
         title="User #1"
         onPress={() => navigation.navigate("User", { name: "Snufolafakus" })}
       />
@@ -44,7 +65,7 @@ const BaseballStandings = props => {
       <Button
         title="Das Modal"
         onPress={() => navigation.navigate("DasModal")}
-      /> */}
+      />
     </View>
   );
 };
