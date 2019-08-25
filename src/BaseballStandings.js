@@ -1,25 +1,55 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
-import { format } from "date-fns";
 
 import { getBaseballStandingsStateSelectors } from "./store/standings/baseballStandingsReducer";
-import {
-  scrapeBaseballStandings,
-  setLastScraped,
-} from "./store/standings/baseballStandingsActions";
+import { scrapeBaseballStandings } from "./store/standings/baseballStandingsActions";
 
 const BaseballStandings = props => {
   const handleScrapeRequest = () => {
-    props.setLastScraped(format(new Date(), "M/D/YY h:m:s"));
+    console.log("hey");
+
+    props.scrapeBaseballStandings();
   };
 
-  const { navigation } = props;
+  const renderStandings = (team, index) => {
+    return (
+      <View
+        key={index}
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          alignSelf: "stretch",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text>{team.teamName}</Text>
+        <Text>{team.wins}</Text>
+        <Text>{team.losses}</Text>
+        <Text>{team.ties}</Text>
+        <Text>{team.winPer}</Text>
+      </View>
+    );
+  };
+
+  const { navigation, baseballStandings } = props;
+
+  console.log("BASEBALL STANDINGS", baseballStandings);
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcome}>Baseball Standings!</Text>
       <Text>{props.lastScraped}</Text>
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+
+          alignItems: "center",
+        }}
+      >
+        {baseballStandings.map((team, index) => renderStandings(team, index))}
+      </View>
       <Button title="Scrape!" onPress={handleScrapeRequest} />
       <Button
         title="User #1"
@@ -72,7 +102,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   scrapeBaseballStandings,
-  setLastScraped,
 };
 
 export default connect(
