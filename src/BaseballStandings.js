@@ -7,8 +7,6 @@ import { scrapeBaseballStandings } from "./store/standings/baseballStandingsActi
 
 const BaseballStandings = props => {
   const handleScrapeRequest = () => {
-    console.log("hey");
-
     props.scrapeBaseballStandings();
   };
 
@@ -20,21 +18,21 @@ const BaseballStandings = props => {
           flex: 1,
           flexDirection: "row",
           alignSelf: "stretch",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
+          alignItems: "center",
         }}
       >
         <Text>{team.teamName}</Text>
         <Text>{team.wins}</Text>
         <Text>{team.losses}</Text>
         <Text>{team.ties}</Text>
-        <Text>{team.winPer}</Text>
+        <Text>{team.winPer.toFixed(3)}</Text>
+        <Text>{team.h2hTrifectaPoints}</Text>
       </View>
     );
   };
 
   const { navigation, baseballStandings } = props;
-
-  console.log("BASEBALL STANDINGS", baseballStandings);
 
   return (
     <View style={styles.container}>
@@ -44,10 +42,25 @@ const BaseballStandings = props => {
         style={{
           flex: 1,
           width: "100%",
-
           alignItems: "center",
         }}
       >
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            alignSelf: "stretch",
+            justifyContent: "space-around",
+            alignItems: "center",
+          }}
+        >
+          <Text>Team Name</Text>
+          <Text>Wins</Text>
+          <Text>Losses</Text>
+          <Text>Ties</Text>
+          <Text>Win %</Text>
+          <Text>H2H Trifecta Points</Text>
+        </View>
         {baseballStandings.map((team, index) => renderStandings(team, index))}
       </View>
       <Button title="Scrape!" onPress={handleScrapeRequest} />

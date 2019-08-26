@@ -4,8 +4,10 @@ import {
   SCRAPE_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_BASEBALL_STANDINGS_FAILED,
   SET_LAST_SCRAPED,
+  BASEBALL_STANDINGS_ADD_POINTS,
 } from "./baseballStandingsActionTypes";
 import { baseballStandingsScraper } from "../../scrapers/baseballStandings";
+import { baseballStandingsComputator } from "../../computators/baseballStandings";
 import { format } from "date-fns";
 
 const actions = {
@@ -14,6 +16,7 @@ const actions = {
     SCRAPE_BASEBALL_STANDINGS_SUCCESS
   ),
   scrapeBaseballStandingsFailed: createAction(SCRAPE_BASEBALL_STANDINGS_FAILED),
+  baseballStandingsAddPoints: createAction(BASEBALL_STANDINGS_ADD_POINTS),
   setLastScraped: createAction(SET_LAST_SCRAPED),
 };
 
@@ -25,7 +28,12 @@ const scrapeBaseballStandings = () => {
 
     if (baseballStandings) {
       dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
-      dispatch(actions.scrapeBaseballStandingsSuccess(baseballStandings));
+      dispatch(actions.scrapeBaseballStandingsSuccess);
+
+      const baseballStandingsWithPoints = baseballStandingsComputator(
+        baseballStandings
+      );
+      dispatch(actions.baseballStandingsAddPoints(baseballStandingsWithPoints));
     } else {
       dispatch(actions.scrapeBaseballStandingsFailed);
     }
