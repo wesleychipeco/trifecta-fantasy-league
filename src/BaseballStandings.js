@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
+import { Row, Rows } from "./components/Row";
 
 import { getBaseballStandingsStateSelectors } from "./store/standings/baseballStandingsReducer";
 import { scrapeBaseballStandings } from "./store/standings/baseballStandingsActions";
@@ -36,6 +37,19 @@ const BaseballStandings = props => {
 
   return (
     <View style={styles.container}>
+      <Rows
+        data={[["1", "2", "3"], ["A", "Bdggdgdgdd", "C"]]}
+        totalHeight={300}
+        heightArray={[150, 100]}
+        totalWidth={400}
+        widthArray={[100, 200, 100]}
+        flexArray={[1, 2, 1]}
+        cellStyle={{
+          backgroundColor: "#008000",
+          padding: 2,
+          justifyContent: "center",
+        }}
+      ></Rows>
       <Text style={styles.welcome}>Baseball Standings!</Text>
       <Text>{props.lastScraped}</Text>
       <View
