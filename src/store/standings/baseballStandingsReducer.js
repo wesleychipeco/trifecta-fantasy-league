@@ -3,6 +3,7 @@ import {
   SCRAPE_BASEBALL_STANDINGS_START,
   SCRAPE_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_BASEBALL_STANDINGS_FAILED,
+  BASEBALL_STANDINGS_ADD_POINTS,
   SET_LAST_SCRAPED,
 } from "./baseballStandingsActionTypes";
 
@@ -30,7 +31,6 @@ const baseballStandingsReducer = (state = initialState, action) => {
         ...state,
         baseballStandingsLoading: false,
         baseballStandingsSuccess: true,
-        baseballStandings: payload,
       };
     }
     case SCRAPE_BASEBALL_STANDINGS_FAILED: {
@@ -38,6 +38,12 @@ const baseballStandingsReducer = (state = initialState, action) => {
         ...state,
         baseballStandingsLoading: false,
         baseballStandingsSuccess: false,
+      };
+    }
+    case BASEBALL_STANDINGS_ADD_POINTS: {
+      return {
+        ...state,
+        baseballStandings: payload,
       };
     }
     case SET_LAST_SCRAPED: {

@@ -1,55 +1,53 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
+import { Row, Rows } from "./components/Row";
 
 import { getBaseballStandingsStateSelectors } from "./store/standings/baseballStandingsReducer";
 import { scrapeBaseballStandings } from "./store/standings/baseballStandingsActions";
 
 const BaseballStandings = props => {
   const handleScrapeRequest = () => {
-    console.log("hey");
-
     props.scrapeBaseballStandings();
   };
 
-  const renderStandings = (team, index) => {
-    return (
-      <View
-        key={index}
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          alignSelf: "stretch",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text>{team.teamName}</Text>
-        <Text>{team.wins}</Text>
-        <Text>{team.losses}</Text>
-        <Text>{team.ties}</Text>
-        <Text>{team.winPer}</Text>
-      </View>
-    );
-  };
-
   const { navigation, baseballStandings } = props;
-
-  console.log("BASEBALL STANDINGS", baseballStandings);
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcome}>Baseball Standings!</Text>
       <Text>{props.lastScraped}</Text>
-      <View
-        style={{
-          flex: 1,
-          width: "100%",
-
-          alignItems: "center",
-        }}
-      >
-        {baseballStandings.map((team, index) => renderStandings(team, index))}
-      </View>
+      <Row
+        data={[
+          "Team Name",
+          "Wins",
+          "Losses",
+          "Ties",
+          "Win %",
+          "H2H Trifecta Points",
+        ]}
+        height={50}
+        totalwidth={700}
+        widthArray={[200, 100, 100, 100, 100, 100]}
+        // flexArray={[2, 1, 1, 1, 1, 1]}
+        rowStyle={{ backgroundColor: "#BEBEBE" }}
+        numberOfLines={2}
+      />
+      <Rows
+        data={baseballStandings}
+        totalheight={500}
+        totalwidth={700}
+        widthArray={[200, 100, 100, 100, 100, 100]}
+        // flexArray={[2, 1, 1, 1, 1, 1]}
+        objectKeys={[
+          "teamName",
+          "wins",
+          "losses",
+          "ties",
+          "winPer",
+          "h2hTrifectaPoints",
+        ]}
+      />
       <Button title="Scrape!" onPress={handleScrapeRequest} />
       <Button
         title="User #1"
