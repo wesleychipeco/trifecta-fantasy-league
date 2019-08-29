@@ -11,72 +11,43 @@ const BaseballStandings = props => {
     props.scrapeBaseballStandings();
   };
 
-  const renderStandings = (team, index) => {
-    return (
-      <View
-        key={index}
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          alignSelf: "stretch",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
-      >
-        <Text>{team.teamName}</Text>
-        <Text>{team.wins}</Text>
-        <Text>{team.losses}</Text>
-        <Text>{team.ties}</Text>
-        <Text>{team.winPer.toFixed(3)}</Text>
-        <Text>{team.h2hTrifectaPoints}</Text>
-      </View>
-    );
-  };
-
   const { navigation, baseballStandings } = props;
 
   return (
     <View style={styles.container}>
-      <Rows
-        data={[["1", "2", "3"], ["A", "Bdggdgdgdd", "C"]]}
-        totalHeight={300}
-        heightArray={[150, 100]}
-        totalWidth={400}
-        widthArray={[100, 200, 100]}
-        flexArray={[1, 2, 1]}
-        cellStyle={{
-          backgroundColor: "#008000",
-          padding: 2,
-          justifyContent: "center",
-        }}
-      ></Rows>
       <Text style={styles.welcome}>Baseball Standings!</Text>
       <Text>{props.lastScraped}</Text>
-      <View
-        style={{
-          flex: 1,
-          width: "100%",
-          alignItems: "center",
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            alignSelf: "stretch",
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-          <Text>Team Name</Text>
-          <Text>Wins</Text>
-          <Text>Losses</Text>
-          <Text>Ties</Text>
-          <Text>Win %</Text>
-          <Text>H2H Trifecta Points</Text>
-        </View>
-        {baseballStandings.map((team, index) => renderStandings(team, index))}
-      </View>
+      <Row
+        data={[
+          "Team Name",
+          "Wins",
+          "Losses",
+          "Ties",
+          "Win %",
+          "H2H Trifecta Points",
+        ]}
+        height={50}
+        totalwidth={700}
+        widthArray={[200, 100, 100, 100, 100, 100]}
+        // flexArray={[2, 1, 1, 1, 1, 1]}
+        rowStyle={{ backgroundColor: "#BEBEBE" }}
+        numberOfLines={2}
+      />
+      <Rows
+        data={baseballStandings}
+        totalheight={500}
+        totalwidth={700}
+        widthArray={[200, 100, 100, 100, 100, 100]}
+        // flexArray={[2, 1, 1, 1, 1, 1]}
+        objectKeys={[
+          "teamName",
+          "wins",
+          "losses",
+          "ties",
+          "winPer",
+          "h2hTrifectaPoints",
+        ]}
+      />
       <Button title="Scrape!" onPress={handleScrapeRequest} />
       <Button
         title="User #1"
