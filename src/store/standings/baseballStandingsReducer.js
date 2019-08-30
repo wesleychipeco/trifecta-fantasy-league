@@ -1,18 +1,25 @@
 import { getStateSlice } from "../reduxUtils";
 import {
-  SCRAPE_BASEBALL_STANDINGS_START,
-  SCRAPE_BASEBALL_STANDINGS_SUCCESS,
-  SCRAPE_BASEBALL_STANDINGS_FAILED,
-  BASEBALL_STANDINGS_ADD_POINTS,
+  SCRAPE_H2H_BASEBALL_STANDINGS_START,
+  SCRAPE_H2H_BASEBALL_STANDINGS_SUCCESS,
+  SCRAPE_H2H_BASEBALL_STANDINGS_FAILED,
+  ADD_H2H_TRIFECTA_POINTS,
+  SCRAPE_ROTO_BASEBALL_STANDINGS_START,
+  SCRAPE_ROTO_BASEBALL_STANDINGS_SUCCESS,
+  SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED,
+  ADD_ROTO_TRIFECTA_POINTS,
   SET_LAST_SCRAPED,
 } from "./baseballStandingsActionTypes";
 
 const BASEBALL_STANDINGS_STATE_PATH = "baseballStandings";
 
 const initialState = {
-  baseballStandingsLoading: false,
-  baseballStandingsSuccess: false,
-  baseballStandings: [],
+  h2hStandingsLoading: false,
+  h2hStandingsSuccess: false,
+  h2hStandings: [],
+  rotoStandingsLoading: false,
+  rotoStandingsSuccess: false,
+  rotoStandings: [],
   lastScraped: "date",
 };
 
@@ -20,30 +27,56 @@ const baseballStandingsReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case SCRAPE_BASEBALL_STANDINGS_START:
+    case SCRAPE_H2H_BASEBALL_STANDINGS_START:
       return {
         ...state,
-        baseballStandingsLoading: true,
-        baseballStandingsSuccess: false,
+        h2hStandingsLoading: true,
+        h2hStandingsSuccess: false,
       };
-    case SCRAPE_BASEBALL_STANDINGS_SUCCESS: {
+    case SCRAPE_H2H_BASEBALL_STANDINGS_SUCCESS: {
       return {
         ...state,
-        baseballStandingsLoading: false,
-        baseballStandingsSuccess: true,
-      };
-    }
-    case SCRAPE_BASEBALL_STANDINGS_FAILED: {
-      return {
-        ...state,
-        baseballStandingsLoading: false,
-        baseballStandingsSuccess: false,
+        h2hStandingsLoading: false,
+        h2hStandingsSuccess: true,
       };
     }
-    case BASEBALL_STANDINGS_ADD_POINTS: {
+    case SCRAPE_H2H_BASEBALL_STANDINGS_FAILED: {
       return {
         ...state,
-        baseballStandings: payload,
+        h2hStandingsLoading: false,
+        h2hStandingsSuccess: false,
+      };
+    }
+    case ADD_H2H_TRIFECTA_POINTS: {
+      return {
+        ...state,
+        h2hStandings: payload,
+      };
+    }
+    case SCRAPE_ROTO_BASEBALL_STANDINGS_START:
+      return {
+        ...state,
+        rotoStandingsLoading: true,
+        rotoStandingsSuccess: false,
+      };
+    case SCRAPE_ROTO_BASEBALL_STANDINGS_SUCCESS: {
+      return {
+        ...state,
+        rotoStandingsLoading: false,
+        rotoStandingsSuccess: true,
+      };
+    }
+    case SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED: {
+      return {
+        ...state,
+        rotoStandingsLoading: false,
+        rotoStandingsSuccess: false,
+      };
+    }
+    case ADD_ROTO_TRIFECTA_POINTS: {
+      return {
+        ...state,
+        rotoStandings: payload,
       };
     }
     case SET_LAST_SCRAPED: {
@@ -61,7 +94,8 @@ const getBaseballStandingsStateSelectors = function(rootState) {
   const state = getStateSlice(rootState, BASEBALL_STANDINGS_STATE_PATH);
 
   return {
-    getBaseballStandings: () => state.baseballStandings,
+    getH2HStandings: () => state.h2hStandings,
+    getRotoStandings: () => state.rotoStandings,
     getLastScraped: () => state.lastScraped,
   };
 };
