@@ -1,11 +1,14 @@
 const assignRankPoints = (
   dataArray,
   compareKey,
+  sortDirection,
   assignKey,
   totalPoints,
   pointsIncrement
 ) => {
-  dataArray.sort((a, b) => (a[compareKey] < b[compareKey] ? 1 : -1));
+  sortDirection === "highToLow"
+    ? dataArray.sort((a, b) => (a[compareKey] < b[compareKey] ? 1 : -1))
+    : dataArray.sort((a, b) => (a[compareKey] > b[compareKey] ? 1 : -1));
 
   // Starting value for points to give out
   let points = totalPoints;

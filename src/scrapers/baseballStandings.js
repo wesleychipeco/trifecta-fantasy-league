@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseballStandingsScraper = () => {
+const h2hStandingsScraper = () => {
   return axios
     .get(
       "http://fantasy.espn.com/apis/v3/games/flb/seasons/2019/segments/0/leagues/109364?view=standings"
@@ -21,4 +21,35 @@ const baseballStandingsScraper = () => {
       return standingsArray;
     });
 };
-export { baseballStandingsScraper };
+
+const rotoStatsScraper = () => {
+  return axios
+    .get(
+      "http://fantasy.espn.com/apis/v3/games/flb/seasons/2019/segments/0/leagues/109364?view=standings"
+    )
+    .then(response => {
+      const standingsArray = [];
+
+      response.data.teams.forEach(team => {
+        standingsArray.push({
+          teamName: team.location + " " + team.nickname,
+          R: team.valuesByStat["20"],
+          HR: team.valuesByStat["5"],
+          RBI: team.valuesByStat["21"],
+          K: team.valuesByStat["27"],
+          SB: team.valuesByStat["23"],
+          OBP: team.valuesByStat["17"],
+          SO: team.valuesByStat["48"],
+          QS: team.valuesByStat["63"],
+          W: team.valuesByStat["53"],
+          SV: team.valuesByStat["57"],
+          ERA: team.valuesByStat["47"],
+          WHIP: team.valuesByStat["41"],
+        });
+      });
+
+      return standingsArray;
+    });
+};
+
+export { h2hStandingsScraper, rotoStatsScraper };
