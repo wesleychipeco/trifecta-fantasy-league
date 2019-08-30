@@ -14,7 +14,7 @@ const h2hStandingsScraper = () => {
           wins: team.record.overall.wins,
           losses: team.record.overall.losses,
           ties: team.record.overall.ties,
-          winPer: team.record.overall.percentage,
+          winPer: team.record.overall.percentage.toFixed(3),
         });
       });
 
@@ -38,13 +38,13 @@ const rotoStatsScraper = () => {
           RBI: team.valuesByStat["21"],
           K: team.valuesByStat["27"],
           SB: team.valuesByStat["23"],
-          OBP: team.valuesByStat["17"],
+          OBP: team.valuesByStat["17"].toFixed(4),
           SO: team.valuesByStat["48"],
           QS: team.valuesByStat["63"],
           W: team.valuesByStat["53"],
           SV: team.valuesByStat["57"],
-          ERA: team.valuesByStat["47"],
-          WHIP: team.valuesByStat["41"],
+          ERA: team.valuesByStat["47"].toFixed(3),
+          WHIP: team.valuesByStat["41"].toFixed(3),
         });
       });
 
