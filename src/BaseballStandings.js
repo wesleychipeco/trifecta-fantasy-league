@@ -7,6 +7,7 @@ import { getBaseballStandingsStateSelectors } from "./store/standings/baseballSt
 import {
   scrapeH2HBaseballStandings,
   scrapeRotoBaseballStandings,
+  calculateTrifectaBaseballStandings,
 } from "./store/standings/baseballStandingsActions";
 
 class BaseballStandings extends PureComponent {
@@ -15,12 +16,64 @@ class BaseballStandings extends PureComponent {
     this.props.scrapeRotoBaseballStandings();
   }
 
+  componentDidUpdate(prevProps) {
+    const { h2hStandings, rotoStandings } = this.props;
+    console.log("prev props", prevProps);
+    if (
+      h2hStandings !== prevProps.h2hStandings &&
+      rotoStandings !== prevProps.rotoStandings
+    ) {
+      this.props.calculateTrifectaBaseballStandings(
+        h2hStandings,
+        rotoStandings
+      );
+      console.log("hey");
+    }
+  }
+
   render() {
-    const { navigation, h2hStandings, rotoStandings, lastScraped } = this.props;
+    const {
+      navigation,
+      h2hStandings,
+      rotoStandings,
+      trifectaStandings,
+      lastScraped,
+    } = this.props;
+
+    if (!h2hStandings || !rotoStandings) return null;
+
+    console.log("trifecta", trifectaStandings);
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Baseball Standings!</Text>
         <Text>{lastScraped}</Text>
+        <Row
+          data={[
+            "Team Name",
+            "H2H Trifecta Points",
+            "Roto Trifecta Points",
+            "Total Trifecta Points",
+          ]}
+          height={50}
+          totalwidth={500}
+          widthArray={[200, 100, 100, 100]}
+          // flexArray={[2, 1, 1, 1, 1, 1]}
+          rowStyle={{ backgroundColor: "#BEBEBE" }}
+          numberOfLines={2}
+        />
+        <Rows
+          data={trifectaStandings}
+          totalheight={250}
+          totalwidth={500}
+          widthArray={[200, 100, 100, 100]}
+          // flexArray={[2, 1, 1, 1, 1, 1]}
+          objectKeys={[
+            "teamName",
+            "h2hTrifectaPoints",
+            "rotoTrifectaPoints",
+            "totalTrifectaPoints",
+          ]}
+        />
         <Row
           data={[
             "Team Name",
@@ -52,7 +105,6 @@ class BaseballStandings extends PureComponent {
             "h2hTrifectaPoints",
           ]}
         />
-        {/* <Button title="Scrape!" onPress={handleScrapeRequest} /> */}
         <Row
           data={[
             "Team Name",
@@ -223,12 +275,14 @@ const mapStateToProps = state => {
   const {
     getH2HStandings,
     getRotoStandings,
+    getTrifectaStandings,
     getLastScraped,
   } = getBaseballStandingsStateSelectors(state);
 
   return {
     h2hStandings: getH2HStandings(),
     rotoStandings: getRotoStandings(),
+    trifectaStandings: getTrifectaStandings(),
     lastScraped: getLastScraped(),
   };
 };
@@ -236,6 +290,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   scrapeH2HBaseballStandings,
   scrapeRotoBaseballStandings,
+  calculateTrifectaBaseballStandings,
 };
 
 export default connect(

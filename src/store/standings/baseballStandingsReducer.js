@@ -8,6 +8,7 @@ import {
   SCRAPE_ROTO_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED,
   ADD_ROTO_TRIFECTA_POINTS,
+  ADD_TOTAL_TRIFECTA_POINTS,
   SET_LAST_SCRAPED,
 } from "./baseballStandingsActionTypes";
 
@@ -79,6 +80,12 @@ const baseballStandingsReducer = (state = initialState, action) => {
         rotoStandings: payload,
       };
     }
+    case ADD_TOTAL_TRIFECTA_POINTS: {
+      return {
+        ...state,
+        trifectaStandings: payload,
+      };
+    }
     case SET_LAST_SCRAPED: {
       return {
         ...state,
@@ -96,6 +103,7 @@ const getBaseballStandingsStateSelectors = function(rootState) {
   return {
     getH2HStandings: () => state.h2hStandings,
     getRotoStandings: () => state.rotoStandings,
+    getTrifectaStandings: () => state.trifectaStandings,
     getLastScraped: () => state.lastScraped,
   };
 };

@@ -3,12 +3,13 @@ import {
   SCRAPE_H2H_BASEBALL_STANDINGS_START,
   SCRAPE_H2H_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_H2H_BASEBALL_STANDINGS_FAILED,
+  ADD_H2H_TRIFECTA_POINTS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_START,
   SCRAPE_ROTO_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED,
-  SET_LAST_SCRAPED,
-  ADD_H2H_TRIFECTA_POINTS,
   ADD_ROTO_TRIFECTA_POINTS,
+  ADD_TOTAL_TRIFECTA_POINTS,
+  SET_LAST_SCRAPED,
 } from "./baseballStandingsActionTypes";
 import {
   h2hStandingsScraper,
@@ -17,6 +18,7 @@ import {
 import { assignRankPoints } from "../../computators/assignRankPoints";
 import { sumRotoPoints } from "../../computators/sumRotoPoints";
 import { format } from "date-fns";
+import { sumTrifectaPoints } from "../../computators/sumTrifectaPoints";
 
 const actions = {
   scrapeH2HBaseballStandingsStart: createAction(
@@ -39,7 +41,36 @@ const actions = {
     SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED
   ),
   addRotoTrifectaPoints: createAction(ADD_ROTO_TRIFECTA_POINTS),
+  addTotalTrifectaPoints: createAction(ADD_TOTAL_TRIFECTA_POINTS),
   setLastScraped: createAction(SET_LAST_SCRAPED),
+};
+
+const scrapeH2HBaseballStandings = () => {
+  return async function(dispatch) {
+    const h2hStandings = await h2hStandingsScraper();
+
+    dispatch(actions.scrapeH2HBaseballStandingsStart);
+
+    if (h2hStandings) {
+      dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
+      dispatch(actions.scrapeH2HBaseballStandingsSuccess);
+
+      const baseballStandingsWithH2HTrifectaPoints = await assignRankPoints(
+        h2hStandings,
+        "winPer",
+        "highToLow",
+        "h2hTrifectaPoints",
+        10,
+        1
+      );
+
+      dispatch(
+        actions.addH2HTrifectaPoints(baseballStandingsWithH2HTrifectaPoints)
+      );
+    } else {
+      dispatch(actions.scrapeH2HBaseballStandingsFailed);
+    }
+  };
 };
 
 const scrapeRotoBaseballStandings = () => {
@@ -97,32 +128,72 @@ const scrapeRotoBaseballStandings = () => {
   };
 };
 
-const scrapeH2HBaseballStandings = () => {
+////////// Try having one baseball standings scraper function that gets called from the component, linking them all to one
+////////// function then synchronously dispatching the actions at the end with their own copies of the state to the different leafs
+const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
   return async function(dispatch) {
-    const h2hStandings = await h2hStandingsScraper();
+    console.log(h2hStandings, ":::::", rotoStandings);
+    if (h2hStandings.length > 0 && rotoStandings.length > 0) {
+      const combinedStandingsArray = [];
 
-    dispatch(actions.scrapeH2HBaseballStandingsStart);
+      h2hStandings.forEach(h2hTeam => {
+        const combinedStandings = {};
+        const h2hTeamName = h2hTeam.teamName;
 
-    if (h2hStandings) {
-      dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
-      dispatch(actions.scrapeH2HBaseballStandingsSuccess);
+        const team = h2hStandings.find(
+          teamname => teamname.teamName === h2hTeamName
+        );
 
-      const baseballStandingsWithH2HTrifectaPoints = await assignRankPoints(
-        h2hStandings,
-        "winPer",
-        "highToLow",
-        "h2hTrifectaPoints",
-        10,
-        1
-      );
-      console.log("h2h", baseballStandingsWithH2HTrifectaPoints);
-      dispatch(
-        actions.addH2HTrifectaPoints(baseballStandingsWithH2HTrifectaPoints)
-      );
-    } else {
-      dispatch(actions.scrapeH2HBaseballStandingsFailed);
+        const team2 = rotoStandings.find(
+          teamname => teamname.teamName === h2hTeamName
+        );
+
+        combinedStandings.teamName = h2hTeamName;
+        combinedStandings.h2hTrifectaPoints = team.h2hTrifectaPoints;
+        combinedStandings.rotoTrifectaPoints = team2.rotoTrifectaPoints;
+        // combinedStandings.
+        console.log("combinedStandings individual", combinedStandings);
+        combinedStandingsArray.push(combinedStandings);
+      });
+
+      console.log("here combined standings array", combinedStandingsArray);
+      dispatch(actions.addTotalTrifectaPoints(combinedStandingsArray));
+      //   for (let i = 0; i < h2hStandings.length; i++) {
+
+      //     console.log("a", i);
+      //     combinedStandings.teamName = h2hStandings[i].teamName;
+      //     combinedStandings.h2hTrifectaPoints = h2hStandings[i].h2hTrifectaPoints;
+      //     console.log("i", i);
+      //     console.log("h2h", h2hStandings[i]);
+      //     console.log("roto", rotoStandings[i]);
+
+      //     combinedStandings.rotoTrifectaPoints =
+      //       rotoStandings[i].rotoTrifectaPoints;
+      //     console.log("b", i);
+
+      //     // h2hStandings[i].forEach(h2hTeam => {
+      //     //   (h2hTrifectaStandings.teamName = h2hTeam.teamName),
+      //     //     (h2hTrifectaStandings.h2hTrifectaPoints =
+      //     //       h2hTeam.h2hTrifectaPoints);
+      //     // });
+
+      //     // rotoStandings[i].forEach(rotoTeam => {
+      //     //   rotoTrifectaStandings.rotoTrifectaPoints =
+      //     //     rotoTeam.rotoTrifectaPoints;
+      //     // });
+
+      //     combinedStandingsArray.push(combinedStandings);
+      //     console.log("combinedStandings individual", combinedStandings);
+      //   }
+      //   console.log("combinedStandings array", combinedStandingsArray);
+      //   // const trifectaStandings = await sumTrifectaPoints(combinedStandings);
+      //   // console.log("trifecta standings", trifectaStandings);
     }
   };
 };
 
-export { scrapeH2HBaseballStandings, scrapeRotoBaseballStandings };
+export {
+  scrapeH2HBaseballStandings,
+  scrapeRotoBaseballStandings,
+  calculateTrifectaBaseballStandings,
+};
