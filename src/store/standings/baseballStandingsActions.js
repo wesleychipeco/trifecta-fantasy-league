@@ -7,7 +7,7 @@ import {
   BASEBALL_STANDINGS_ADD_POINTS,
 } from "./baseballStandingsActionTypes";
 import { baseballStandingsScraper } from "../../scrapers/baseballStandings";
-import { baseballStandingsComputator } from "../../computators/baseballStandings";
+import { assignRankPoints } from "../../computators/assignRankPoints";
 import { format } from "date-fns";
 
 const actions = {
@@ -30,10 +30,16 @@ const scrapeBaseballStandings = () => {
       dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
       dispatch(actions.scrapeBaseballStandingsSuccess);
 
-      const baseballStandingsWithPoints = baseballStandingsComputator(
-        baseballStandings
+      const baseballStandingsWithTrifectaPoints = assignRankPoints(
+        baseballStandings,
+        "winPer",
+        "h2hTrifectaPoints",
+        10,
+        1
       );
-      dispatch(actions.baseballStandingsAddPoints(baseballStandingsWithPoints));
+      dispatch(
+        actions.baseballStandingsAddPoints(baseballStandingsWithTrifectaPoints)
+      );
     } else {
       dispatch(actions.scrapeBaseballStandingsFailed);
     }
