@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
-export class Cell extends Component {
+export class Cell extends PureComponent {
   static propTypes = {
     data: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     height: PropTypes.number.isRequired,
@@ -59,5 +59,5 @@ export class Cell extends Component {
 
 const styles = StyleSheet.create({
   cell: { justifyContent: "center", alignItems: "center" },
-  text: { backgroundColor: "transparent" },
+  text: { backgroundColor: "transparent", textAlign: "center" },
 });

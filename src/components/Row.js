@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { View, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 import { sum } from "../utils";
 import { Cell } from "./Cell";
 
-export class Row extends Component {
+export class Row extends PureComponent {
   // totalheight: sets the outer "table" height independent of each row height
   //    - not required. If not set, sum heightArray
   // heightArray: sets each row's height
@@ -95,7 +95,7 @@ export class Row extends Component {
   }
 }
 
-export class Rows extends Component {
+export class Rows extends PureComponent {
   static propTypes = {
     data: PropTypes.array.isRequired,
     objectKeys: PropTypes.array,
