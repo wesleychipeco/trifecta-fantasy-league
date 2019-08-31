@@ -4,17 +4,10 @@ import { connect } from "react-redux";
 import { Row, Rows } from "./components/Row";
 
 import { getBaseballStandingsStateSelectors } from "./store/standings/baseballStandingsReducer";
-import {
-  scrapeBaseballStandings,
-  scrapeH2HBaseballStandings,
-  scrapeRotoBaseballStandings,
-  calculateTrifectaBaseballStandings,
-} from "./store/standings/baseballStandingsActions";
+import { scrapeBaseballStandings } from "./store/standings/baseballStandingsActions";
 
 class BaseballStandings extends PureComponent {
   componentDidMount() {
-    // this.props.scrapeH2HBaseballStandings();
-    // this.props.scrapeRotoBaseballStandings();
     this.props.scrapeBaseballStandings();
   }
 
@@ -275,9 +268,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   scrapeBaseballStandings,
-  scrapeH2HBaseballStandings,
-  scrapeRotoBaseballStandings,
-  calculateTrifectaBaseballStandings,
 };
 
 export default connect(
