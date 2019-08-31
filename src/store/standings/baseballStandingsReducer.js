@@ -10,6 +10,7 @@ import {
   ADD_ROTO_TRIFECTA_POINTS,
   ADD_TOTAL_TRIFECTA_POINTS,
   SET_LAST_SCRAPED,
+  SORT_BY_COLUMN,
 } from "./baseballStandingsActionTypes";
 
 const BASEBALL_STANDINGS_STATE_PATH = "baseballStandings";
@@ -90,6 +91,12 @@ const baseballStandingsReducer = (state = initialState, action) => {
       return {
         ...state,
         lastScraped: payload,
+      };
+    }
+    case SORT_BY_COLUMN: {
+      return {
+        ...state,
+        trifectaStandings: payload,
       };
     }
     default:
