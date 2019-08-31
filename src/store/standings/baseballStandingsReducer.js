@@ -27,6 +27,8 @@ const initialState = {
 const baseballStandingsReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
+  console.log("action type", type);
+
   switch (type) {
     case SCRAPE_H2H_BASEBALL_STANDINGS_START:
       return {
@@ -81,6 +83,7 @@ const baseballStandingsReducer = (state = initialState, action) => {
       };
     }
     case ADD_TOTAL_TRIFECTA_POINTS: {
+      console.log("called?");
       return {
         ...state,
         trifectaStandings: payload,

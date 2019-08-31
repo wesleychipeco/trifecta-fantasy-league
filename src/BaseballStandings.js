@@ -5,6 +5,7 @@ import { Row, Rows } from "./components/Row";
 
 import { getBaseballStandingsStateSelectors } from "./store/standings/baseballStandingsReducer";
 import {
+  scrapeBaseballStandings,
   scrapeH2HBaseballStandings,
   scrapeRotoBaseballStandings,
   calculateTrifectaBaseballStandings,
@@ -12,23 +13,9 @@ import {
 
 class BaseballStandings extends PureComponent {
   componentDidMount() {
-    this.props.scrapeH2HBaseballStandings();
-    this.props.scrapeRotoBaseballStandings();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { h2hStandings, rotoStandings } = this.props;
-    console.log("prev props", prevProps);
-    if (
-      h2hStandings !== prevProps.h2hStandings &&
-      rotoStandings !== prevProps.rotoStandings
-    ) {
-      this.props.calculateTrifectaBaseballStandings(
-        h2hStandings,
-        rotoStandings
-      );
-      console.log("hey");
-    }
+    // this.props.scrapeH2HBaseballStandings();
+    // this.props.scrapeRotoBaseballStandings();
+    this.props.scrapeBaseballStandings();
   }
 
   render() {
@@ -42,7 +29,6 @@ class BaseballStandings extends PureComponent {
 
     if (!h2hStandings || !rotoStandings) return null;
 
-    console.log("trifecta", trifectaStandings);
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Baseball Standings!</Text>
@@ -288,6 +274,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
+  scrapeBaseballStandings,
   scrapeH2HBaseballStandings,
   scrapeRotoBaseballStandings,
   calculateTrifectaBaseballStandings,
