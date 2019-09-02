@@ -10,7 +10,7 @@ import {
   ADD_ROTO_TRIFECTA_POINTS,
   ADD_TOTAL_TRIFECTA_POINTS,
   SET_LAST_SCRAPED,
-  SORT_BY_COLUMN,
+  SORT_TABLE,
 } from "./baseballStandingsActionTypes";
 import {
   h2hStandingsScraper,
@@ -43,7 +43,7 @@ const actions = {
   addRotoTrifectaPoints: createAction(ADD_ROTO_TRIFECTA_POINTS),
   addTotalTrifectaPoints: createAction(ADD_TOTAL_TRIFECTA_POINTS),
   setLastScraped: createAction(SET_LAST_SCRAPED),
-  sortByColumn: createAction(SORT_BY_COLUMN),
+  sortTable: createAction(SORT_TABLE),
 };
 
 const assignRotoCategoryPoints = rotoStandings => {
@@ -166,10 +166,10 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
   }
 };
 
-const sortByColumn = standings => {
+const sortTable = standings => {
   return async function(dispatch) {
-    dispatch(actions.sortByColumn(standings));
+    dispatch(actions.sortTable(standings));
   };
 };
 
-export { scrapeBaseballStandings, sortByColumn };
+export { scrapeBaseballStandings, sortTable };

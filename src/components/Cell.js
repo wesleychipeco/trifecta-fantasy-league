@@ -39,10 +39,6 @@ export class Cell extends PureComponent {
       ...props
     } = this.props;
 
-    if (React.isValidElement(data)) {
-      console.log("data", data);
-    }
-
     const textDom = React.isValidElement(data) ? (
       data
     ) : (
