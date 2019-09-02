@@ -63,7 +63,39 @@ class BaseballStandings extends PureComponent {
     sortByColumn(trifectaStandingsSorted);
   };
 
-  sortByH2HPoints = () => {
+  sortByRotoTrifectaPoints = () => {
+    const { sortByColumn, trifectaStandings } = this.props;
+
+    const trifectaStandingsSorted = [...trifectaStandings];
+
+    if (this.state.trifectaStandings.sortedDirection === "highToLow") {
+      trifectaStandingsSorted.sort((a, b) =>
+        a["rotoTrifectaPoints"] > b["rotoTrifectaPoints"] ? 1 : -1
+      );
+
+      this.setState({
+        trifectaStandings: {
+          sortedColumn: "rotoTrifectaPoints",
+          sortedDirection: "lowToHigh",
+        },
+      });
+    } else {
+      trifectaStandingsSorted.sort((a, b) =>
+        a["rotoTrifectaPoints"] < b["rotoTrifectaPoints"] ? 1 : -1
+      );
+
+      this.setState({
+        trifectaStandings: {
+          sortedColumn: "rotoTrifectaPoints",
+          sortedDirection: "highToLow",
+        },
+      });
+    }
+
+    sortByColumn(trifectaStandingsSorted);
+  };
+
+  sortByH2HTrifectaPoints = () => {
     const { sortByColumn, trifectaStandings } = this.props;
 
     const trifectaStandingsSorted = [...trifectaStandings];
@@ -95,6 +127,14 @@ class BaseballStandings extends PureComponent {
     sortByColumn(trifectaStandingsSorted);
   };
 
+  renderHeaderRowColumn = item => {
+    return (
+      <Button key={item.title} title={item.title} onPress={item.onPress} />
+    );
+  };
+
+  noop = () => {};
+
   render() {
     const {
       navigation,
@@ -105,6 +145,17 @@ class BaseballStandings extends PureComponent {
     } = this.props;
 
     if (!h2hStandings || !rotoStandings || !trifectaStandings) return null;
+
+    const trifectaStandingsHeaderRowMap = [
+      { title: "Team Name", onPress: this.noop },
+      { title: "H2H Trifecta Points", onPress: this.sortByH2HTrifectaPoints },
+      { title: "Roto Trifecta Points", onPress: this.sortByRotoTrifectaPoints },
+      { title: "Total Trifecta Points", onPress: this.sortByTrifectaPoints },
+    ];
+
+    const trifectaStandingsHeaderRow = trifectaStandingsHeaderRowMap.map(
+      this.renderHeaderRowColumn
+    );
 
     return (
       <View style={styles.container}>
@@ -118,31 +169,12 @@ class BaseballStandings extends PureComponent {
           <Text style={styles.welcome}>Baseball Standings!</Text>
           <Text>{lastScraped}</Text>
         </View>
-        <View>
-          <Button
-            title="Sort Trifecta Points"
-            onPress={this.sortByTrifectaPoints}
-          />
-          <Button
-            title="sort h2h triecta points"
-            onPress={this.sortByH2HPoints}
-          />
-        </View>
         <View style={{ alignItems: "center", marginVertical: 10 }}>
-          <Text style={{ alignSelf: "flex-start" }}>Trifecta Standings</Text>
           <Row
-            data={[
-              "Team Name",
-              "H2H Trifecta Points",
-              "Roto Trifecta Points",
-              "Total Trifecta Points",
-            ]}
+            data={trifectaStandingsHeaderRow}
             height={50}
-            totalwidth={500}
+            totalWidth={500}
             widthArray={[200, 100, 100, 100]}
-            // flexArray={[2, 1, 1, 1, 1, 1]}
-            rowStyle={{ backgroundColor: "#BEBEBE" }}
-            numberOfLines={2}
           />
           <Rows
             data={trifectaStandings}

@@ -4,7 +4,11 @@ import PropTypes from "prop-types";
 
 export class Cell extends PureComponent {
   static propTypes = {
-    data: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    data: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+      PropTypes.element,
+    ]).isRequired,
     height: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
     flex: PropTypes.number,
@@ -34,6 +38,10 @@ export class Cell extends PureComponent {
       numberOfLines,
       ...props
     } = this.props;
+
+    if (React.isValidElement(data)) {
+      console.log("data", data);
+    }
 
     const textDom = React.isValidElement(data) ? (
       data
