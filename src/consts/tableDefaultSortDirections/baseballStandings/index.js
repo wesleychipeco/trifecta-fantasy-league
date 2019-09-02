@@ -26,6 +26,8 @@ const tableDefaultSortDirections = {
     WHIPPoints: true,
     totalPoints: true,
     rotoTrifectaPoints: true,
+  },
+  rotoStats: {
     R: true,
     HR: true,
     RBI: true,

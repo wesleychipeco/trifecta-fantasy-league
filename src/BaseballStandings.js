@@ -29,6 +29,10 @@ class BaseballStandings extends PureComponent {
         sortedColumn: "rotoTrifectaPoints",
         highToLow: true,
       },
+      rotoStats: {
+        sortedColumn: "teamName",
+        highToLow: true,
+      },
     };
   }
 
@@ -125,7 +129,7 @@ class BaseballStandings extends PureComponent {
     this.sortTableByColumn(h2hStandings, "h2hTrifectaPoints", "h2hStandings");
   };
 
-  // Roto Standings & Stats Tables sort methods
+  // Roto Standings Table sort methods
   sortRotoStandingsByRPoints = () => {
     const { rotoStandings } = this.props;
     this.sortTableByColumn(rotoStandings, "RPoints", "rotoStandings");
@@ -200,64 +204,65 @@ class BaseballStandings extends PureComponent {
     );
   };
 
+  // Roto Stats Table sort methods
   sortRotoStandingsByR = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "R", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "R", "rotoStats");
   };
 
   sortRotoStandingsByHR = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "HR", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "HR", "rotoStats");
   };
 
   sortRotoStandingsByRBI = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "RBI", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "RBI", "rotoStats");
   };
 
   sortRotoStandingsByK = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "K", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "K", "rotoStats");
   };
 
   sortRotoStandingsBySB = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "SB", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "SB", "rotoStats");
   };
 
   sortRotoStandingsByOBP = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "OBP", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "OBP", "rotoStats");
   };
 
   sortRotoStandingsBySO = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "SO", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "SO", "rotoStats");
   };
 
   sortRotoStandingsByQS = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "QS", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "QS", "rotoStats");
   };
 
   sortRotoStandingsByW = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "W", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "W", "rotoStats");
   };
 
   sortRotoStandingsBySV = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "SV", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "SV", "rotoStats");
   };
 
   sortRotoStandingsByERA = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "ERA", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "ERA", "rotoStats");
   };
 
   sortRotoStandingsByWHIP = () => {
     const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "WHIP", "rotoStandings");
+    this.sortTableByColumn(rotoStandings, "WHIP", "rotoStats");
   };
 
   renderHeaderRowColumn = ({ title, onPress }) => {
@@ -267,9 +272,10 @@ class BaseballStandings extends PureComponent {
   render() {
     const {
       navigation,
+      trifectaStandings,
       h2hStandings,
       rotoStandings,
-      trifectaStandings,
+      rotoStats,
       lastScraped,
     } = this.props;
 
@@ -376,7 +382,7 @@ class BaseballStandings extends PureComponent {
     // Create header row for Roto Standings Table
     const rotoStandingsHeaderRowMap = [
       { title: "Team Name", onPress: this.noop },
-      { title: "R", onPress: this.noop },
+      { title: "R", onPress: this.sortRotoStandingsByRPoints },
       { title: "HR", onPress: this.sortRotoStandingsByHRPoints },
       { title: "RBI", onPress: this.sortRotoStandingsByRBIPoints },
       { title: "K", onPress: this.sortRotoStandingsByKPoints },
@@ -398,6 +404,40 @@ class BaseballStandings extends PureComponent {
       this.renderHeaderRowColumn
     );
 
+    ///// ROTO STATS /////
+    const rotoStatsHeaderRowHeight = 75;
+    const rotoStatsTotalHeight = 500;
+    const rotoStatsTotalWidth = 700;
+    const rotoStatsWidthArray = [
+      100,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+    ];
+    const rotoStatsObjectKeys = [
+      "teamName",
+      "R",
+      "HR",
+      "RBI",
+      "K",
+      "SB",
+      "OBP",
+      "SO",
+      "QS",
+      "W",
+      "SV",
+      "ERA",
+      "WHIP",
+    ];
     const rotoStatsHeaderRowMap = [
       { title: "Team Name", onPress: this.noop },
       { title: "R", onPress: this.sortRotoStandingsByR },
@@ -485,34 +525,18 @@ class BaseballStandings extends PureComponent {
             <Text style={{ alignSelf: "flex-start" }}>Roto Stats</Text>
             <Row
               data={rotoStatsHeaderRow}
-              height={50}
-              totalwidth={700}
-              widthArray={[100, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50]}
-              // flexArray={[2, 1, 1, 1, 1, 1]}
+              height={rotoStatsHeaderRowHeight}
+              totalwidth={rotoStatsTotalWidth}
+              widthArray={rotoStatsWidthArray}
               rowStyle={{ backgroundColor: "#BEBEBE" }}
               numberOfLines={2}
             />
             <Rows
-              data={rotoStandings}
-              totalheight={500}
-              totalwidth={700}
-              widthArray={[100, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50]}
-              // flexArray={[2, 1, 1, 1, 1, 1]}
-              objectKeys={[
-                "teamName",
-                "R",
-                "HR",
-                "RBI",
-                "K",
-                "SB",
-                "OBP",
-                "SO",
-                "QS",
-                "W",
-                "SV",
-                "ERA",
-                "WHIP",
-              ]}
+              data={rotoStats}
+              totalheight={rotoStatsTotalHeight}
+              totalwidth={rotoStatsTotalWidth}
+              widthArray={rotoStatsWidthArray}
+              objectKeys={rotoStatsObjectKeys}
               numberOfLines={2}
             />
           </View>
@@ -558,16 +582,18 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   const {
+    getTrifectaStandings,
     getH2HStandings,
     getRotoStandings,
-    getTrifectaStandings,
+    getRotoStats,
     getLastScraped,
   } = getBaseballStandingsStateSelectors(state);
 
   return {
+    trifectaStandings: getTrifectaStandings(),
     h2hStandings: getH2HStandings(),
     rotoStandings: getRotoStandings(),
-    trifectaStandings: getTrifectaStandings(),
+    rotoStats: getRotoStats(),
     lastScraped: getLastScraped(),
   };
 };

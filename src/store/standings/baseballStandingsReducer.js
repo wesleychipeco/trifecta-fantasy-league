@@ -66,6 +66,7 @@ const baseballStandingsReducer = (state = initialState, action) => {
         ...state,
         rotoStandingsLoading: false,
         rotoStandingsSuccess: true,
+        rotoStats: payload,
       };
     }
     case SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED: {
@@ -109,9 +110,10 @@ const getBaseballStandingsStateSelectors = function(rootState) {
   const state = getStateSlice(rootState, BASEBALL_STANDINGS_STATE_PATH);
 
   return {
+    getTrifectaStandings: () => state.trifectaStandings,
     getH2HStandings: () => state.h2hStandings,
     getRotoStandings: () => state.rotoStandings,
-    getTrifectaStandings: () => state.trifectaStandings,
+    getRotoStats: () => state.rotoStats,
     getLastScraped: () => state.lastScraped,
   };
 };

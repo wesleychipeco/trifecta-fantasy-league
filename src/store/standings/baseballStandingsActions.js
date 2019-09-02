@@ -88,7 +88,7 @@ const scrapeBaseballStandings = () => {
       dispatch(actions.scrapeH2HBaseballStandingsSuccess);
       if (rotoStandings) {
         dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
-        dispatch(actions.scrapeRotoBaseballStandingsSuccess);
+        const rotoStats = [...rotoStandings];
 
         // H2H Standings
         const h2hStandingsWithTrifectaPoints = await assignRankPoints(
@@ -117,6 +117,8 @@ const scrapeBaseballStandings = () => {
         dispatch(
           actions.addRotoTrifectaPoints(rotoStandingsWithTrifectaPoints)
         );
+        dispatch(actions.scrapeRotoBaseballStandingsSuccess(rotoStats));
+
         dispatch(
           actions.addTotalTrifectaPoints(
             calculateTrifectaBaseballStandings(
