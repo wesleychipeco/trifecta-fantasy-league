@@ -3,12 +3,13 @@ import {
   SCRAPE_H2H_BASEBALL_STANDINGS_START,
   SCRAPE_H2H_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_H2H_BASEBALL_STANDINGS_FAILED,
-  ADD_H2H_TRIFECTA_POINTS,
+  SAVE_H2H_STANDINGS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_START,
   SCRAPE_ROTO_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED,
-  ADD_ROTO_TRIFECTA_POINTS,
-  ADD_TOTAL_TRIFECTA_POINTS,
+  SAVE_ROTO_STATS,
+  SAVE_ROTO_STANDINGS,
+  SAVE_TRIFECTA_STANDINGS,
   SET_LAST_SCRAPED,
   SORT_TABLE,
 } from "./baseballStandingsActionTypes";
@@ -30,7 +31,7 @@ const actions = {
   scrapeH2HBaseballStandingsFailed: createAction(
     SCRAPE_H2H_BASEBALL_STANDINGS_FAILED
   ),
-  addH2HTrifectaPoints: createAction(ADD_H2H_TRIFECTA_POINTS),
+  saveH2HStandings: createAction(SAVE_H2H_STANDINGS),
   scrapeRotoBaseballStandingsStart: createAction(
     SCRAPE_ROTO_BASEBALL_STANDINGS_START
   ),
@@ -40,8 +41,9 @@ const actions = {
   scrapeRotoBaseballStandingsFailed: createAction(
     SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED
   ),
-  addRotoTrifectaPoints: createAction(ADD_ROTO_TRIFECTA_POINTS),
-  addTotalTrifectaPoints: createAction(ADD_TOTAL_TRIFECTA_POINTS),
+  saveRotoStats: createAction(SAVE_ROTO_STATS),
+  saveRotoStandings: createAction(SAVE_ROTO_STANDINGS),
+  saveTrifectaStandings: createAction(SAVE_TRIFECTA_STANDINGS),
   setLastScraped: createAction(SET_LAST_SCRAPED),
   sortTable: createAction(SORT_TABLE),
 };
@@ -88,6 +90,7 @@ const scrapeBaseballStandings = () => {
       dispatch(actions.scrapeH2HBaseballStandingsSuccess);
       if (rotoStandings) {
         dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
+        dispatch(actions.scrapeRotoBaseballStandingsSuccess);
         const rotoStats = [...rotoStandings];
 
         // H2H Standings
@@ -113,14 +116,12 @@ const scrapeBaseballStandings = () => {
           1
         );
 
-        dispatch(actions.addH2HTrifectaPoints(h2hStandingsWithTrifectaPoints));
+        // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
+        dispatch(actions.saveH2HStandings(h2hStandingsWithTrifectaPoints));
+        dispatch(actions.saveRotoStandings(rotoStandingsWithTrifectaPoints));
+        dispatch(actions.saveRotoStats(rotoStats));
         dispatch(
-          actions.addRotoTrifectaPoints(rotoStandingsWithTrifectaPoints)
-        );
-        dispatch(actions.scrapeRotoBaseballStandingsSuccess(rotoStats));
-
-        dispatch(
-          actions.addTotalTrifectaPoints(
+          actions.saveTrifectaStandings(
             calculateTrifectaBaseballStandings(
               h2hStandingsWithTrifectaPoints,
               rotoStandingsWithTrifectaPoints

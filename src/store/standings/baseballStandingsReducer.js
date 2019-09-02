@@ -3,12 +3,13 @@ import {
   SCRAPE_H2H_BASEBALL_STANDINGS_START,
   SCRAPE_H2H_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_H2H_BASEBALL_STANDINGS_FAILED,
-  ADD_H2H_TRIFECTA_POINTS,
+  SAVE_H2H_STANDINGS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_START,
   SCRAPE_ROTO_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED,
-  ADD_ROTO_TRIFECTA_POINTS,
-  ADD_TOTAL_TRIFECTA_POINTS,
+  SAVE_ROTO_STATS,
+  SAVE_ROTO_STANDINGS,
+  SAVE_TRIFECTA_STANDINGS,
   SET_LAST_SCRAPED,
   SORT_TABLE,
 } from "./baseballStandingsActionTypes";
@@ -49,7 +50,7 @@ const baseballStandingsReducer = (state = initialState, action) => {
         h2hStandingsSuccess: false,
       };
     }
-    case ADD_H2H_TRIFECTA_POINTS: {
+    case SAVE_H2H_STANDINGS: {
       return {
         ...state,
         h2hStandings: payload,
@@ -66,7 +67,6 @@ const baseballStandingsReducer = (state = initialState, action) => {
         ...state,
         rotoStandingsLoading: false,
         rotoStandingsSuccess: true,
-        rotoStats: payload,
       };
     }
     case SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED: {
@@ -76,13 +76,19 @@ const baseballStandingsReducer = (state = initialState, action) => {
         rotoStandingsSuccess: false,
       };
     }
-    case ADD_ROTO_TRIFECTA_POINTS: {
+    case SAVE_ROTO_STATS: {
+      return {
+        ...state,
+        rotoStats: payload,
+      };
+    }
+    case SAVE_ROTO_STANDINGS: {
       return {
         ...state,
         rotoStandings: payload,
       };
     }
-    case ADD_TOTAL_TRIFECTA_POINTS: {
+    case SAVE_TRIFECTA_STANDINGS: {
       return {
         ...state,
         trifectaStandings: payload,
