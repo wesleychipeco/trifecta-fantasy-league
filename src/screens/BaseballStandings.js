@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
+import { LinkText } from "../components/LinkText";
 
 import { getBaseballStandingsStateSelectors } from "../store/baseballStandings/baseballStandingsReducer";
 import {
@@ -266,7 +267,14 @@ class BaseballStandings extends PureComponent {
   };
 
   renderHeaderRowColumn = ({ title, onPress }) => {
-    return <Button key={title} title={title} onPress={onPress} />;
+    return (
+      <LinkText
+        key={title}
+        title={title}
+        onPress={onPress}
+        textStyles={{ color: "#0041C2" }}
+      />
+    );
   };
 
   render() {
@@ -476,6 +484,7 @@ class BaseballStandings extends PureComponent {
             height={trifectaStandingsHeaderRowHeight}
             totalWidth={trifectaStandingsTotalWidth}
             widthArray={trifectaStandingsWidthArray}
+            rowStyle={{ backgroundColor: "#BEBEBE" }}
           />
           <Rows
             data={trifectaStandings}
