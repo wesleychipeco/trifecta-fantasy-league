@@ -3,12 +3,12 @@ import React, { Component } from "react";
 import { View } from "react-native";
 import WebRoutesGenerator from "./NativeWebRouteWrapper";
 import { ModalContainer } from "react-router-modal";
-import HomeScreen from "./HomeScreen";
+import HomeScreen from "./screens/HomeScreen";
 import TopNav from "./TopNav";
-import SecondScreen from "./SecondScreen";
-import UserScreen from "./UserScreen";
-import DasModalScreen from "./DasModalScreen";
-import BaseballStandings from "./BaseballStandings";
+import SecondScreen from "./screens/SecondScreen";
+import UserScreen from "./screens/UserScreen";
+import DasModalScreen from "./screens/DasModalScreen";
+import BaseballStandings from "./screens/BaseballStandings";
 
 const routeMap = {
   Home: {

@@ -1,16 +1,16 @@
 import React, { PureComponent } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
-import { Row, Rows } from "./components/Row";
+import { Row, Rows } from "../components/Row";
 
-import { getBaseballStandingsStateSelectors } from "./store/standings/baseballStandingsReducer";
+import { getBaseballStandingsStateSelectors } from "../store/baseballStandings/baseballStandingsReducer";
 import {
   scrapeBaseballStandings,
   sortTable,
-} from "./store/standings/baseballStandingsActions";
+} from "../store/baseballStandings/baseballStandingsActions";
 
-import { tableDefaultSortDirections } from "./consts/tableDefaultSortDirections/baseballStandings";
-import { sortArrayBy } from "./utils/";
+import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/baseballStandings";
+import { sortArrayBy } from "../utils/";
 
 class BaseballStandings extends PureComponent {
   constructor(props) {
