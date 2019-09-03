@@ -3,14 +3,15 @@ import {
   SCRAPE_H2H_BASEBALL_STANDINGS_START,
   SCRAPE_H2H_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_H2H_BASEBALL_STANDINGS_FAILED,
-  ADD_H2H_TRIFECTA_POINTS,
+  SAVE_H2H_STANDINGS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_START,
   SCRAPE_ROTO_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED,
-  ADD_ROTO_TRIFECTA_POINTS,
-  ADD_TOTAL_TRIFECTA_POINTS,
+  SAVE_ROTO_STATS,
+  SAVE_ROTO_STANDINGS,
+  SAVE_TRIFECTA_STANDINGS,
   SET_LAST_SCRAPED,
-  SORT_BY_COLUMN,
+  SORT_TABLE,
 } from "./baseballStandingsActionTypes";
 
 const BASEBALL_STANDINGS_STATE_PATH = "baseballStandings";
@@ -49,7 +50,7 @@ const baseballStandingsReducer = (state = initialState, action) => {
         h2hStandingsSuccess: false,
       };
     }
-    case ADD_H2H_TRIFECTA_POINTS: {
+    case SAVE_H2H_STANDINGS: {
       return {
         ...state,
         h2hStandings: payload,
@@ -75,13 +76,19 @@ const baseballStandingsReducer = (state = initialState, action) => {
         rotoStandingsSuccess: false,
       };
     }
-    case ADD_ROTO_TRIFECTA_POINTS: {
+    case SAVE_ROTO_STATS: {
+      return {
+        ...state,
+        rotoStats: payload,
+      };
+    }
+    case SAVE_ROTO_STANDINGS: {
       return {
         ...state,
         rotoStandings: payload,
       };
     }
-    case ADD_TOTAL_TRIFECTA_POINTS: {
+    case SAVE_TRIFECTA_STANDINGS: {
       return {
         ...state,
         trifectaStandings: payload,
@@ -93,10 +100,11 @@ const baseballStandingsReducer = (state = initialState, action) => {
         lastScraped: payload,
       };
     }
-    case SORT_BY_COLUMN: {
+    case SORT_TABLE: {
+      const [standings, tableType] = payload;
       return {
         ...state,
-        trifectaStandings: payload,
+        [tableType]: standings,
       };
     }
     default:
@@ -108,9 +116,10 @@ const getBaseballStandingsStateSelectors = function(rootState) {
   const state = getStateSlice(rootState, BASEBALL_STANDINGS_STATE_PATH);
 
   return {
+    getTrifectaStandings: () => state.trifectaStandings,
     getH2HStandings: () => state.h2hStandings,
     getRotoStandings: () => state.rotoStandings,
-    getTrifectaStandings: () => state.trifectaStandings,
+    getRotoStats: () => state.rotoStats,
     getLastScraped: () => state.lastScraped,
   };
 };
