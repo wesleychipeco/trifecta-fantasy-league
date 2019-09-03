@@ -1,6 +1,6 @@
 import baseballStandingsReducer, {
   BASEBALL_STANDINGS_STATE_PATH,
-} from "./standings/baseballStandingsReducer";
+} from "./baseballStandings/baseballStandingsReducer";
 
 export default {
   [BASEBALL_STANDINGS_STATE_PATH]: baseballStandingsReducer,
