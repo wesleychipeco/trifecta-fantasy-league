@@ -9,6 +9,7 @@ import SecondScreen from "./screens/SecondScreen";
 import UserScreen from "./screens/UserScreen";
 import DasModalScreen from "./screens/DasModalScreen";
 import BaseballStandings from "./screens/BaseballStandings";
+import BasketballStandings from "./screens/BasketballStandings";
 
 const routeMap = {
   Home: {
@@ -19,6 +20,11 @@ const routeMap = {
   BaseballStandings: {
     component: BaseballStandings,
     path: "/standings/baseball",
+    exact: true,
+  },
+  BasketballStandings: {
+    component: BasketballStandings,
+    path: "/standings/basketball",
     exact: true,
   },
   Second: {

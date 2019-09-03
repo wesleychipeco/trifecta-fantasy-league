@@ -1,0 +1,61 @@
+import { getStateSlice } from "../reduxUtils";
+import {
+  SCRAPE_BASKETBALL_STANDINGS_START,
+  SCRAPE_BASKETBALL_STANDINGS_SUCCESS,
+  SCRAPE_BASKETBALL_STANDINGS_FAILED,
+} from "./basketballStandingsActionTypes";
+
+const BASKETBALL_STANDINGS_STATE_PATH = "basketballStandings";
+
+const initialState = {
+  basketballStandingsLoading: false,
+  basketballStandingsSuccess: false,
+  basketballStandings: [],
+  lastScraped: "date",
+};
+
+const basketballStandingsReducer = (state = initialState, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case SCRAPE_BASKETBALL_STANDINGS_START: {
+      return {
+        ...state,
+        basketballStandingsLoading: true,
+        basketballStandingsSuccess: false,
+      };
+    }
+    case SCRAPE_BASKETBALL_STANDINGS_SUCCESS: {
+      return {
+        ...state,
+        basketballStandingsLoading: false,
+        basketballStandingsSuccess: true,
+        basketballStandings: payload,
+      };
+    }
+    case SCRAPE_BASKETBALL_STANDINGS_FAILED: {
+      return {
+        ...state,
+        basketballStandingsLoading: false,
+        basketballStandingsSuccess: false,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
+const getBasketballStandingsStateSelectors = function(rootState) {
+  const state = getStateSlice(rootState, BASKETBALL_STANDINGS_STATE_PATH);
+
+  return {
+    getBasketballStandings: () => state.basketballStandings,
+  };
+};
+
+export {
+  BASKETBALL_STANDINGS_STATE_PATH,
+  getBasketballStandingsStateSelectors,
+};
+
+export default basketballStandingsReducer;
