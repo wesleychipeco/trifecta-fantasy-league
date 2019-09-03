@@ -20,6 +20,7 @@ import {
 import { assignRankPoints } from "../../computators/assignRankPoints";
 import { sumRotoPoints } from "../../computators/sumRotoPoints";
 import { format } from "date-fns";
+import { sortArrayBy } from "../../utils";
 
 const actions = {
   scrapeH2HBaseballStandingsStart: createAction(
@@ -165,7 +166,7 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
       combinedStandingsArray.push(combinedStandings);
     });
 
-    return combinedStandingsArray;
+    return sortArrayBy(combinedStandingsArray, "totalTrifectaPoints", true);
   }
 };
 
