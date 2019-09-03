@@ -344,23 +344,23 @@ class BaseballStandings extends PureComponent {
     ///// ROTO STANDINGS /////
     const rotoStandingsHeaderRowHeight = 75;
     const rotoStandingsTotalHeight = 500;
-    const rotoStandingsTotalWidth = 800;
+    const rotoStandingsTotalWidth = 1250;
     const rotoStandingsWidthArray = [
-      100,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
+      200,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
     ];
     const rotoStandingsObjectKeys = [
       "teamName",
@@ -407,21 +407,21 @@ class BaseballStandings extends PureComponent {
     ///// ROTO STATS /////
     const rotoStatsHeaderRowHeight = 75;
     const rotoStatsTotalHeight = 500;
-    const rotoStatsTotalWidth = 700;
+    const rotoStatsTotalWidth = 1100;
     const rotoStatsWidthArray = [
-      100,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
-      50,
+      200,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
+      75,
     ];
     const rotoStatsObjectKeys = [
       "teamName",
@@ -470,7 +470,7 @@ class BaseballStandings extends PureComponent {
           <Text>{lastScraped}</Text>
         </View>
         <View style={{ alignItems: "center", marginVertical: 10 }}>
-          <Text>Trifecta Standings</Text>
+          <Text style={{ alignSelf: "flex-start" }}>Trifecta Standings</Text>
           <Row
             data={trifectaStandingsHeaderRow}
             height={trifectaStandingsHeaderRowHeight}
