@@ -21,6 +21,10 @@ const HomeScreen = ({ navigation }) => {
         onPress={() => navigation.navigate("BaseballStandings")}
       />
       <Button
+        title="Go to Basketball Standings!"
+        onPress={() => navigation.navigate("BasketballStandings")}
+      />
+      <Button
         title="Go to Second!"
         onPress={() => navigation.navigate("Second")}
       />

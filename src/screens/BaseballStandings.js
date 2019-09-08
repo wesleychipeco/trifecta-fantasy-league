@@ -551,6 +551,10 @@ class BaseballStandings extends PureComponent {
           </View>
         </View>
         <Button
+          title="Go to Basketball Standings!"
+          onPress={() => navigation.navigate("BasketballStandings")}
+        />
+        <Button
           title="User #1"
           onPress={() => navigation.navigate("User", { name: "Snufolafakus" })}
         />
@@ -581,11 +585,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
     margin: 10,
-  },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5,
   },
 });
 

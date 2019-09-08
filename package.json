@@ -13,6 +13,7 @@
     "lodash.template": "4.5.0",
     "mem": "4.0.0",
     "merge": "1.2.1",
+    "mongodb-stitch-react-native-sdk": "^4.5.0",
     "react": "^16.4.1",
     "react-art": "^16.5.1",
     "react-dom": "^16.4.1",
