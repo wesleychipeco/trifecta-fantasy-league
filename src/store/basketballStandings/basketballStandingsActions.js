@@ -26,4 +26,10 @@ const scrapeBasketballStandings = () => {
   };
 };
 
-export { scrapeBasketballStandings };
+const displayBasketballStandings = () => {
+  return async function(dispatch) {
+    console.log("display basketball standings from mongodb");
+  };
+};
+
+export { scrapeBasketballStandings, displayBasketballStandings };
