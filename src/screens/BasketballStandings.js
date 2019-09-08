@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
@@ -15,13 +15,19 @@ class BasketballStandings extends PureComponent {
       currentUser: undefined,
       client: undefined,
       standings: [],
+      inSeason: false,
+      inPlayoffs: false,
     };
     this._loadClient = this._loadClient.bind(this);
   }
 
   componentDidMount() {
-    this._loadClient();
-    // this.props.scrapeBasketballStandings();
+    const { inSeason, inPlayoffs } = this.state;
+    if (!inSeason && !inPlayoffs) {
+      this._loadClient();
+    } else {
+      this.props.scrapeBasketballStandings();
+    }
   }
 
   _loadClient() {
@@ -32,14 +38,11 @@ class BasketballStandings extends PureComponent {
     );
     const db = mongoClient.db("trifecta");
     const data = db.collection("basketballStandings2019");
-    console.log("data", data);
 
     data
       .find({}, { sort: { totalTrifectaPoints: -1 } })
       .asArray()
       .then(docs => {
-        console.log("data", docs);
-        console.log("data2", docs[0]);
         this.setState({
           standings: docs,
         });
@@ -51,12 +54,18 @@ class BasketballStandings extends PureComponent {
 
   render() {
     const { navigation, basketballStandings, lastScraped } = this.props;
-    const { standings } = this.state;
-    if (!standings) {
+    const { standings, inSeason, inPlayoffs } = this.state;
+
+    const standingsToDisplay =
+      !inSeason && !inPlayoffs ? standings : basketballStandings;
+
+    if (!standings && !basketballStandings) {
       return null;
     }
+
     return (
       <View style={styles.container}>
+        <Text style={styles.welcome}>Basketball Standings!</Text>
         <Row
           data={[
             "Team Name",
@@ -72,7 +81,7 @@ class BasketballStandings extends PureComponent {
           widthArray={[200, 100, 100, 100, 100, 100, 100, 100]}
         />
         <Rows
-          data={standings}
+          data={standingsToDisplay}
           totalheight={500}
           totalwidth={900}
           widthArray={[200, 100, 100, 100, 100, 100, 100, 100]}
@@ -87,6 +96,10 @@ class BasketballStandings extends PureComponent {
             "totalTrifectaPoints",
           ]}
         />
+        <Button
+          title="Go to Baseball Standings!"
+          onPress={() => navigation.navigate("BaseballStandings")}
+        />
       </View>
     );
   }
@@ -98,13 +111,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F5FCFF",
   },
+  welcome: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10,
+  },
 });
 
 const mapStateToProps = state => {
   const { getBasketballStandings } = getBasketballStandingsStateSelectors(
     state
   );
-  console.log("hh", getBasketballStandings);
 
   return {
     basketballStandings: getBasketballStandings(),
