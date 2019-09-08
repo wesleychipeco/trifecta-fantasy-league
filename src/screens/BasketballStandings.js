@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
@@ -31,16 +31,17 @@ class BasketballStandings extends PureComponent {
       "mongodb-atlas"
     );
     const db = mongoClient.db("trifecta");
-    const data = db.collection("basketballStandings");
+    const data = db.collection("basketballStandings2019");
+    console.log("data", data);
 
     data
-      .find({}, { sort: { totalTrifectaPoints: 1 } })
+      .find({}, { sort: { totalTrifectaPoints: -1 } })
       .asArray()
       .then(docs => {
         console.log("data", docs);
         console.log("data2", docs[0]);
         this.setState({
-          standings: docs[0]["2019"],
+          standings: docs,
         });
       })
       .catch(err => {
@@ -55,7 +56,7 @@ class BasketballStandings extends PureComponent {
       return null;
     }
     return (
-      <View style={StyleSheet.container}>
+      <View style={styles.container}>
         <Row
           data={[
             "Team Name",
@@ -90,6 +91,14 @@ class BasketballStandings extends PureComponent {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF",
+  },
+});
 
 const mapStateToProps = state => {
   const { getBasketballStandings } = getBasketballStandingsStateSelectors(
