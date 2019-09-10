@@ -19,7 +19,7 @@ class BaseballStandings extends PureComponent {
     super(props);
 
     this.state = {
-      inSeason: false,
+      inSeason: true,
       trifectaStandings: {
         sortedColumn: "totalTrifectaPoints",
         highToLow: true,
@@ -294,7 +294,8 @@ class BaseballStandings extends PureComponent {
       lastScraped,
     } = this.props;
 
-    if (!h2hStandings || !rotoStandings || !trifectaStandings) return null;
+    if (!h2hStandings || !rotoStandings || !rotoStats || !trifectaStandings)
+      return null;
 
     ///// Trifecta Standings /////
     const trifectaStandingsHeaderRowHeight = 75;

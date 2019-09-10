@@ -140,33 +140,32 @@ const scrapeBaseballStandings = () => {
           "baseballRotoStats2019"
         );
 
+        // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
         deleteAndInsert(
+          dispatch,
+          actions.saveH2HStandings,
           baseballH2HStandingsCollection,
           h2hStandingsWithTrifectaPoints
         );
         deleteAndInsert(
+          dispatch,
+          actions.saveRotoStandings,
           baseballRotoStandingsCollection,
           rotoStandingsWithTrifectaPoints
         );
-        deleteAndInsert(baseballRotoStatsCollection, rotoStats);
         deleteAndInsert(
+          dispatch,
+          actions.saveRotoStats,
+          baseballRotoStatsCollection,
+          rotoStats
+        );
+        deleteAndInsert(
+          dispatch,
+          actions.saveTrifectaStandings,
           baseballTrifectaStandingsCollection,
           calculateTrifectaBaseballStandings(
             h2hStandingsWithTrifectaPoints,
             rotoStandingsWithTrifectaPoints
-          )
-        );
-
-        // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
-        dispatch(actions.saveH2HStandings(h2hStandingsWithTrifectaPoints));
-        dispatch(actions.saveRotoStandings(rotoStandingsWithTrifectaPoints));
-        dispatch(actions.saveRotoStats(rotoStats));
-        dispatch(
-          actions.saveTrifectaStandings(
-            calculateTrifectaBaseballStandings(
-              h2hStandingsWithTrifectaPoints,
-              rotoStandingsWithTrifectaPoints
-            )
           )
         );
       } else {

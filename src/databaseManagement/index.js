@@ -1,4 +1,4 @@
-const deleteAndInsert = (collection, data) => {
+const deleteAndInsert = (dispatch, action, collection, data) => {
   collection
     .deleteMany({})
     .then(result => {
@@ -7,6 +7,7 @@ const deleteAndInsert = (collection, data) => {
         .insertMany(data)
         .then(result1 => {
           console.log(`Trifecta Baseball Standings documents inserted!`);
+          dispatch(action(data));
         })
         .catch(err1 => {
           console.log(`Failed to insert documents: ${err1}`);

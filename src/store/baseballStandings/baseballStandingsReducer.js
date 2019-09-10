@@ -51,6 +51,7 @@ const baseballStandingsReducer = (state = initialState, action) => {
       };
     }
     case SAVE_H2H_STANDINGS: {
+      payload.forEach(item => delete item._id);
       return {
         ...state,
         h2hStandings: payload,
@@ -77,18 +78,21 @@ const baseballStandingsReducer = (state = initialState, action) => {
       };
     }
     case SAVE_ROTO_STATS: {
+      payload.forEach(item => delete item._id);
       return {
         ...state,
         rotoStats: payload,
       };
     }
     case SAVE_ROTO_STANDINGS: {
+      payload.forEach(item => delete item._id);
       return {
         ...state,
         rotoStandings: payload,
       };
     }
     case SAVE_TRIFECTA_STANDINGS: {
+      payload.forEach(item => delete item._id);
       return {
         ...state,
         trifectaStandings: payload,

@@ -17,7 +17,6 @@ const h2hStandingsScraper = () => {
           winPer: team.record.overall.percentage.toFixed(3),
         });
       });
-
       return standingsArray;
     });
 };
