@@ -10,6 +10,7 @@ import {
 } from "./basketballStandingsActionTypes";
 import { basketballStandingsScraper } from "../../scrapers/basketballStandings";
 import { format } from "date-fns";
+import { findAndSaveToRedux } from "../../databaseManagement";
 
 const actions = {
   scrapeBasketballStandingsStart: createAction(
@@ -36,7 +37,6 @@ const scrapeBasketballStandings = () => {
 
 const displayBasketballStandings = () => {
   return async function(dispatch) {
-    console.log("display basketball standings from mongodb");
     // connect to mongo
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
@@ -44,18 +44,14 @@ const displayBasketballStandings = () => {
       "mongodb-atlas"
     );
     const db = mongoClient.db("trifecta");
-    const data = db.collection("basketballStandings2019");
+    const basketballStandings = db.collection("basketballStandings2019");
 
-    // Default sort is totalTrifectaPoints
-    data
-      .find({}, { sort: { totalTrifectaPoints: -1 } })
-      .asArray()
-      .then(docs => {
-        dispatch(actions.saveBasketballStandings(docs));
-      })
-      .catch(err => {
-        console.log("error!", err);
-      });
+    findAndSaveToRedux(
+      dispatch,
+      actions.saveBasketballStandings,
+      basketballStandings,
+      "totalTrifectaPoints"
+    );
   };
 };
 
