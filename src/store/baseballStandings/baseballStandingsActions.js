@@ -1,3 +1,4 @@
+import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
 import { createAction } from "redux-starter-kit";
 import {
   SCRAPE_H2H_BASEBALL_STANDINGS_START,
@@ -21,6 +22,7 @@ import { assignRankPoints } from "../../computators/assignRankPoints";
 import { sumRotoPoints } from "../../computators/sumRotoPoints";
 import { format } from "date-fns";
 import { sortArrayBy } from "../../utils";
+import { deleteAndInsert, findAndSaveToRedux } from "../../databaseManagement";
 
 const actions = {
   scrapeH2HBaseballStandingsStart: createAction(
@@ -117,6 +119,44 @@ const scrapeBaseballStandings = () => {
           1
         );
 
+        // connect to mongo
+        const stitchAppClient = Stitch.defaultAppClient;
+        const mongoClient = stitchAppClient.getServiceClient(
+          RemoteMongoClient.factory,
+          "mongodb-atlas"
+        );
+        const db = mongoClient.db("trifecta");
+
+        const baseballTrifectaStandingsCollection = db.collection(
+          "baseballTrifectaStandings2019"
+        );
+        const baseballH2HStandingsCollection = db.collection(
+          "baseballH2HStandings2019"
+        );
+        const baseballRotoStandingsCollection = db.collection(
+          "baseballRotoStandings2019"
+        );
+        const baseballRotoStatsCollection = db.collection(
+          "baseballRotoStats2019"
+        );
+
+        deleteAndInsert(
+          baseballH2HStandingsCollection,
+          h2hStandingsWithTrifectaPoints
+        );
+        deleteAndInsert(
+          baseballRotoStandingsCollection,
+          rotoStandingsWithTrifectaPoints
+        );
+        deleteAndInsert(baseballRotoStatsCollection, rotoStats);
+        deleteAndInsert(
+          baseballTrifectaStandingsCollection,
+          calculateTrifectaBaseballStandings(
+            h2hStandingsWithTrifectaPoints,
+            rotoStandingsWithTrifectaPoints
+          )
+        );
+
         // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
         dispatch(actions.saveH2HStandings(h2hStandingsWithTrifectaPoints));
         dispatch(actions.saveRotoStandings(rotoStandingsWithTrifectaPoints));
@@ -170,10 +210,50 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
   }
 };
 
+const displayBaseballStandings = () => {
+  return async function(dispatch) {
+    // connect to mongo
+    const stitchAppClient = Stitch.defaultAppClient;
+    const mongoClient = stitchAppClient.getServiceClient(
+      RemoteMongoClient.factory,
+      "mongodb-atlas"
+    );
+    const db = mongoClient.db("trifecta");
+
+    const baseballH2HStandings = db.collection("baseballH2HStandings2019");
+    const baseballRotoStandings = db.collection("baseballRotoStandings2019");
+    const baseballRotoStats = db.collection("baseballRotoStats2019");
+    const baseballTrifectaStandings = db.collection(
+      "baseballTrifectaStandings2019"
+    );
+
+    // Pull and save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
+    findAndSaveToRedux(
+      dispatch,
+      actions.saveH2HStandings,
+      baseballH2HStandings,
+      "h2hTrifectaPoints"
+    );
+    findAndSaveToRedux(
+      dispatch,
+      actions.saveRotoStandings,
+      baseballRotoStandings,
+      "rotoTrifectaPoints"
+    );
+    findAndSaveToRedux(dispatch, actions.saveRotoStats, baseballRotoStats, "R");
+    findAndSaveToRedux(
+      dispatch,
+      actions.saveTrifectaStandings,
+      baseballTrifectaStandings,
+      "totalTrifectaPoints"
+    );
+  };
+};
+
 const sortTable = standings => {
   return async function(dispatch) {
     dispatch(actions.sortTable(standings));
   };
 };
 
-export { scrapeBaseballStandings, sortTable };
+export { scrapeBaseballStandings, displayBaseballStandings, sortTable };

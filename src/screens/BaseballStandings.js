@@ -7,6 +7,7 @@ import { LinkText } from "../components/LinkText";
 import { getBaseballStandingsStateSelectors } from "../store/baseballStandings/baseballStandingsReducer";
 import {
   scrapeBaseballStandings,
+  displayBaseballStandings,
   sortTable,
 } from "../store/baseballStandings/baseballStandingsActions";
 
@@ -18,6 +19,7 @@ class BaseballStandings extends PureComponent {
     super(props);
 
     this.state = {
+      inSeason: false,
       trifectaStandings: {
         sortedColumn: "totalTrifectaPoints",
         highToLow: true,
@@ -38,7 +40,12 @@ class BaseballStandings extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.scrapeBaseballStandings();
+    const { inSeason } = this.state;
+    if (inSeason) {
+      this.props.scrapeBaseballStandings();
+    } else {
+      this.props.displayBaseballStandings();
+    }
   }
 
   sortTableByColumn = (tableArray, columnKey, tableType) => {
@@ -608,6 +615,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   scrapeBaseballStandings,
+  displayBaseballStandings,
   sortTable,
 };
 

@@ -3,6 +3,8 @@ import {
   SCRAPE_BASKETBALL_STANDINGS_START,
   SCRAPE_BASKETBALL_STANDINGS_SUCCESS,
   SCRAPE_BASKETBALL_STANDINGS_FAILED,
+  SAVE_BASKETBALL_STANDINGS,
+  SORT_TABLE,
 } from "./basketballStandingsActionTypes";
 
 const BASKETBALL_STANDINGS_STATE_PATH = "basketballStandings";
@@ -38,6 +40,18 @@ const basketballStandingsReducer = (state = initialState, action) => {
         ...state,
         basketballStandingsLoading: false,
         basketballStandingsSuccess: false,
+      };
+    }
+    case SAVE_BASKETBALL_STANDINGS: {
+      return {
+        ...state,
+        basketballStandings: payload,
+      };
+    }
+    case SORT_TABLE: {
+      return {
+        ...state,
+        basketballStandings: payload,
       };
     }
     default:
