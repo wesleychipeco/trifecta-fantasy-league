@@ -1,3 +1,11 @@
+## Create each collection in MongoDB first, and add rules in Stitch ##
++ If in season -> pull data via API -> save to mongo & save to redux
++ If not in season or in season and already scraped today -> pull data via mongo -> save to redux
++ Sorting -> sort data and save to redux to re-render
+
+
+
+
 # React Native Web Boilerplate 🥘 with navigation 🗺
 
 A small and simple boilerplate for lazy people to create a universal Web/Native React app. How is that possible? By code sharing between both of those worlds. The most crucial element of this puzzle is a brilliant [React Native Web](https://github.com/necolas/react-native-web) library by [Nicolas Gallagher](http://nicolasgallagher.com).
