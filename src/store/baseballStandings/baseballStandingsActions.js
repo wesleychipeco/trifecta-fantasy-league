@@ -81,7 +81,7 @@ const assignRotoCategoryPoints = rotoStandings => {
   return sumRotoPoints(rotoStandings, "totalPoints");
 };
 
-const scrapeBaseballStandings = () => {
+const scrapeBaseballStandings = year => {
   return async function(dispatch) {
     const h2hStandingsScrape = await h2hStandingsScraper();
     dispatch(actions.scrapeH2HBaseballStandingsStart);
@@ -128,16 +128,16 @@ const scrapeBaseballStandings = () => {
         const db = mongoClient.db("trifecta");
 
         const baseballTrifectaStandingsCollection = db.collection(
-          "baseballTrifectaStandings2019"
+          "baseballTrifectaStandings" + year
         );
         const baseballH2HStandingsCollection = db.collection(
-          "baseballH2HStandings2019"
+          "baseballH2HStandings" + year
         );
         const baseballRotoStandingsCollection = db.collection(
-          "baseballRotoStandings2019"
+          "baseballRotoStandings" + year
         );
         const baseballRotoStatsCollection = db.collection(
-          "baseballRotoStats2019"
+          "baseballRotoStats" + year
         );
 
         // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
@@ -206,7 +206,7 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
   }
 };
 
-const displayBaseballStandings = () => {
+const displayBaseballStandings = year => {
   return async function(dispatch) {
     // connect to mongo
     const stitchAppClient = Stitch.defaultAppClient;
@@ -216,11 +216,11 @@ const displayBaseballStandings = () => {
     );
     const db = mongoClient.db("trifecta");
 
-    const baseballH2HStandings = db.collection("baseballH2HStandings2019");
-    const baseballRotoStandings = db.collection("baseballRotoStandings2019");
-    const baseballRotoStats = db.collection("baseballRotoStats2019");
+    const baseballH2HStandings = db.collection("baseballH2HStandings" + year);
+    const baseballRotoStandings = db.collection("baseballRotoStandings" + year);
+    const baseballRotoStats = db.collection("baseballRotoStats" + year);
     const baseballTrifectaStandings = db.collection(
-      "baseballTrifectaStandings2019"
+      "baseballTrifectaStandings" + year
     );
 
     // Pull and save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings

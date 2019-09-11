@@ -22,12 +22,12 @@ const routeMap = {
   },
   BaseballStandings: {
     component: BaseballStandings,
-    path: "/standings/baseball",
+    path: "/standings/baseball/:year?",
     exact: true,
   },
   BasketballStandings: {
     component: BasketballStandings,
-    path: "/standings/basketball",
+    path: "/standings/basketball/:year?",
     exact: true,
   },
   Second: {

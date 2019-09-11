@@ -17,12 +17,16 @@ const HomeScreen = ({ navigation }) => {
       </Text>
       <Text style={styles.instructions}>{instructions}</Text>
       <Button
-        title="Go to Baseball Standings!"
-        onPress={() => navigation.navigate("BaseballStandings")}
+        title="Go to 2019 Baseball Standings!"
+        onPress={() =>
+          navigation.navigate("BaseballStandings", { year: "2019" })
+        }
       />
       <Button
-        title="Go to Basketball Standings!"
-        onPress={() => navigation.navigate("BasketballStandings")}
+        title="Go to 2019 Basketball Standings!"
+        onPress={() =>
+          navigation.navigate("BasketballStandings", { year: "2019" })
+        }
       />
       <Button
         title="Go to Second!"
