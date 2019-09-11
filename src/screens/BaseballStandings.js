@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
+import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
 
 import { getBaseballStandingsStateSelectors } from "../store/baseballStandings/baseballStandingsReducer";
 import {
@@ -17,9 +18,7 @@ import { sortArrayBy } from "../utils/";
 class BaseballStandings extends PureComponent {
   constructor(props) {
     super(props);
-
     this.state = {
-      inSeason: true,
       trifectaStandings: {
         sortedColumn: "totalTrifectaPoints",
         highToLow: true,
@@ -40,15 +39,30 @@ class BaseballStandings extends PureComponent {
   }
 
   componentDidMount() {
-    const { inSeason } = this.state;
     const { lastScraped, navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
-    if (inSeason && !lastScraped) {
-      this.props.scrapeBaseballStandings(year);
-    } else {
-      this.props.displayBaseballStandings(year);
-    }
+    const stitchAppClient = Stitch.defaultAppClient;
+    const mongoClient = stitchAppClient.getServiceClient(
+      RemoteMongoClient.factory,
+      "mongodb-atlas"
+    );
+
+    const db = mongoClient.db("trifecta");
+    const seasonVariablesCollection = db.collection("seasonVariables");
+
+    seasonVariablesCollection
+      .find({})
+      .asArray()
+      .then(seasonVariables => {
+        const { inSeason } = seasonVariables[0].baseball;
+
+        if (inSeason && !lastScraped) {
+          this.props.scrapeBaseballStandings(year);
+        } else {
+          this.props.displayBaseballStandings(year);
+        }
+      });
   }
 
   sortTableByColumn = (tableArray, columnKey, tableType) => {
@@ -611,11 +625,11 @@ const mapStateToProps = state => {
   } = getBaseballStandingsStateSelectors(state);
 
   return {
+    lastScraped: getLastScraped(),
     trifectaStandings: getTrifectaStandings(),
     h2hStandings: getH2HStandings(),
     rotoStandings: getRotoStandings(),
     rotoStats: getRotoStats(),
-    lastScraped: getLastScraped(),
   };
 };
 

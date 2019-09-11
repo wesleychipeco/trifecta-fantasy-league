@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
+import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
 
 import { getBasketballStandingsStateSelectors } from "../store/basketballStandings/basketballStandingsReducer";
 import {
@@ -19,7 +20,6 @@ class BasketballStandings extends PureComponent {
     super(props);
 
     this.state = {
-      inSeason: false, // if inSeason === false -> display from mongo, true -> scrape
       basketballStandings: {
         sortedColumn: "totalTrifectaPoints",
         highToLow: true,
@@ -28,15 +28,30 @@ class BasketballStandings extends PureComponent {
   }
 
   componentDidMount() {
-    const { inSeason } = this.state;
     const { lastScraped, navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
-    if (inSeason && !lastScraped) {
-      this.props.scrapeBasketballStandings(year);
-    } else {
-      this.props.displayBasketballStandings(year);
-    }
+    const stitchAppClient = Stitch.defaultAppClient;
+    const mongoClient = stitchAppClient.getServiceClient(
+      RemoteMongoClient.factory,
+      "mongodb-atlas"
+    );
+
+    const db = mongoClient.db("trifecta");
+    const seasonVariablesCollection = db.collection("seasonVariables");
+
+    seasonVariablesCollection
+      .find({})
+      .asArray()
+      .then(seasonVariables => {
+        const { inSeason } = seasonVariables[0].basketball;
+
+        if (inSeason && !lastScraped) {
+          this.props.scrapeBasketballStandings(year);
+        } else {
+          this.props.displayBasketballStandings(year);
+        }
+      });
   }
 
   sortTableByColumn = (tableArray, columnKey) => {

@@ -1,3 +1,5 @@
+// import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
+
 const deleteAndInsert = (dispatch, action, collection, data) => {
   collection
     .deleteMany({})

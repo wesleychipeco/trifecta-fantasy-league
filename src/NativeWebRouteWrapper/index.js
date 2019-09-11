@@ -41,7 +41,7 @@ function Wrapper({ element, history, match, routeMap, closeModal }) {
 
   return React.cloneElement(element, {
     navigation: { navigate, getParam, goBack },
-    closeModal
+    closeModal,
   });
 }
 
@@ -50,7 +50,7 @@ Wrapper.propTypes = {
   history: PropTypes.object,
   routeMap: PropTypes.object,
   closeModal: PropTypes.func,
-  match: PropTypes.object
+  match: PropTypes.object,
 };
 
 const WebRoutesGenerator = ({ routeMap }) => {
@@ -73,9 +73,11 @@ const WebRoutesGenerator = ({ routeMap }) => {
           key={currentRoute.path}
           path={currentRoute.path}
           exact={currentRoute.exact}
-          render={props => (
-            <Wrapper element={<Component />} {...props} routeMap={routeMap} />
-          )}
+          render={props => {
+            return (
+              <Wrapper element={<Component />} {...props} routeMap={routeMap} />
+            );
+          }}
         />
       );
     }
@@ -83,7 +85,7 @@ const WebRoutesGenerator = ({ routeMap }) => {
 };
 
 WebRoutesGenerator.propTypes = {
-  routeMap: PropTypes.object
+  routeMap: PropTypes.object,
 };
 
 export default WebRoutesGenerator;
