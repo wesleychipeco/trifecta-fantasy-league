@@ -19,8 +19,6 @@ class BasketballStandings extends PureComponent {
     super(props);
 
     this.state = {
-      currentUser: undefined,
-      client: undefined,
       inSeason: false, // if inSeason === false -> display from mongo, true -> scrape
       basketballStandings: {
         sortedColumn: "totalTrifectaPoints",
