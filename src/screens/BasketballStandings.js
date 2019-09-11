@@ -31,7 +31,9 @@ class BasketballStandings extends PureComponent {
 
   componentDidMount() {
     const { inSeason } = this.state;
-    if (inSeason) {
+    const { lastScraped } = this.props;
+
+    if (inSeason && !lastScraped) {
       this.props.scrapeBasketballStandings();
     } else {
       this.props.displayBasketballStandings();

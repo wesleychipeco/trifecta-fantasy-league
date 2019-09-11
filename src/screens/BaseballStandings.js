@@ -42,7 +42,7 @@ class BaseballStandings extends PureComponent {
   componentDidMount() {
     const { inSeason } = this.state;
     const { lastScraped } = this.props;
-    console.log("lastscraped", lastScraped);
+
     if (inSeason && !lastScraped) {
       this.props.scrapeBaseballStandings();
     } else {
