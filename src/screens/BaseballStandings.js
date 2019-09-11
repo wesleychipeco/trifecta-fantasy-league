@@ -41,12 +41,13 @@ class BaseballStandings extends PureComponent {
 
   componentDidMount() {
     const { inSeason } = this.state;
-    const { lastScraped } = this.props;
+    const { lastScraped, navigation } = this.props;
+    const year = navigation.getParam("year", "No year was defined!");
 
     if (inSeason && !lastScraped) {
-      this.props.scrapeBaseballStandings();
+      this.props.scrapeBaseballStandings(year);
     } else {
-      this.props.displayBaseballStandings();
+      this.props.displayBaseballStandings(year);
     }
   }
 
@@ -561,8 +562,10 @@ class BaseballStandings extends PureComponent {
           </View>
         </View>
         <Button
-          title="Go to Basketball Standings!"
-          onPress={() => navigation.navigate("BasketballStandings")}
+          title="Go to 2019 Basketball Standings!"
+          onPress={() =>
+            navigation.navigate("BasketballStandings", { year: "2019" })
+          }
         />
         <Button
           title="User #1"

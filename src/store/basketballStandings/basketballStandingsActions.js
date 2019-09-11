@@ -27,7 +27,7 @@ const actions = {
   setLastScrped: createAction(SET_LAST_SCRAPED),
 };
 
-const scrapeBasketballStandings = () => {
+const scrapeBasketballStandings = year => {
   return async function(dispatch) {
     const standings = await basketballStandingsScraper();
     dispatch(actions.setLastScrped(format(new Date(), "M/D/YY h:mm:ss")));
@@ -35,7 +35,7 @@ const scrapeBasketballStandings = () => {
   };
 };
 
-const displayBasketballStandings = () => {
+const displayBasketballStandings = year => {
   return async function(dispatch) {
     // connect to mongo
     const stitchAppClient = Stitch.defaultAppClient;
@@ -44,7 +44,7 @@ const displayBasketballStandings = () => {
       "mongodb-atlas"
     );
     const db = mongoClient.db("trifecta");
-    const basketballStandings = db.collection("basketballStandings2019");
+    const basketballStandings = db.collection("basketballStandings" + year);
 
     findAndSaveToRedux(
       dispatch,
