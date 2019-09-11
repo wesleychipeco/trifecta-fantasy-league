@@ -19,8 +19,6 @@ class BasketballStandings extends PureComponent {
     super(props);
 
     this.state = {
-      currentUser: undefined,
-      client: undefined,
       inSeason: false, // if inSeason === false -> display from mongo, true -> scrape
       basketballStandings: {
         sortedColumn: "totalTrifectaPoints",
@@ -31,7 +29,9 @@ class BasketballStandings extends PureComponent {
 
   componentDidMount() {
     const { inSeason } = this.state;
-    if (inSeason) {
+    const { lastScraped } = this.props;
+
+    if (inSeason && !lastScraped) {
       this.props.scrapeBasketballStandings();
     } else {
       this.props.displayBasketballStandings();

@@ -13,7 +13,7 @@ const initialState = {
   basketballStandingsLoading: false,
   basketballStandingsSuccess: false,
   basketballStandings: [],
-  lastScraped: "date",
+  lastScraped: undefined,
 };
 
 const basketballStandingsReducer = (state = initialState, action) => {
