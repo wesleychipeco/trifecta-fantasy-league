@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
-import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
 
 import { getBasketballStandingsStateSelectors } from "../store/basketballStandings/basketballStandingsReducer";
 import {
@@ -14,6 +13,7 @@ import {
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/basketballStandings";
 import { sortArrayBy } from "../utils";
 import { LinkText } from "../components/LinkText";
+import { returnMongoCollection } from "../databaseManagement";
 
 class BasketballStandings extends PureComponent {
   constructor(props) {
@@ -31,15 +31,7 @@ class BasketballStandings extends PureComponent {
     const { lastScraped, navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
-    const stitchAppClient = Stitch.defaultAppClient;
-    const mongoClient = stitchAppClient.getServiceClient(
-      RemoteMongoClient.factory,
-      "mongodb-atlas"
-    );
-
-    const db = mongoClient.db("trifecta");
-    const seasonVariablesCollection = db.collection("seasonVariables");
-
+    const seasonVariablesCollection = returnMongoCollection("seasonVariables");
     seasonVariablesCollection
       .find({})
       .asArray()

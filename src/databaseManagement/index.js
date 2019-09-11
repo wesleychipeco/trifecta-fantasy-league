@@ -1,4 +1,15 @@
-// import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
+import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
+
+const returnMongoCollection = collectionName => {
+  const stitchAppClient = Stitch.defaultAppClient;
+  const mongoClient = stitchAppClient.getServiceClient(
+    RemoteMongoClient.factory,
+    "mongodb-atlas"
+  );
+
+  const db = mongoClient.db("trifecta");
+  return db.collection(collectionName);
+};
 
 const deleteAndInsert = (dispatch, action, collection, data) => {
   collection
@@ -38,4 +49,4 @@ const findAndSaveToRedux = (
     });
 };
 
-export { deleteAndInsert, findAndSaveToRedux };
+export { returnMongoCollection, deleteAndInsert, findAndSaveToRedux };
