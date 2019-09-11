@@ -83,22 +83,22 @@ const assignRotoCategoryPoints = rotoStandings => {
 
 const scrapeBaseballStandings = () => {
   return async function(dispatch) {
-    const h2hStandings = await h2hStandingsScraper();
+    const h2hStandingsScrape = await h2hStandingsScraper();
     dispatch(actions.scrapeH2HBaseballStandingsStart);
 
-    const rotoStandings = await rotoStatsScraper();
+    const rotoStandingsScrape = await rotoStatsScraper();
     dispatch(actions.scrapeRotoBaseballStandingsStart);
 
-    if (h2hStandings) {
+    if (h2hStandingsScrape) {
       dispatch(actions.scrapeH2HBaseballStandingsSuccess);
-      if (rotoStandings) {
+      if (rotoStandingsScrape) {
         dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
         dispatch(actions.scrapeRotoBaseballStandingsSuccess);
-        const rotoStats = [...rotoStandings];
+        const rotoStats = [...rotoStandingsScrape];
 
         // H2H Standings
-        const h2hStandingsWithTrifectaPoints = await assignRankPoints(
-          h2hStandings,
+        const h2hStandings = await assignRankPoints(
+          h2hStandingsScrape,
           "winPer",
           "highToLow",
           "h2hTrifectaPoints",
@@ -108,9 +108,9 @@ const scrapeBaseballStandings = () => {
 
         // Roto Standings
         const rotoStandingsWithRotoPoints = assignRotoCategoryPoints(
-          rotoStandings
+          rotoStandingsScrape
         );
-        const rotoStandingsWithTrifectaPoints = await assignRankPoints(
+        const rotoStandings = await assignRankPoints(
           rotoStandingsWithRotoPoints,
           "totalPoints",
           "highToLow",
@@ -145,13 +145,13 @@ const scrapeBaseballStandings = () => {
           dispatch,
           actions.saveH2HStandings,
           baseballH2HStandingsCollection,
-          h2hStandingsWithTrifectaPoints
+          h2hStandings
         );
         deleteAndInsert(
           dispatch,
           actions.saveRotoStandings,
           baseballRotoStandingsCollection,
-          rotoStandingsWithTrifectaPoints
+          rotoStandings
         );
         deleteAndInsert(
           dispatch,
@@ -163,10 +163,7 @@ const scrapeBaseballStandings = () => {
           dispatch,
           actions.saveTrifectaStandings,
           baseballTrifectaStandingsCollection,
-          calculateTrifectaBaseballStandings(
-            h2hStandingsWithTrifectaPoints,
-            rotoStandingsWithTrifectaPoints
-          )
+          calculateTrifectaBaseballStandings(h2hStandings, rotoStandings)
         );
       } else {
         dispatch(actions.scrapeRotoBaseballStandingsFailed);
