@@ -1,4 +1,3 @@
-import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
 import { createAction } from "redux-starter-kit";
 import {
   SCRAPE_BASKETBALL_STANDINGS_START,
@@ -10,7 +9,10 @@ import {
 } from "./basketballStandingsActionTypes";
 import { basketballStandingsScraper } from "../../scrapers/basketballStandings";
 import { format } from "date-fns";
-import { findAndSaveToRedux } from "../../databaseManagement";
+import {
+  returnMongoCollection,
+  findAndSaveToRedux,
+} from "../../databaseManagement";
 
 const actions = {
   scrapeBasketballStandingsStart: createAction(
@@ -38,13 +40,9 @@ const scrapeBasketballStandings = year => {
 const displayBasketballStandings = year => {
   return async function(dispatch) {
     // connect to mongo
-    const stitchAppClient = Stitch.defaultAppClient;
-    const mongoClient = stitchAppClient.getServiceClient(
-      RemoteMongoClient.factory,
-      "mongodb-atlas"
+    const basketballStandings = returnMongoCollection(
+      "basketballStandings" + year
     );
-    const db = mongoClient.db("trifecta");
-    const basketballStandings = db.collection("basketballStandings" + year);
 
     findAndSaveToRedux(
       dispatch,

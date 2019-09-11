@@ -1,4 +1,3 @@
-import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
 import { createAction } from "redux-starter-kit";
 import {
   SCRAPE_H2H_BASEBALL_STANDINGS_START,
@@ -22,7 +21,11 @@ import { assignRankPoints } from "../../computators/assignRankPoints";
 import { sumRotoPoints } from "../../computators/sumRotoPoints";
 import { format } from "date-fns";
 import { sortArrayBy } from "../../utils";
-import { deleteAndInsert, findAndSaveToRedux } from "../../databaseManagement";
+import {
+  returnMongoCollection,
+  deleteAndInsert,
+  findAndSaveToRedux,
+} from "../../databaseManagement";
 
 const actions = {
   scrapeH2HBaseballStandingsStart: createAction(
@@ -120,23 +123,16 @@ const scrapeBaseballStandings = year => {
         );
 
         // connect to mongo
-        const stitchAppClient = Stitch.defaultAppClient;
-        const mongoClient = stitchAppClient.getServiceClient(
-          RemoteMongoClient.factory,
-          "mongodb-atlas"
-        );
-        const db = mongoClient.db("trifecta");
-
-        const baseballTrifectaStandingsCollection = db.collection(
+        const baseballTrifectaStandingsCollection = returnMongoCollection(
           "baseballTrifectaStandings" + year
         );
-        const baseballH2HStandingsCollection = db.collection(
+        const baseballH2HStandingsCollection = returnMongoCollection(
           "baseballH2HStandings" + year
         );
-        const baseballRotoStandingsCollection = db.collection(
+        const baseballRotoStandingsCollection = returnMongoCollection(
           "baseballRotoStandings" + year
         );
-        const baseballRotoStatsCollection = db.collection(
+        const baseballRotoStatsCollection = returnMongoCollection(
           "baseballRotoStats" + year
         );
 
@@ -209,17 +205,14 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
 const displayBaseballStandings = year => {
   return async function(dispatch) {
     // connect to mongo
-    const stitchAppClient = Stitch.defaultAppClient;
-    const mongoClient = stitchAppClient.getServiceClient(
-      RemoteMongoClient.factory,
-      "mongodb-atlas"
+    const baseballH2HStandings = returnMongoCollection(
+      "baseballH2HStandings" + year
     );
-    const db = mongoClient.db("trifecta");
-
-    const baseballH2HStandings = db.collection("baseballH2HStandings" + year);
-    const baseballRotoStandings = db.collection("baseballRotoStandings" + year);
-    const baseballRotoStats = db.collection("baseballRotoStats" + year);
-    const baseballTrifectaStandings = db.collection(
+    const baseballRotoStandings = returnMongoCollection(
+      "baseballRotoStandings" + year
+    );
+    const baseballRotoStats = returnMongoCollection("baseballRotoStats" + year);
+    const baseballTrifectaStandings = returnMongoCollection(
       "baseballTrifectaStandings" + year
     );
 

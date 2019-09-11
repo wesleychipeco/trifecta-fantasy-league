@@ -13,13 +13,13 @@ import {
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/basketballStandings";
 import { sortArrayBy } from "../utils";
 import { LinkText } from "../components/LinkText";
+import { returnMongoCollection } from "../databaseManagement";
 
 class BasketballStandings extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      inSeason: false, // if inSeason === false -> display from mongo, true -> scrape
       basketballStandings: {
         sortedColumn: "totalTrifectaPoints",
         highToLow: true,
@@ -28,15 +28,22 @@ class BasketballStandings extends PureComponent {
   }
 
   componentDidMount() {
-    const { inSeason } = this.state;
     const { lastScraped, navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
-    if (inSeason && !lastScraped) {
-      this.props.scrapeBasketballStandings(year);
-    } else {
-      this.props.displayBasketballStandings(year);
-    }
+    const seasonVariablesCollection = returnMongoCollection("seasonVariables");
+    seasonVariablesCollection
+      .find({})
+      .asArray()
+      .then(seasonVariables => {
+        const { inSeason } = seasonVariables[0].basketball;
+
+        if (inSeason && !lastScraped) {
+          this.props.scrapeBasketballStandings(year);
+        } else {
+          this.props.displayBasketballStandings(year);
+        }
+      });
   }
 
   sortTableByColumn = (tableArray, columnKey) => {
