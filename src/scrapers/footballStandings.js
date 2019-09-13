@@ -1,10 +1,10 @@
 import axios from "axios";
 import round from "lodash/round";
 
-const basketballStandingsScraper = () => {
+const footballStandingsScraper = () => {
   return axios
     .get(
-      "http://fantasy.espn.com/apis/v3/games/fba/seasons/2019/segments/0/leagues/100660?view=standings"
+      "http://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/154802?view=standings"
     )
     .then(response => {
       const standingsArray = [];
@@ -16,6 +16,8 @@ const basketballStandingsScraper = () => {
           losses: team.record.overall.losses,
           ties: team.record.overall.ties,
           winPer: round(team.record.overall.percentage, 3),
+          pointsFor: round(team.record.overall.pointsFor, 1),
+          pointsAgainst: round(team.record.overall.pointsAgainst, 1),
         });
       });
 
@@ -23,4 +25,4 @@ const basketballStandingsScraper = () => {
     });
 };
 
-export { basketballStandingsScraper };
+export { footballStandingsScraper };
