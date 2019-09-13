@@ -193,12 +193,12 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
       combinedStandings.teamName = teamName;
       combinedStandings.h2hTrifectaPoints = h2hPoints;
       combinedStandings.rotoTrifectaPoints = rotoPoints;
-      combinedStandings.totalTrifectaPoints = h2hPoints + rotoPoints;
+      combinedStandings.trifectaPoints = h2hPoints + rotoPoints;
 
       combinedStandingsArray.push(combinedStandings);
     });
 
-    return sortArrayBy(combinedStandingsArray, "totalTrifectaPoints", true);
+    return sortArrayBy(combinedStandingsArray, "trifectaPoints", true);
   }
 };
 

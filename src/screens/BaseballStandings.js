@@ -19,8 +19,10 @@ class BaseballStandings extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      seasonStarted: undefined,
+      inSeason: undefined,
       trifectaStandings: {
-        sortedColumn: "totalTrifectaPoints",
+        sortedColumn: "trifectaPoints",
         highToLow: true,
       },
       h2hStandings: {
@@ -47,12 +49,19 @@ class BaseballStandings extends PureComponent {
       .find({})
       .asArray()
       .then(seasonVariables => {
-        const { inSeason } = seasonVariables[0].baseball;
+        const { seasonStarted, inSeason } = seasonVariables[0].baseball;
 
-        if (inSeason && !lastScraped) {
-          this.props.scrapeBaseballStandings(year);
-        } else {
-          this.props.displayBaseballStandings(year);
+        this.setState({
+          seasonStarted,
+          inSeason,
+        });
+
+        if (seasonStarted) {
+          if (inSeason && !lastScraped) {
+            this.props.scrapeBaseballStandings(year);
+          } else {
+            this.props.displayBaseballStandings(year);
+          }
         }
       });
   }
@@ -93,11 +102,11 @@ class BaseballStandings extends PureComponent {
   noop = () => {};
 
   // Trifecta Standings Table sort methods
-  sortTrifectaStandingsByTrifectaPoints = () => {
+  sortTrifectaStandingsbyH2HPoints = () => {
     const { trifectaStandings } = this.props;
     this.sortTableByColumn(
       trifectaStandings,
-      "totalTrifectaPoints",
+      "h2hTrifectaPoints",
       "trifectaStandings"
     );
   };
@@ -111,11 +120,29 @@ class BaseballStandings extends PureComponent {
     );
   };
 
-  sortTrifectaStandingsbyH2HPoints = () => {
+  sortTrifectaStandingsByTrifectaPoints = () => {
     const { trifectaStandings } = this.props;
     this.sortTableByColumn(
       trifectaStandings,
-      "h2hTrifectaPoints",
+      "trifectaPoints",
+      "trifectaStandings"
+    );
+  };
+
+  sortTrifectaStandingsByPlayoffPoints = () => {
+    const { trifectaStandings } = this.props;
+    this.sortTableByColumn(
+      trifectaStandings,
+      "playoffPoints",
+      "trifectaStandings"
+    );
+  };
+
+  sortTrifectaStandingsByTotalTrifectaPoints = () => {
+    const { trifectaStandings } = this.props;
+    this.sortTableByColumn(
+      trifectaStandings,
+      "totalTrifectaPoints",
       "trifectaStandings"
     );
   };
@@ -302,6 +329,15 @@ class BaseballStandings extends PureComponent {
       rotoStats,
       lastScraped,
     } = this.props;
+    const { seasonStarted, inSeason } = this.state;
+
+    if (seasonStarted === false) {
+      return (
+        <View>
+          <Text>Not in season yet!</Text>
+        </View>
+      );
+    }
 
     if (!h2hStandings || !rotoStandings || !rotoStats || !trifectaStandings)
       return null;
@@ -309,14 +345,15 @@ class BaseballStandings extends PureComponent {
     ///// Trifecta Standings /////
     const trifectaStandingsHeaderRowHeight = 75;
     const trifectaStandingsTotalHeight = 250;
-    const trifectaStandingsTotalWidth = 500;
+    const trifectaStandingsTotalWidth = inSeason ? 500 : 700;
     const trifectaStandingsWidthArray = [200, 100, 100, 100];
     const trifectaStandingsObjectKeys = [
       "teamName",
       "h2hTrifectaPoints",
       "rotoTrifectaPoints",
-      "totalTrifectaPoints",
+      "trifectaPoints",
     ];
+
     // Create header row for Trifecta Standings Table
     const trifectaStandingsHeaderRowMap = [
       { title: "Team Name", onPress: this.noop },
@@ -329,10 +366,26 @@ class BaseballStandings extends PureComponent {
         onPress: this.sortTrifectaStandingsByRotoPoints,
       },
       {
-        title: "Total Trifecta Points",
+        title: "Regular Season Trifecta Points",
         onPress: this.sortTrifectaStandingsByTrifectaPoints,
       },
     ];
+
+    if (!inSeason) {
+      trifectaStandingsWidthArray.push(100, 100);
+      trifectaStandingsObjectKeys.push("playoffPoints", "totalTrifectaPoints");
+      trifectaStandingsHeaderRowMap.push(
+        {
+          title: "Playoff Points",
+          onPress: this.sortTrifectaStandingsByPlayoffPoints,
+        },
+        {
+          title: "Total Trifecta Points",
+          onPress: this.sortTrifectaStandingsByTotalTrifectaPoints,
+        }
+      );
+    }
+
     const trifectaStandingsHeaderRow = trifectaStandingsHeaderRowMap.map(
       this.renderHeaderRowColumn
     );
