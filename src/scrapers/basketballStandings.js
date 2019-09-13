@@ -1,4 +1,5 @@
 import axios from "axios";
+import round from "lodash/round";
 
 const basketballStandingsScraper = () => {
   return axios
@@ -14,7 +15,7 @@ const basketballStandingsScraper = () => {
           wins: team.record.overall.wins,
           losses: team.record.overall.losses,
           ties: team.record.overall.ties,
-          winPer: team.record.overall.percentage.toFixed(3),
+          winPer: round(team.record.overall.percentage, 3),
         });
       });
 

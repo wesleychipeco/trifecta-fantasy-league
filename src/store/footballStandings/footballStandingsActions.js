@@ -31,7 +31,6 @@ const scrapeFootballStandings = year => {
   return async function(dispatch) {
     const footballStandingsScraped = await footballStandingsScraper();
     dispatch(actions.scrapeFootballStandingsStart);
-    console.log(footballStandingsScraped);
 
     if (footballStandingsScraped) {
       dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));

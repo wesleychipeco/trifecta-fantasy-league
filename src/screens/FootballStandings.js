@@ -12,6 +12,8 @@ import {
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/footballStandings";
 import { returnMongoCollection } from "../databaseManagement";
+import { sortArrayBy } from "../utils";
+import { LinkText } from "../components/LinkText";
 
 class FootballStandings extends PureComponent {
   constructor(props) {
@@ -51,9 +53,113 @@ class FootballStandings extends PureComponent {
       });
   }
 
+  sortTableByColumn = (tableArray, columnKey) => {
+    const { sortTable } = this.props;
+    const { sortedColumn, highToLow } = this.state.footballStandings;
+
+    const tableArraySorted = [...tableArray];
+
+    if (sortedColumn === columnKey) {
+      this.setState({
+        footballStandings: {
+          sortedColumn: columnKey,
+          highToLow: !highToLow,
+        },
+      });
+      sortTable(sortArrayBy(tableArraySorted, columnKey, !highToLow));
+    } else {
+      const columnDefaultSortDirection =
+        tableDefaultSortDirections.footballStandings[columnKey];
+      this.setState({
+        footballStandings: {
+          sortedColumn: columnKey,
+          highToLow: columnDefaultSortDirection,
+        },
+      });
+      sortTable(
+        sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection)
+      );
+    }
+  };
+
+  noop = () => {};
+
+  sortFootballStandingsByWins = () => {
+    const { footballStandings } = this.props;
+    this.sortTableByColumn(footballStandings, "wins");
+  };
+
+  sortFootballStandingsByLosses = () => {
+    const { footballStandings } = this.props;
+    this.sortTableByColumn(footballStandings, "losses");
+  };
+
+  sortFootballStandingsByTies = () => {
+    const { footballStandings } = this.props;
+    this.sortTableByColumn(footballStandings, "ties");
+  };
+
+  sortFootballStandingsByWinPer = () => {
+    const { footballStandings } = this.props;
+    this.sortTableByColumn(footballStandings, "winPer");
+  };
+
+  sortFootballStandingsByPointsFor = () => {
+    const { footballStandings } = this.props;
+    console.log(
+      "ffff",
+      footballStandings[0].pointsFor,
+      typeof footballStandings[0].pointsFor
+    );
+    this.sortTableByColumn(footballStandings, "pointsFor");
+  };
+
+  sortFootballStandingsByPointsAgainst = () => {
+    const { footballStandings } = this.props;
+    this.sortTableByColumn(footballStandings, "pointsAgainst");
+  };
+
+  sortFootballStandingsByTrifectaPoints = () => {
+    const { footballStandings } = this.props;
+    this.sortTableByColumn(footballStandings, "trifectaPoints");
+  };
+
+  sortFootballStandingsByPlayoffPoints = () => {
+    const { footballStandings } = this.props;
+    this.sortTableByColumn(footballStandings, "playoffPoints");
+  };
+
+  sortFootballStandingsByTotalTrifectaPoints = () => {
+    const { footballStandings } = this.props;
+    this.sortTableByColumn(footballStandings, "totalTrifectaPoints");
+  };
+
+  renderHeaderRowColumn = ({ title, onPress }) => {
+    return (
+      <LinkText
+        key={title}
+        title={title}
+        onPress={onPress}
+        textStyles={{ color: "#0041C2" }}
+      />
+    );
+  };
+
   render() {
     const { navigation, footballStandings, lastScraped } = this.props;
     const { inSeason, started } = this.state;
+
+    if (started === false) {
+      return (
+        <View>
+          <Text>Not in season yet!</Text>
+        </View>
+      );
+    }
+
+    if (!footballStandings) {
+      return null;
+    }
 
     const headerRowHeight = 75;
     const totalHeight = 500;
@@ -69,14 +175,41 @@ class FootballStandings extends PureComponent {
       "pointsAgainst",
       "trifectaPoints",
     ];
+    if (!inSeason) {
+      widthArray.push(100, 100);
+      objectKeys.push("playoffPoints", "totalTrifectaPoints");
+    }
 
-    if (started === false) {
-      return (
-        <View>
-          <Text>Not in season yet!</Text>
-        </View>
+    const headerRowMap = [
+      { title: "Team Name", onPress: this.noop },
+      { title: "Wins", onPress: this.sortFootballStandingsByWins },
+      { title: "Losses", onPress: this.sortFootballStandingsByLosses },
+      { title: "Ties", onPress: this.sortFootballStandingsByTies },
+      { title: "Win %", onPress: this.sortFootballStandingsByWinPer },
+      { title: "Points For", onPress: this.sortFootballStandingsByPointsFor },
+      {
+        title: "Points Against",
+        onPress: this.sortFootballStandingsByPointsAgainst,
+      },
+      {
+        title: "Trifecta Points",
+        onPress: this.sortFootballStandingsByTrifectaPoints,
+      },
+    ];
+
+    if (!inSeason) {
+      headerRowMap.push(
+        {
+          title: "Playoff Points",
+          onPress: this.sortFootballStandingsByPlayoffPoints,
+        },
+        {
+          title: "Total Trifecta Points",
+          onPress: this.sortFootballStandingsByTotalTrifectaPoints,
+        }
       );
     }
+    const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
 
     return (
       <View style={styles.container}>
@@ -84,13 +217,13 @@ class FootballStandings extends PureComponent {
         <Text>{lastScraped}</Text>
         <View style={{ alignItems: "center", marginVertical: 10 }}>
           <Text style={{ alignSelf: "flex-start" }}>Football Standings</Text>
-          {/* <Row
+          <Row
             data={headerRow}
             height={headerRowHeight}
             totalWidth={totalWidth}
             widthArray={widthArray}
             rowStyle={{ backgroundColor: "#BEBEBE" }}
-          /> */}
+          />
           <Rows
             data={footballStandings}
             totalheight={totalHeight}
