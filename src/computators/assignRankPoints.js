@@ -38,8 +38,12 @@ const assignRankPoints = (
     if (sameRecords > 1) {
       // if this is the first time finding the tie, initialize distributed tied points
       if (pointsHold.length === 0) {
-        // points to be averaged and split are a range of (points - # of teams tied, points)
-        for (let k = points - sameRecords + 1; k < points + 1; k++) {
+        // points to be averaged and split are a range of [points - # of other teams tied, points]
+        for (
+          let k = points - (sameRecords - 1) * pointsIncrement;
+          k <= points;
+          k += pointsIncrement
+        ) {
           pointsHold.push(k);
         }
 
