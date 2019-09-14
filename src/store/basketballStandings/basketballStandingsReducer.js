@@ -5,8 +5,8 @@ import {
   SCRAPE_BASKETBALL_STANDINGS_FAILED,
   SAVE_SCRAPED_BASKETBALL_STANDINGS,
   SAVE_EXISTING_BASKETBALL_STANDINGS,
-  SORT_TABLE,
-  SET_LAST_SCRAPED,
+  SORT_BASKETBALL_STANDINGS_TABLE,
+  SET_BASKETBALL_STANDINGS_LAST_SCRAPED,
 } from "./basketballStandingsActionTypes";
 import { filterIdField } from "../../databaseManagement";
 
@@ -57,13 +57,13 @@ const basketballStandingsReducer = (state = initialState, action) => {
         basketballStandings: payload,
       };
     }
-    case SET_LAST_SCRAPED: {
+    case SET_BASKETBALL_STANDINGS_LAST_SCRAPED: {
       return {
         ...state,
         lastScraped: payload,
       };
     }
-    case SORT_TABLE: {
+    case SORT_BASKETBALL_STANDINGS_TABLE: {
       return {
         ...state,
         basketballStandings: payload,

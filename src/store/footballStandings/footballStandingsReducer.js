@@ -5,8 +5,8 @@ import {
   SCRAPE_FOOTBALL_STANDINGS_FAILED,
   SAVE_SCRAPED_FOOTBALL_STANDINGS,
   SAVE_EXISTING_FOOTBALL_STANDINGS,
-  SORT_TABLE,
-  SET_LAST_SCRAPED,
+  SORT_FOOTBALL_STANDINGS_TABLE,
+  SET_FOOTBALL_STANDINGS_LAST_SCRAPED,
 } from "./footballStandingsActionTypes";
 import { filterIdField } from "../../databaseManagement";
 
@@ -57,13 +57,13 @@ const footballStandingsReducer = (state = initialState, action) => {
         footballStandings: payload,
       };
     }
-    case SET_LAST_SCRAPED: {
+    case SET_FOOTBALL_STANDINGS_LAST_SCRAPED: {
       return {
         ...state,
         lastScraped: payload,
       };
     }
-    case SORT_TABLE: {
+    case SORT_FOOTBALL_STANDINGS_TABLE: {
       return {
         ...state,
         footballStandings: payload,

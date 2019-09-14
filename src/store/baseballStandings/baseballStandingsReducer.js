@@ -14,8 +14,8 @@ import {
   SAVE_EXISTING_ROTO_STANDINGS,
   SAVE_SCRAPED_TRIFECTA_STANDINGS,
   SAVE_EXISTING_TRIFECTA_STANDINGS,
-  SET_LAST_SCRAPED,
-  SORT_TABLE,
+  SORT_BASEBALL_STANDINGS_TABLE,
+  SET_BASEBALL_STANDINGS_LAST_SCRAPED,
 } from "./baseballStandingsActionTypes";
 import { filterIdField } from "../../databaseManagement";
 
@@ -127,13 +127,13 @@ const baseballStandingsReducer = (state = initialState, action) => {
         trifectaStandings: payload,
       };
     }
-    case SET_LAST_SCRAPED: {
+    case SET_BASEBALL_STANDINGS_LAST_SCRAPED: {
       return {
         ...state,
         lastScraped: payload,
       };
     }
-    case SORT_TABLE: {
+    case SORT_BASEBALL_STANDINGS_TABLE: {
       const [standings, tableType] = payload;
       return {
         ...state,
