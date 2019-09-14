@@ -20,11 +20,11 @@ class BasketballStandings extends PureComponent {
     super(props);
 
     this.state = {
-      seasonStarted: undefined,
-      inSeason: undefined,
+      seasonStarted: null,
+      inSeason: null,
       basketballStandings: {
-        sortedColumn: "totalTrifectaPoints",
-        highToLow: true,
+        sortedColumn: null,
+        highToLow: null,
       },
     };
   }
@@ -40,9 +40,17 @@ class BasketballStandings extends PureComponent {
       .then(seasonVariables => {
         const { seasonStarted, inSeason } = seasonVariables[0].basketball;
 
+        const defaultSortColumn = inSeason
+          ? "trifectaPoints"
+          : "totalTrifectaPoints";
+
         this.setState({
           seasonStarted,
           inSeason,
+          basketballStandings: {
+            sortedColumn: defaultSortColumn,
+            highToLow: true,
+          },
         });
 
         if (seasonStarted) {
