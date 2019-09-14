@@ -51,15 +51,17 @@ class BaseballStandings extends PureComponent {
       .then(seasonVariables => {
         const { seasonStarted, inSeason } = seasonVariables[0].baseball;
 
-        const defaultSortColumn = inSeason ? "trifectaPoints" : "totalTrifectaPoints";
+        const defaultSortColumn = inSeason
+          ? "trifectaPoints"
+          : "totalTrifectaPoints";
 
         this.setState({
           seasonStarted,
           inSeason,
           trifectaStandings: {
             sortedColumn: defaultSortColumn,
-            highToLow: true
-          }
+            highToLow: true,
+          },
         });
 
         if (seasonStarted) {
@@ -633,20 +635,10 @@ class BaseballStandings extends PureComponent {
           }
         />
         <Button
-          title="User #1"
-          onPress={() => navigation.navigate("User", { name: "Snufolafakus" })}
-        />
-        <Button
-          title="User #2"
+          title="Go to 2019 Football Standings!"
           onPress={() =>
-            navigation.navigate("User", {
-              name: "Simsalabimbambasaladusaladim",
-            })
+            navigation.navigate("FootballStandings", { year: "2019" })
           }
-        />
-        <Button
-          title="Das Modal"
-          onPress={() => navigation.navigate("DasModal")}
         />
       </View>
     );

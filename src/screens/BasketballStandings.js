@@ -225,6 +225,12 @@ class BasketballStandings extends PureComponent {
             navigation.navigate("BaseballStandings", { year: "2019" })
           }
         />
+        <Button
+          title="Go to 2019 Football Standings!"
+          onPress={() =>
+            navigation.navigate("FootballStandings", { year: "2019" })
+          }
+        />
       </View>
     );
   }
