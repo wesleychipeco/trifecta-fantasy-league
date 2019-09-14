@@ -3,10 +3,12 @@ import {
   SCRAPE_BASKETBALL_STANDINGS_START,
   SCRAPE_BASKETBALL_STANDINGS_SUCCESS,
   SCRAPE_BASKETBALL_STANDINGS_FAILED,
-  SAVE_BASKETBALL_STANDINGS,
+  SAVE_SCRAPED_BASKETBALL_STANDINGS,
+  SAVE_EXISTING_BASKETBALL_STANDINGS,
   SORT_TABLE,
   SET_LAST_SCRAPED,
 } from "./basketballStandingsActionTypes";
+import { filterIdField } from "../../databaseManagement";
 
 const BASKETBALL_STANDINGS_STATE_PATH = "basketballStandings";
 
@@ -42,7 +44,14 @@ const basketballStandingsReducer = (state = initialState, action) => {
         basketballStandingsSuccess: false,
       };
     }
-    case SAVE_BASKETBALL_STANDINGS: {
+    case SAVE_SCRAPED_BASKETBALL_STANDINGS: {
+      const filteredPayload = filterIdField(payload);
+      return {
+        ...state,
+        basketballStandings: filteredPayload,
+      };
+    }
+    case SAVE_EXISTING_BASKETBALL_STANDINGS: {
       return {
         ...state,
         basketballStandings: payload,

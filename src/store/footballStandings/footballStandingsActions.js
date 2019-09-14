@@ -3,7 +3,8 @@ import {
   SCRAPE_FOOTBALL_STANDINGS_START,
   SCRAPE_FOOTBALL_STANDINGS_SUCCESS,
   SCRAPE_FOOTBALL_STANDINGS_FAILED,
-  SAVE_FOOTBALL_STANDINGS,
+  SAVE_SCRAPED_FOOTBALL_STANDINGS,
+  SAVE_EXISTING_FOOTBALL_STANDINGS,
   SORT_TABLE,
   SET_LAST_SCRAPED,
 } from "./footballStandingsActionTypes";
@@ -22,7 +23,8 @@ const actions = {
     SCRAPE_FOOTBALL_STANDINGS_SUCCESS
   ),
   scrapeFootballStandingsFailed: createAction(SCRAPE_FOOTBALL_STANDINGS_FAILED),
-  saveFootballStandings: createAction(SAVE_FOOTBALL_STANDINGS),
+  saveScrapedFootballStandings: createAction(SAVE_SCRAPED_FOOTBALL_STANDINGS),
+  saveExistingFootballStandings: createAction(SAVE_EXISTING_FOOTBALL_STANDINGS),
   sortTable: createAction(SORT_TABLE),
   setLastScraped: createAction(SET_LAST_SCRAPED),
 };
@@ -51,7 +53,7 @@ const scrapeFootballStandings = year => {
 
       deleteAndInsert(
         dispatch,
-        actions.saveFootballStandings,
+        actions.saveScrapedFootballStandings,
         footballStandingsCollection,
         footballStandings
       );
@@ -69,7 +71,7 @@ const displayFootballStandings = year => {
 
     findAndSaveToRedux(
       dispatch,
-      actions.saveFootballStandings,
+      actions.saveExistingFootballStandings,
       footballStandingsCollection,
       "trifectaPoints"
     );

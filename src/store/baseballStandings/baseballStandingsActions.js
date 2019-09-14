@@ -3,13 +3,17 @@ import {
   SCRAPE_H2H_BASEBALL_STANDINGS_START,
   SCRAPE_H2H_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_H2H_BASEBALL_STANDINGS_FAILED,
-  SAVE_H2H_STANDINGS,
+  SAVE_SCRAPED_H2H_STANDINGS,
+  SAVE_EXISTING_H2H_STANDINGS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_START,
   SCRAPE_ROTO_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED,
-  SAVE_ROTO_STATS,
-  SAVE_ROTO_STANDINGS,
-  SAVE_TRIFECTA_STANDINGS,
+  SAVE_SCRAPED_ROTO_STATS,
+  SAVE_EXISTING_ROTO_STATS,
+  SAVE_SCRAPED_ROTO_STANDINGS,
+  SAVE_EXISTING_ROTO_STANDINGS,
+  SAVE_SCRAPED_TRIFECTA_STANDINGS,
+  SAVE_EXISTING_TRIFECTA_STANDINGS,
   SET_LAST_SCRAPED,
   SORT_TABLE,
 } from "./baseballStandingsActionTypes";
@@ -37,7 +41,8 @@ const actions = {
   scrapeH2HBaseballStandingsFailed: createAction(
     SCRAPE_H2H_BASEBALL_STANDINGS_FAILED
   ),
-  saveH2HStandings: createAction(SAVE_H2H_STANDINGS),
+  saveScrapedH2HStandings: createAction(SAVE_SCRAPED_H2H_STANDINGS),
+  saveExistingH2HStandings: createAction(SAVE_EXISTING_H2H_STANDINGS),
   scrapeRotoBaseballStandingsStart: createAction(
     SCRAPE_ROTO_BASEBALL_STANDINGS_START
   ),
@@ -47,9 +52,12 @@ const actions = {
   scrapeRotoBaseballStandingsFailed: createAction(
     SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED
   ),
-  saveRotoStats: createAction(SAVE_ROTO_STATS),
-  saveRotoStandings: createAction(SAVE_ROTO_STANDINGS),
-  saveTrifectaStandings: createAction(SAVE_TRIFECTA_STANDINGS),
+  saveScrapedRotoStats: createAction(SAVE_SCRAPED_ROTO_STATS),
+  saveExistingRotoStats: createAction(SAVE_EXISTING_ROTO_STATS),
+  saveScrapedRotoStandings: createAction(SAVE_SCRAPED_ROTO_STANDINGS),
+  saveExistingRotoStandings: createAction(SAVE_EXISTING_ROTO_STANDINGS),
+  saveScrapedTrifectaStandings: createAction(SAVE_SCRAPED_TRIFECTA_STANDINGS),
+  saveExistingTrifectaStandings: createAction(SAVE_EXISTING_TRIFECTA_STANDINGS),
   setLastScraped: createAction(SET_LAST_SCRAPED),
   sortTable: createAction(SORT_TABLE),
 };
@@ -139,25 +147,25 @@ const scrapeBaseballStandings = year => {
         // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
         deleteAndInsert(
           dispatch,
-          actions.saveH2HStandings,
+          actions.saveScrapedH2HStandings,
           baseballH2HStandingsCollection,
           h2hStandings
         );
         deleteAndInsert(
           dispatch,
-          actions.saveRotoStandings,
+          actions.saveScrapedRotoStandings,
           baseballRotoStandingsCollection,
           rotoStandings
         );
         deleteAndInsert(
           dispatch,
-          actions.saveRotoStats,
+          actions.saveScrapedRotoStats,
           baseballRotoStatsCollection,
           rotoStats
         );
         deleteAndInsert(
           dispatch,
-          actions.saveTrifectaStandings,
+          actions.saveScrapedTrifectaStandings,
           baseballTrifectaStandingsCollection,
           calculateTrifectaBaseballStandings(h2hStandings, rotoStandings)
         );
@@ -219,20 +227,25 @@ const displayBaseballStandings = year => {
     // Pull and save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
     findAndSaveToRedux(
       dispatch,
-      actions.saveH2HStandings,
+      actions.saveExistingH2HStandings,
       baseballH2HStandings,
       "h2hTrifectaPoints"
     );
     findAndSaveToRedux(
       dispatch,
-      actions.saveRotoStandings,
+      actions.saveExistingRotoStandings,
       baseballRotoStandings,
       "rotoTrifectaPoints"
     );
-    findAndSaveToRedux(dispatch, actions.saveRotoStats, baseballRotoStats, "R");
     findAndSaveToRedux(
       dispatch,
-      actions.saveTrifectaStandings,
+      actions.saveExistingRotoStats,
+      baseballRotoStats,
+      "R"
+    );
+    findAndSaveToRedux(
+      dispatch,
+      actions.saveExistingTrifectaStandings,
       baseballTrifectaStandings,
       "totalTrifectaPoints"
     );

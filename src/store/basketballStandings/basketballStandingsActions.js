@@ -3,7 +3,8 @@ import {
   SCRAPE_BASKETBALL_STANDINGS_START,
   SCRAPE_BASKETBALL_STANDINGS_SUCCESS,
   SCRAPE_BASKETBALL_STANDINGS_FAILED,
-  SAVE_BASKETBALL_STANDINGS,
+  SAVE_SCRAPED_BASKETBALL_STANDINGS,
+  SAVE_EXISTING_BASKETBALL_STANDINGS,
   SORT_TABLE,
   SET_LAST_SCRAPED,
 } from "./basketballStandingsActionTypes";
@@ -24,7 +25,12 @@ const actions = {
   scrapeBasketballStandingsFailed: createAction(
     SCRAPE_BASKETBALL_STANDINGS_FAILED
   ),
-  saveBasketballStandings: createAction(SAVE_BASKETBALL_STANDINGS),
+  saveScrapedBasketballStandings: createAction(
+    SAVE_SCRAPED_BASKETBALL_STANDINGS
+  ),
+  saveExistingBasketballStandings: createAction(
+    SAVE_EXISTING_BASKETBALL_STANDINGS
+  ),
   sortTable: createAction(SORT_TABLE),
   setLastScrped: createAction(SET_LAST_SCRAPED),
 };
@@ -46,7 +52,7 @@ const displayBasketballStandings = year => {
 
     findAndSaveToRedux(
       dispatch,
-      actions.saveBasketballStandings,
+      actions.saveExistingBasketballStandings,
       basketballStandings,
       "totalTrifectaPoints"
     );
@@ -55,7 +61,7 @@ const displayBasketballStandings = year => {
 
 const sortTable = standings => {
   return async function(dispatch) {
-    dispatch(actions.sortTable(standings));
+    dispatch(actions.saveExistingBasketballStandings(standings));
   };
 };
 
