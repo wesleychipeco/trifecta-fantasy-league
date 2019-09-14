@@ -5,6 +5,7 @@ import {
   SCRAPE_BASKETBALL_STANDINGS_FAILED,
   SAVE_BASKETBALL_STANDINGS,
   SORT_TABLE,
+  SET_LAST_SCRAPED,
 } from "./basketballStandingsActionTypes";
 
 const BASKETBALL_STANDINGS_STATE_PATH = "basketballStandings";
@@ -13,7 +14,7 @@ const initialState = {
   basketballStandingsLoading: false,
   basketballStandingsSuccess: false,
   basketballStandings: [],
-  lastScraped: undefined,
+  lastScraped: null,
 };
 
 const basketballStandingsReducer = (state = initialState, action) => {
@@ -32,7 +33,6 @@ const basketballStandingsReducer = (state = initialState, action) => {
         ...state,
         basketballStandingsLoading: false,
         basketballStandingsSuccess: true,
-        basketballStandings: payload,
       };
     }
     case SCRAPE_BASKETBALL_STANDINGS_FAILED: {
@@ -46,6 +46,12 @@ const basketballStandingsReducer = (state = initialState, action) => {
       return {
         ...state,
         basketballStandings: payload,
+      };
+    }
+    case SET_LAST_SCRAPED: {
+      return {
+        ...state,
+        lastScraped: payload,
       };
     }
     case SORT_TABLE: {
@@ -64,6 +70,7 @@ const getBasketballStandingsStateSelectors = function(rootState) {
 
   return {
     getBasketballStandings: () => state.basketballStandings,
+    getLastScraped: () => state.lastScraped,
   };
 };
 

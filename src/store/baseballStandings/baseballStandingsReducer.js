@@ -23,7 +23,7 @@ const initialState = {
   rotoStandingsLoading: false,
   rotoStandingsSuccess: false,
   rotoStandings: [],
-  lastScraped: undefined,
+  lastScraped: null,
 };
 
 const baseballStandingsReducer = (state = initialState, action) => {

@@ -5,6 +5,7 @@ import {
   SCRAPE_FOOTBALL_STANDINGS_FAILED,
   SAVE_FOOTBALL_STANDINGS,
   SORT_TABLE,
+  SET_LAST_SCRAPED,
 } from "./footballStandingsActionTypes";
 
 const FOOTBALL_STANDINGS_STATE_PATH = "footballStandings";
@@ -32,7 +33,6 @@ const footballStandingsReducer = (state = initialState, action) => {
         ...state,
         footballStandingsLoading: false,
         footballStandingsSuccess: true,
-        footballStandings: payload,
       };
     }
     case SCRAPE_FOOTBALL_STANDINGS_FAILED: {
@@ -46,6 +46,12 @@ const footballStandingsReducer = (state = initialState, action) => {
       return {
         ...state,
         footballStandings: payload,
+      };
+    }
+    case SET_LAST_SCRAPED: {
+      return {
+        ...state,
+        lastScraped: payload,
       };
     }
     case SORT_TABLE: {
@@ -65,6 +71,7 @@ const getFootballStandingsStateSelectors = function(rootState) {
 
   return {
     getFootballStandings: () => state.footballStandings,
+    getLastScraped: () => state.lastScraped,
   };
 };
 
