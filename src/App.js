@@ -14,6 +14,7 @@ import DasModalScreen from "./screens/DasModalScreen";
 import BaseballStandings from "./screens/BaseballStandings";
 import BasketballStandings from "./screens/BasketballStandings";
 import FootballStandings from "./screens/FootballStandings";
+import TrifectaStandings from "./screens/TrifectaStandings";
 
 const routeMap = {
   Home: {
@@ -34,6 +35,11 @@ const routeMap = {
   FootballStandings: {
     component: FootballStandings,
     path: "/standings/football/:year?",
+    exact: true,
+  },
+  TrifectaStandings: {
+    component: TrifectaStandings,
+    path: "/standings/trifecta/:year?",
     exact: true,
   },
   Second: {
