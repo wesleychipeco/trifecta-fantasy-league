@@ -244,12 +244,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const { getBasketballStandings } = getBasketballStandingsStateSelectors(
-    state
-  );
+  const {
+    getBasketballStandings,
+    getLastScraped,
+  } = getBasketballStandingsStateSelectors(state);
 
   return {
     basketballStandings: getBasketballStandings(),
+    lastScraped: getLastScraped(),
   };
 };
 
