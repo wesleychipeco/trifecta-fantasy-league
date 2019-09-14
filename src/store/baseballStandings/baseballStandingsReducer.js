@@ -3,16 +3,21 @@ import {
   SCRAPE_H2H_BASEBALL_STANDINGS_START,
   SCRAPE_H2H_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_H2H_BASEBALL_STANDINGS_FAILED,
-  SAVE_H2H_STANDINGS,
+  SAVE_SCRAPED_H2H_STANDINGS,
+  SAVE_EXISTING_H2H_STANDINGS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_START,
   SCRAPE_ROTO_BASEBALL_STANDINGS_SUCCESS,
   SCRAPE_ROTO_BASEBALL_STANDINGS_FAILED,
-  SAVE_ROTO_STATS,
-  SAVE_ROTO_STANDINGS,
-  SAVE_TRIFECTA_STANDINGS,
+  SAVE_SCRAPED_ROTO_STATS,
+  SAVE_EXISTING_ROTO_STATS,
+  SAVE_SCRAPED_ROTO_STANDINGS,
+  SAVE_EXISTING_ROTO_STANDINGS,
+  SAVE_SCRAPED_TRIFECTA_STANDINGS,
+  SAVE_EXISTING_TRIFECTA_STANDINGS,
   SET_LAST_SCRAPED,
   SORT_TABLE,
 } from "./baseballStandingsActionTypes";
+import { filterIdField } from "../../databaseManagement";
 
 const BASEBALL_STANDINGS_STATE_PATH = "baseballStandings";
 
@@ -50,8 +55,14 @@ const baseballStandingsReducer = (state = initialState, action) => {
         h2hStandingsSuccess: false,
       };
     }
-    case SAVE_H2H_STANDINGS: {
-      payload.forEach(item => delete item._id);
+    case SAVE_SCRAPED_H2H_STANDINGS: {
+      const filteredPayload = filterIdField(payload);
+      return {
+        ...state,
+        h2hStandings: filteredPayload,
+      };
+    }
+    case SAVE_EXISTING_H2H_STANDINGS: {
       return {
         ...state,
         h2hStandings: payload,
@@ -77,22 +88,40 @@ const baseballStandingsReducer = (state = initialState, action) => {
         rotoStandingsSuccess: false,
       };
     }
-    case SAVE_ROTO_STATS: {
-      payload.forEach(item => delete item._id);
+    case SAVE_SCRAPED_ROTO_STATS: {
+      const filteredPayload = filterIdField(payload);
+      return {
+        ...state,
+        rotoStats: filteredPayload,
+      };
+    }
+    case SAVE_EXISTING_ROTO_STATS: {
       return {
         ...state,
         rotoStats: payload,
       };
     }
-    case SAVE_ROTO_STANDINGS: {
-      payload.forEach(item => delete item._id);
+    case SAVE_SCRAPED_ROTO_STANDINGS: {
+      const filteredPayload = filterIdField(payload);
+      return {
+        ...state,
+        rotoStandings: filteredPayload,
+      };
+    }
+    case SAVE_EXISTING_ROTO_STANDINGS: {
       return {
         ...state,
         rotoStandings: payload,
       };
     }
-    case SAVE_TRIFECTA_STANDINGS: {
-      payload.forEach(item => delete item._id);
+    case SAVE_SCRAPED_TRIFECTA_STANDINGS: {
+      const filteredPayload = filterIdField(payload);
+      return {
+        ...state,
+        trifectaStandings: filteredPayload,
+      };
+    }
+    case SAVE_EXISTING_TRIFECTA_STANDINGS: {
       return {
         ...state,
         trifectaStandings: payload,

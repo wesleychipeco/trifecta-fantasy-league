@@ -49,4 +49,23 @@ const findAndSaveToRedux = (
     });
 };
 
-export { returnMongoCollection, deleteAndInsert, findAndSaveToRedux };
+const filterIdField = array => {
+  const filteredArray = [];
+  array.forEach(eachPayload => {
+    const filteredPayload = Object.keys(eachPayload)
+      .filter(key => key.valueOf() !== "_id")
+      .reduce((object, key) => {
+        object[key] = eachPayload[key];
+        return object;
+      }, {});
+    filteredArray.push(filteredPayload);
+  });
+  return filteredArray;
+};
+
+export {
+  returnMongoCollection,
+  deleteAndInsert,
+  findAndSaveToRedux,
+  filterIdField,
+};
