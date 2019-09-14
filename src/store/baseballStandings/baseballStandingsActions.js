@@ -14,8 +14,8 @@ import {
   SAVE_EXISTING_ROTO_STANDINGS,
   SAVE_SCRAPED_TRIFECTA_STANDINGS,
   SAVE_EXISTING_TRIFECTA_STANDINGS,
-  SET_LAST_SCRAPED,
-  SORT_TABLE,
+  SET_BASEBALL_STANDINGS_LAST_SCRAPED,
+  SORT_BASEBALL_STANDINGS_TABLE,
 } from "./baseballStandingsActionTypes";
 import {
   h2hStandingsScraper,
@@ -58,8 +58,10 @@ const actions = {
   saveExistingRotoStandings: createAction(SAVE_EXISTING_ROTO_STANDINGS),
   saveScrapedTrifectaStandings: createAction(SAVE_SCRAPED_TRIFECTA_STANDINGS),
   saveExistingTrifectaStandings: createAction(SAVE_EXISTING_TRIFECTA_STANDINGS),
-  setLastScraped: createAction(SET_LAST_SCRAPED),
-  sortTable: createAction(SORT_TABLE),
+  setBaseballStandingsLastScraped: createAction(
+    SET_BASEBALL_STANDINGS_LAST_SCRAPED
+  ),
+  sortBaseballStandingsTable: createAction(SORT_BASEBALL_STANDINGS_TABLE),
 };
 
 const assignRotoCategoryPoints = rotoStandings => {
@@ -103,7 +105,11 @@ const scrapeBaseballStandings = year => {
     if (h2hStandingsScrape) {
       dispatch(actions.scrapeH2HBaseballStandingsSuccess);
       if (rotoStandingsScrape) {
-        dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
+        dispatch(
+          actions.setBaseballStandingsLastScraped(
+            format(new Date(), "M/D/YY h:mm:ss")
+          )
+        );
         dispatch(actions.scrapeRotoBaseballStandingsSuccess);
         const rotoStats = [...rotoStandingsScrape];
 
@@ -254,7 +260,7 @@ const displayBaseballStandings = year => {
 
 const sortTable = standings => {
   return async function(dispatch) {
-    dispatch(actions.sortTable(standings));
+    dispatch(actions.sortBaseballStandingsTable(standings));
   };
 };
 

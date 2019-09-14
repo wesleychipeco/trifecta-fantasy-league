@@ -5,8 +5,8 @@ import {
   SCRAPE_FOOTBALL_STANDINGS_FAILED,
   SAVE_SCRAPED_FOOTBALL_STANDINGS,
   SAVE_EXISTING_FOOTBALL_STANDINGS,
-  SORT_TABLE,
-  SET_LAST_SCRAPED,
+  SORT_FOOTBALL_STANDINGS_TABLE,
+  SET_FOOTBALL_STANDINGS_LAST_SCRAPED,
 } from "./footballStandingsActionTypes";
 import { footballStandingsScraper } from "../../scrapers/footballStandings";
 import { format } from "date-fns";
@@ -25,8 +25,10 @@ const actions = {
   scrapeFootballStandingsFailed: createAction(SCRAPE_FOOTBALL_STANDINGS_FAILED),
   saveScrapedFootballStandings: createAction(SAVE_SCRAPED_FOOTBALL_STANDINGS),
   saveExistingFootballStandings: createAction(SAVE_EXISTING_FOOTBALL_STANDINGS),
-  sortTable: createAction(SORT_TABLE),
-  setLastScraped: createAction(SET_LAST_SCRAPED),
+  sortFootballStandingsTable: createAction(SORT_FOOTBALL_STANDINGS_TABLE),
+  setFootballStandingsLastScraped: createAction(
+    SET_FOOTBALL_STANDINGS_LAST_SCRAPED
+  ),
 };
 
 const scrapeFootballStandings = year => {
@@ -35,7 +37,11 @@ const scrapeFootballStandings = year => {
     dispatch(actions.scrapeFootballStandingsStart);
 
     if (footballStandingsScraped) {
-      dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:ss")));
+      dispatch(
+        actions.setFootballStandingsLastScraped(
+          format(new Date(), "M/D/YY h:mm:ss")
+        )
+      );
       dispatch(actions.scrapeFootballStandingsSuccess);
 
       const footballStandings = await assignRankPoints(
@@ -80,7 +86,7 @@ const displayFootballStandings = year => {
 
 const sortTable = standings => {
   return async function(dispatch) {
-    dispatch(actions.sortTable(standings));
+    dispatch(actions.sortFootballStandingsTable(standings));
   };
 };
 

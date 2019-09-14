@@ -5,8 +5,8 @@ import {
   SCRAPE_BASKETBALL_STANDINGS_FAILED,
   SAVE_SCRAPED_BASKETBALL_STANDINGS,
   SAVE_EXISTING_BASKETBALL_STANDINGS,
-  SORT_TABLE,
-  SET_LAST_SCRAPED,
+  SORT_BASKETBALL_STANDINGS_TABLE,
+  SET_BASKETBALL_STANDINGS_LAST_SCRAPED,
 } from "./basketballStandingsActionTypes";
 import { basketballStandingsScraper } from "../../scrapers/basketballStandings";
 import { format } from "date-fns";
@@ -31,14 +31,20 @@ const actions = {
   saveExistingBasketballStandings: createAction(
     SAVE_EXISTING_BASKETBALL_STANDINGS
   ),
-  sortTable: createAction(SORT_TABLE),
-  setLastScrped: createAction(SET_LAST_SCRAPED),
+  sortBasketballStandingsTable: createAction(SORT_BASKETBALL_STANDINGS_TABLE),
+  setBasketballStandingsLastScraped: createAction(
+    SET_BASKETBALL_STANDINGS_LAST_SCRAPED
+  ),
 };
 
 const scrapeBasketballStandings = year => {
   return async function(dispatch) {
     const standings = await basketballStandingsScraper();
-    dispatch(actions.setLastScrped(format(new Date(), "M/D/YY h:mm:ss")));
+    dispatch(
+      actions.setBasketballStandingsLastScraped(
+        format(new Date(), "M/D/YY h:mm:ss")
+      )
+    );
     console.log("standings", standings);
   };
 };
@@ -61,7 +67,7 @@ const displayBasketballStandings = year => {
 
 const sortTable = standings => {
   return async function(dispatch) {
-    dispatch(actions.saveExistingBasketballStandings(standings));
+    dispatch(actions.sortBasketballStandingsTable(standings));
   };
 };
 
