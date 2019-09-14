@@ -13,7 +13,7 @@ const initialState = {
   basketballStandingsLoading: false,
   basketballStandingsSuccess: false,
   basketballStandings: [],
-  lastScraped: undefined,
+  lastScraped: null,
 };
 
 const basketballStandingsReducer = (state = initialState, action) => {
@@ -32,7 +32,6 @@ const basketballStandingsReducer = (state = initialState, action) => {
         ...state,
         basketballStandingsLoading: false,
         basketballStandingsSuccess: true,
-        basketballStandings: payload,
       };
     }
     case SCRAPE_BASKETBALL_STANDINGS_FAILED: {

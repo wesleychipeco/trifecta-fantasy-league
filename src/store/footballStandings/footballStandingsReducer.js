@@ -32,7 +32,6 @@ const footballStandingsReducer = (state = initialState, action) => {
         ...state,
         footballStandingsLoading: false,
         footballStandingsSuccess: true,
-        footballStandings: payload,
       };
     }
     case SCRAPE_FOOTBALL_STANDINGS_FAILED: {
