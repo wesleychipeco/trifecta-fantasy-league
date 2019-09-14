@@ -2,6 +2,8 @@ const tableDefaultSortDirections = {
   trifectaStandings: {
     h2hTrifectaPoints: true,
     rotoTrifectaPoints: true,
+    trifectaPoints: true,
+    playoffPoints: true,
     totalTrifectaPoints: true,
   },
   h2hStandings: {

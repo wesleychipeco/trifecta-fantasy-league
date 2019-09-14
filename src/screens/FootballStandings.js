@@ -20,11 +20,11 @@ class FootballStandings extends PureComponent {
     super(props);
 
     this.state = {
-      inSeason: undefined,
-      started: undefined,
+      seasonStarted: null,
+      inSeason: null,
       footballStandings: {
-        sortedColumn: "trifectaPoints",
-        highToLow: true,
+        sortedColumn: null,
+        highToLow: null,
       },
     };
   }
@@ -38,17 +38,27 @@ class FootballStandings extends PureComponent {
       .find({})
       .asArray()
       .then(seasonVariables => {
-        const { inSeason, started } = seasonVariables[0].football;
+        const { seasonStarted, inSeason } = seasonVariables[0].football;
+
+        const defaultSortColumn = inSeason
+          ? "trifectaPoints"
+          : "totalTrifectaPoints";
 
         this.setState({
+          seasonStarted,
           inSeason,
-          started,
+          footballStandings: {
+            sortedColumn: defaultSortColumn,
+            highToLow: true,
+          },
         });
 
-        if (inSeason && !lastScraped) {
-          this.props.scrapeFootballStandings(year);
-        } else {
-          this.props.displayFootballStandings(year);
+        if (seasonStarted) {
+          if (inSeason && !lastScraped) {
+            this.props.scrapeFootballStandings(year);
+          } else {
+            this.props.displayFootballStandings(year);
+          }
         }
       });
   }
@@ -106,11 +116,6 @@ class FootballStandings extends PureComponent {
 
   sortFootballStandingsByPointsFor = () => {
     const { footballStandings } = this.props;
-    console.log(
-      "ffff",
-      footballStandings[0].pointsFor,
-      typeof footballStandings[0].pointsFor
-    );
     this.sortTableByColumn(footballStandings, "pointsFor");
   };
 
@@ -147,9 +152,9 @@ class FootballStandings extends PureComponent {
 
   render() {
     const { navigation, footballStandings, lastScraped } = this.props;
-    const { inSeason, started } = this.state;
+    const { seasonStarted, inSeason } = this.state;
 
-    if (started === false) {
+    if (seasonStarted === false) {
       return (
         <View>
           <Text>Not in season yet!</Text>
@@ -175,10 +180,6 @@ class FootballStandings extends PureComponent {
       "pointsAgainst",
       "trifectaPoints",
     ];
-    if (!inSeason) {
-      widthArray.push(100, 100);
-      objectKeys.push("playoffPoints", "totalTrifectaPoints");
-    }
 
     const headerRowMap = [
       { title: "Team Name", onPress: this.noop },
@@ -198,6 +199,8 @@ class FootballStandings extends PureComponent {
     ];
 
     if (!inSeason) {
+      widthArray.push(100, 100);
+      objectKeys.push("playoffPoints", "totalTrifectaPoints");
       headerRowMap.push(
         {
           title: "Playoff Points",

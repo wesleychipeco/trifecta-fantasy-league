@@ -20,9 +20,11 @@ class BasketballStandings extends PureComponent {
     super(props);
 
     this.state = {
+      seasonStarted: null,
+      inSeason: null,
       basketballStandings: {
-        sortedColumn: "totalTrifectaPoints",
-        highToLow: true,
+        sortedColumn: null,
+        highToLow: null,
       },
     };
   }
@@ -36,12 +38,27 @@ class BasketballStandings extends PureComponent {
       .find({})
       .asArray()
       .then(seasonVariables => {
-        const { inSeason } = seasonVariables[0].basketball;
+        const { seasonStarted, inSeason } = seasonVariables[0].basketball;
 
-        if (inSeason && !lastScraped) {
-          this.props.scrapeBasketballStandings(year);
-        } else {
-          this.props.displayBasketballStandings(year);
+        const defaultSortColumn = inSeason
+          ? "trifectaPoints"
+          : "totalTrifectaPoints";
+
+        this.setState({
+          seasonStarted,
+          inSeason,
+          basketballStandings: {
+            sortedColumn: defaultSortColumn,
+            highToLow: true,
+          },
+        });
+
+        if (seasonStarted) {
+          if (inSeason && !lastScraped) {
+            this.props.scrapeBasketballStandings(year);
+          } else {
+            this.props.displayBasketballStandings(year);
+          }
         }
       });
   }
@@ -125,37 +142,19 @@ class BasketballStandings extends PureComponent {
 
   render() {
     const { navigation, basketballStandings, lastScraped } = this.props;
-    const { inSeason } = this.state;
+    const { seasonStarted, inSeason } = this.state;
+
+    if (seasonStarted === false) {
+      return (
+        <View>
+          <Text>Not in season yet!</Text>
+        </View>
+      );
+    }
 
     if (!basketballStandings) {
       return null;
     }
-
-    const headerRowMap = [
-      { title: "Team Name", onPress: this.noop },
-      { title: "Wins", onPress: this.sortBasketballStandingsByWins },
-      { title: "Losses", onPress: this.sortBasketballStandingsByLosses },
-      { title: "Ties", onPress: this.sortBasketballStandingsByTies },
-      { title: "Win %", onPress: this.sortBasketballStandingsByWinPer },
-      {
-        title: "Trifecta Points",
-        onPress: this.sortBasketballStandingsByTrifectaPoints,
-      },
-    ];
-    // If not in season, add in playoff points and total trifecta points
-    if (!inSeason) {
-      headerRowMap.push(
-        {
-          title: "Playoff Points",
-          onPress: this.sortBasketballStandingsByPlayoffPoints,
-        },
-        {
-          title: "Total Trifecta Points",
-          onPress: this.sortBasketballStandingsByTotalTrifectaPoints,
-        }
-      );
-    }
-    const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
 
     const headerRowHeight = 75;
     const totalHeight = 500;
@@ -170,10 +169,33 @@ class BasketballStandings extends PureComponent {
       "trifectaPoints",
     ];
 
+    const headerRowMap = [
+      { title: "Team Name", onPress: this.noop },
+      { title: "Wins", onPress: this.sortBasketballStandingsByWins },
+      { title: "Losses", onPress: this.sortBasketballStandingsByLosses },
+      { title: "Ties", onPress: this.sortBasketballStandingsByTies },
+      { title: "Win %", onPress: this.sortBasketballStandingsByWinPer },
+      {
+        title: "Trifecta Points",
+        onPress: this.sortBasketballStandingsByTrifectaPoints,
+      },
+    ];
+    // If not in season, add in playoff points and total trifecta points
     if (!inSeason) {
       widthArray.push(100, 100);
       objectKeys.push("playoffPoints", "totalTrifectaPoints");
+      headerRowMap.push(
+        {
+          title: "Playoff Points",
+          onPress: this.sortBasketballStandingsByPlayoffPoints,
+        },
+        {
+          title: "Total Trifecta Points",
+          onPress: this.sortBasketballStandingsByTotalTrifectaPoints,
+        }
+      );
     }
+    const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
 
     return (
       <View style={styles.container}>
