@@ -34,6 +34,7 @@ const rotoStatsScraper = () => {
       response.data.teams.forEach(team => {
         standingsArray.push({
           teamName: team.location + " " + team.nickname,
+          ownerIds: team.owners,
           R: team.valuesByStat["20"],
           HR: team.valuesByStat["5"],
           RBI: team.valuesByStat["21"],
