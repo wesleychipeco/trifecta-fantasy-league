@@ -138,7 +138,7 @@ const scrapeBaseballStandings = year => {
 
         // connect to mongo
         const baseballTrifectaStandingsCollection = returnMongoCollection(
-          "baseballTrifectaStandings" + year
+          "baseballStandings" + year
         );
         const baseballH2HStandingsCollection = returnMongoCollection(
           "baseballH2HStandings" + year
@@ -205,6 +205,7 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
       const rotoPoints = teamRoto.rotoTrifectaPoints;
 
       combinedStandings.teamName = teamName;
+      combinedStandings.ownerIds = teamH2H.ownerIds;
       combinedStandings.h2hTrifectaPoints = h2hPoints;
       combinedStandings.rotoTrifectaPoints = rotoPoints;
       combinedStandings.trifectaPoints = h2hPoints + rotoPoints;
@@ -227,7 +228,7 @@ const displayBaseballStandings = year => {
     );
     const baseballRotoStats = returnMongoCollection("baseballRotoStats" + year);
     const baseballTrifectaStandings = returnMongoCollection(
-      "baseballTrifectaStandings" + year
+      "baseballStandings" + year
     );
 
     // Pull and save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
