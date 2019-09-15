@@ -12,6 +12,7 @@ const footballStandingsScraper = () => {
       response.data.teams.forEach(team => {
         standingsArray.push({
           teamName: team.location + " " + team.nickname,
+          ownerIds: team.owners,
           wins: team.record.overall.wins,
           losses: team.record.overall.losses,
           ties: team.record.overall.ties,
