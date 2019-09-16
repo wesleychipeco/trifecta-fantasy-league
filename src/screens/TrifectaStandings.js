@@ -4,9 +4,13 @@ import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 
 import { getTrifectaStandingsStateSelectors } from "../store/trifectaStandings/trifectaStandingsReducer";
-import { calculateTrifectaStandings } from "../store/trifectaStandings/trifectaStandingsActions";
+import {
+  calculateTrifectaStandings,
+  displayTrifectaStandings,
+  sortTable,
+} from "../store/trifectaStandings/trifectaStandingsActions";
 
-import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/basketballStandings";
+import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/trifectaStandings";
 import { sortArrayBy } from "../utils";
 import { LinkText } from "../components/LinkText";
 import { returnMongoCollection } from "../databaseManagement";
@@ -32,7 +36,7 @@ class TrifectaStandings extends PureComponent {
 
     const seasonVariablesCollection = returnMongoCollection("seasonVariables");
     seasonVariablesCollection
-      .find({})
+      .find({}, { projection: { _id: 0 } })
       .asArray()
       .then(seasonVariables => {
         const basketballSeasonVariables = seasonVariables[0].basketball;
@@ -74,70 +78,64 @@ class TrifectaStandings extends PureComponent {
     return seasonStarted === true && inSeason === false ? true : false;
   };
 
-  // sortTableByColumn = (tableArray, columnKey) => {
-  //   const { sortTable } = this.props;
-  //   const { sortedColumn, highToLow } = this.state.basketballStandings;
+  sortTableByColumn = (tableArray, columnKey) => {
+    const { sortTable } = this.props;
+    const { sortedColumn, highToLow } = this.state.trifectaStandings;
 
-  //   const tableArraySorted = [...tableArray];
+    const tableArraySorted = [...tableArray];
 
-  //   if (sortedColumn === columnKey) {
-  //     this.setState({
-  //       basketballStandings: {
-  //         sortedColumn: columnKey,
-  //         highToLow: !highToLow,
-  //       },
-  //     });
-  //     sortTable(sortArrayBy(tableArraySorted, columnKey, !highToLow));
-  //   } else {
-  //     const columnDefaultSortDirection =
-  //       tableDefaultSortDirections.basketballStandings[columnKey];
-  //     this.setState({
-  //       basketballStandings: {
-  //         sortedColumn: columnKey,
-  //         highToLow: columnDefaultSortDirection,
-  //       },
-  //     });
-  //     sortTable(
-  //       sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection)
-  //     );
-  //   }
-  // };
+    if (sortedColumn === columnKey) {
+      this.setState({
+        trifectaStandings: {
+          sortedColumn: columnKey,
+          highToLow: !highToLow,
+        },
+      });
+      sortTable(sortArrayBy(tableArraySorted, columnKey, !highToLow));
+    } else {
+      const columnDefaultSortDirection =
+        tableDefaultSortDirections.trifectaStandings[columnKey];
+      this.setState({
+        trifectaStandings: {
+          sortedColumn: columnKey,
+          highToLow: columnDefaultSortDirection,
+        },
+      });
+      sortTable(
+        sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection)
+      );
+    }
+  };
 
   noop = () => {};
 
-  sortBasketballStandingsByWins = () => {
-    const { basketballStandings } = this.props;
-    this.sortTableByColumn(basketballStandings, "wins");
+  sortTrifectaStandingsByBasketball = () => {
+    const { trifectaStandings } = this.props;
+    const { basketballSeasonEnded } = this.state;
+    if (basketballSeasonEnded) {
+      this.sortTableByColumn(trifectaStandings, "basketballTrifectaPoints");
+    }
   };
 
-  sortBasketballStandingsByLosses = () => {
-    const { basketballStandings } = this.props;
-    this.sortTableByColumn(basketballStandings, "losses");
+  sortTrifectaStandingsByBaseball = () => {
+    const { trifectaStandings } = this.props;
+    const { baseballSeasonEnded } = this.state;
+    if (baseballSeasonEnded) {
+      this.sortTableByColumn(trifectaStandings, "baseballTrifectaPoints");
+    }
   };
 
-  sortBasketballStandingsByTies = () => {
-    const { basketballStandings } = this.props;
-    this.sortTableByColumn(basketballStandings, "ties");
+  sortTrifectaStandingsByFootball = () => {
+    const { trifectaStandings } = this.props;
+    const { footballSeasonEnded } = this.state;
+    if (footballSeasonEnded) {
+      this.sortTableByColumn(trifectaStandings, "footballTrifectaPoints");
+    }
   };
 
-  sortBasketballStandingsByWinPer = () => {
-    const { basketballStandings } = this.props;
-    this.sortTableByColumn(basketballStandings, "winPer");
-  };
-
-  sortBasketballStandingsByTrifectaPoints = () => {
-    const { basketballStandings } = this.props;
-    this.sortTableByColumn(basketballStandings, "trifectaPoints");
-  };
-
-  sortBasketballStandingsByPlayoffPoints = () => {
-    const { basketballStandings } = this.props;
-    this.sortTableByColumn(basketballStandings, "playoffPoints");
-  };
-
-  sortBasketballStandingsByTotalTrifectaPoints = () => {
-    const { basketballStandings } = this.props;
-    this.sortTableByColumn(basketballStandings, "totalTrifectaPoints");
+  sortTrifectaStandingsByTotal = () => {
+    const { trifectaStandings } = this.props;
+    this.sortTableByColumn(trifectaStandings, "totalTrifectaPoints");
   };
 
   renderHeaderRowColumn = ({ title, onPress }) => {
@@ -152,104 +150,78 @@ class TrifectaStandings extends PureComponent {
   };
 
   render() {
-    const { navigation, basketballStandings, lastScraped } = this.props;
-    const { seasonStarted, inSeason } = this.state;
+    const { navigation, trifectaStandings, lastScraped } = this.props;
+
+    const headerRowHeight = 75;
+    const totalHeight = 500;
+    const totalWidth = 600;
+    const widthArray = [200, 100, 100, 100, 100];
+    const objectKeys = [
+      "ownerNames",
+      "basketballTrifectaPoints",
+      "baseballTrifectaPoints",
+      "footballTrifectaPoints",
+      "totalTrifectaPoints",
+    ];
+
+    const headerRowMap = [
+      { title: "Owner(s)", onPress: this.noop },
+      {
+        title: "Basketball Trifecta Points",
+        onPress: this.sortTrifectaStandingsByBasketball,
+      },
+      {
+        title: "Baseball Trifecta Points",
+        onPress: this.sortTrifectaStandingsByBaseball,
+      },
+      {
+        title: "Football Trifecta Points",
+        onPress: this.sortTrifectaStandingsByFootball,
+      },
+      {
+        title: "Total Trifecta Points",
+        onPress: this.sortTrifectaStandingsByTotal,
+      },
+    ];
+
+    const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
 
     return (
-      <View>
-        <Text>Hi</Text>
+      <View style={styles.container}>
+        <Text style={styles.welcome}>Trifecta Standings!</Text>
+        <Text>{lastScraped}</Text>
+        <View style={{ alignItems: "center", marginVertical: 10 }}>
+          <Text style={{ alignSelf: "flex-start" }}>Trifecta Standings</Text>
+          <Row
+            data={headerRow}
+            height={headerRowHeight}
+            totalWidth={totalWidth}
+            widthArray={widthArray}
+            rowStyle={{ backgroundColor: "#BEBEBE" }}
+          />
+          <Rows
+            data={trifectaStandings}
+            totalheight={totalHeight}
+            totalwidth={totalWidth}
+            widthArray={widthArray}
+            objectKeys={objectKeys}
+          />
+        </View>
+
+        <Button
+          title="Go to 2019 Baseball Standings!"
+          onPress={() =>
+            navigation.navigate("BaseballStandings", { year: "2019" })
+          }
+        />
+        <Button
+          title="Go to 2019 Football Standings!"
+          onPress={() =>
+            navigation.navigate("FootballStandings", { year: "2019" })
+          }
+        />
       </View>
     );
-
-    //   if (seasonStarted === false) {
-    //     return (
-    //       <View>
-    //         <Text>Not in season yet!</Text>
-    //       </View>
-    //     );
-    //   }
-
-    //   if (!basketballStandings) {
-    //     return null;
-    //   }
-
-    //   const headerRowHeight = 75;
-    //   const totalHeight = 500;
-    //   const totalWidth = inSeason ? 700 : 900;
-    //   const widthArray = [200, 100, 100, 100, 100, 100];
-    //   const objectKeys = [
-    //     "teamName",
-    //     "wins",
-    //     "losses",
-    //     "ties",
-    //     "winPer",
-    //     "trifectaPoints",
-    //   ];
-
-    //   const headerRowMap = [
-    //     { title: "Team Name", onPress: this.noop },
-    //     { title: "Wins", onPress: this.sortBasketballStandingsByWins },
-    //     { title: "Losses", onPress: this.sortBasketballStandingsByLosses },
-    //     { title: "Ties", onPress: this.sortBasketballStandingsByTies },
-    //     { title: "Win %", onPress: this.sortBasketballStandingsByWinPer },
-    //     {
-    //       title: "Trifecta Points",
-    //       onPress: this.sortBasketballStandingsByTrifectaPoints,
-    //     },
-    //   ];
-    //   // If not in season, add in playoff points and total trifecta points
-    //   if (!inSeason) {
-    //     widthArray.push(100, 100);
-    //     objectKeys.push("playoffPoints", "totalTrifectaPoints");
-    //     headerRowMap.push(
-    //       {
-    //         title: "Playoff Points",
-    //         onPress: this.sortBasketballStandingsByPlayoffPoints,
-    //       },
-    //       {
-    //         title: "Total Trifecta Points",
-    //         onPress: this.sortBasketballStandingsByTotalTrifectaPoints,
-    //       }
-    //     );
-    //   }
-    //   const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
-
-    //   return (
-    //     <View style={styles.container}>
-    //       <Text style={styles.welcome}>Basketball Standings!</Text>
-    //       <Text>{lastScraped}</Text>
-    //       <View style={{ alignItems: "center", marginVertical: 10 }}>
-    //         <Text style={{ alignSelf: "flex-start" }}>Basketball Standings</Text>
-    //         <Row
-    //           data={headerRow}
-    //           height={headerRowHeight}
-    //           totalWidth={totalWidth}
-    //           widthArray={widthArray}
-    //           rowStyle={{ backgroundColor: "#BEBEBE" }}
-    //         />
-    //         <Rows
-    //           data={basketballStandings}
-    //           totalheight={totalHeight}
-    //           totalwidth={totalWidth}
-    //           widthArray={widthArray}
-    //           objectKeys={objectKeys}
-    //         />
-    //       </View>
-
-    //       <Button
-    //         title="Go to 2019 Baseball Standings!"
-    //         onPress={() =>
-    //           navigation.navigate("BaseballStandings", { year: "2019" })
-    //         }
-    //       />
-    //       <Button
-    //         title="Go to 2019 Football Standings!"
-    //         onPress={() =>
-    //           navigation.navigate("FootballStandings", { year: "2019" })
-    //         }
-    //       />
-    //     </View>
-    //   );
   }
 }
 
@@ -280,6 +252,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   calculateTrifectaStandings,
+  displayTrifectaStandings,
+  sortTable,
 };
 
 export default connect(

@@ -35,7 +35,7 @@ class BasketballStandings extends PureComponent {
 
     const seasonVariablesCollection = returnMongoCollection("seasonVariables");
     seasonVariablesCollection
-      .find({})
+      .find({}, { projection: { _id: 0 } })
       .asArray()
       .then(seasonVariables => {
         const { seasonStarted, inSeason } = seasonVariables[0].basketball;

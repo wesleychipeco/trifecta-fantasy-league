@@ -39,7 +39,10 @@ const findAndSaveToRedux = (
   const sortDirection = defaultSortDirection ? -1 : 1;
 
   collection
-    .find({}, { sort: { [defaultSortColumn]: sortDirection } })
+    .find(
+      {},
+      { projection: { _id: 0 }, sort: { [defaultSortColumn]: sortDirection } }
+    )
     .asArray()
     .then(docs => {
       dispatch(action(docs));
