@@ -11,6 +11,7 @@ import {
 import { footballStandingsScraper } from "../../scrapers/footballStandings";
 import { format } from "date-fns";
 import { assignRankPoints } from "../../computators/assignRankPoints";
+import { assignFootballTrifectaPoints } from "../../computators/assignFootballTrifectaPoints";
 import {
   deleteAndInsert,
   returnMongoCollection,
@@ -44,7 +45,7 @@ const scrapeFootballStandings = year => {
       );
       dispatch(actions.scrapeFootballStandingsSuccess);
 
-      const footballStandings = await assignRankPoints(
+      const footballStandings = await assignFootballTrifectaPoints(
         footballStandingsScraped,
         "winPer",
         "highToLow",
