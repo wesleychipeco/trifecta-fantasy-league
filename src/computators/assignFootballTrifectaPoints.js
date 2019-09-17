@@ -1,3 +1,5 @@
+import { sortArrayBy } from "../utils";
+
 const assignFootballTrifectaPoints = (
   dataArray,
   compareKey,
@@ -12,12 +14,12 @@ const assignFootballTrifectaPoints = (
 
   // Starting value for points to give out
   let points = totalPoints;
-  let individualPoints, distributedPoints;
+  let individualPoints;
 
   // Initialize factors to determine points if there is a tie
-  let pointsHold = [];
-  let timesDistributed = 0;
-  let heldTiedTeams = [];
+  let tiedTeams = [];
+  let tiedTeamsPointsHold = [];
+  let tiedTeamsTimesDistributed = 0;
 
   for (let i = 0; i < dataArray.length; i++) {
     // Initialize how many teams tied with current team
@@ -29,85 +31,64 @@ const assignFootballTrifectaPoints = (
       let compareTeamCompareValue = dataArray[j][compareKey];
 
       // if 2 teams tied in win per, increase number of teams with same record
+      // Add to tiedTeams array, do not duplicate
       if (currentTeamCompareValue === compareTeamCompareValue) {
         sameRecords += 1;
-        if (heldTiedTeams.includes(dataArray[i]) === false)
-          heldTiedTeams.push(dataArray[i]);
+        if (tiedTeams.includes(dataArray[i]) === false)
+          tiedTeams.push(dataArray[i]);
+        if (tiedTeams.includes(dataArray[j]) === false)
+          tiedTeams.push(dataArray[j]);
       }
     }
 
     // after done with inner loop of all teams to find matches, determine whether to go into tie process or not
     // there will always be at least 1 team with same record (itself), so if > 1, go in to tie process
     if (sameRecords > 1) {
-      // when all tied teams are added to array
-      let tiedPointsFor;
-      // Sort heldTeams by PointsFor
-      heldTiedTeams.sort((a, b) => (a["pointsFor"] < b["pointsFor"] ? 1 : -1));
-      console.log(sameRecords);
-      console.log("heldteams", heldTiedTeams);
-
-      for (let y = 0; y < heldTiedTeams.length; y++) {
-        tiedPointsFor = 0;
-
-        let currentTeamPointsFor = heldTiedTeams[y]["pointsFor"];
-
-        for (let z = 0; z < heldTiedTeams.length; z++) {
-          let compareTeamPointsFor = heldTiedTeams[z]["pointsFor"];
-
-          if (currentTeamPointsFor === compareTeamPointsFor) {
-            tiedPointsFor += 1;
-          }
+      // If first time that there is a tie and tiedTeamsPointsHold array needs to be set
+      if (tiedTeamsPointsHold.length === 0) {
+        // points to be held and distributed in PointsFor order are a range of [points, points - # of other teams tied]
+        for (
+          let k = points;
+          k >= points - (sameRecords - 1) * pointsIncrement;
+          k -= pointsIncrement
+        ) {
+          tiedTeamsPointsHold.push(k);
         }
       }
-      console.log("tpf", tiedPointsFor);
 
-      if (tiedPointsFor > 1) {
-        // if this is the first time finding the tie, initialize distributed tied points
-        if (pointsHold.length === 0) {
-          // points to be averaged and split are a range of [points - # of other teams tied, points]
-          for (
-            let k = points - (sameRecords - 1) * pointsIncrement;
-            k <= points;
-            k += pointsIncrement
-          ) {
-            pointsHold.push(k);
-          }
+      // sort tiedTeams from highToLow pointsFor
+      tiedTeams.sort((a, b) => (a["pointsFor"] < b["pointsFor"] ? 1 : -1));
 
-          // range of points allocated is summed and averaged
-          distributedPoints = 0;
-          for (let x = 0; x < pointsHold.length; x++) {
-            distributedPoints += pointsHold[x];
-          }
-          distributedPoints /= sameRecords;
-        }
+      // Set the array index (sorted order) of given team (dataArray[i])
+      const sortedIndex = tiedTeams.findIndex(team => team === dataArray[i]);
 
-        // now that points have been averaged, each tied team gets this same number of points
-        individualPoints = distributedPoints;
-        timesDistributed += 1;
+      // NOTE: CAN'T HANDLE TIE BETWEEN TEAMS WITH SAME RECORD AND SAME POINTS FOR
 
-        // if all tied team's points have been distributed, then reset counts
-        if (timesDistributed === sameRecords) {
-          pointsHold = [];
-          timesDistributed = 0;
-        }
-      } else {
-        console.log("hello");
-        heldTiedTeams = [];
-        individualPoints = points;
+      // assign points based off of sorted tiedTeams by PF and held points from most to least
+      individualPoints = tiedTeamsPointsHold[sortedIndex];
+      tiedTeamsTimesDistributed += 1;
+
+      // If all teams who are tied have been distributed, reset initializing variables
+      if (tiedTeamsTimesDistributed === sameRecords) {
+        tiedTeams = [];
+        tiedTeamsPointsHold = [];
+        tiedTeamsTimesDistributed = 0;
       }
-    } else {
-      console.log("hi");
+    }
+    // else no same records, distribute points
+    else {
       individualPoints = points;
     }
 
     // at the end of each loop of each team, decrease the number of points
     points -= pointsIncrement;
-    console.log("team", dataArray[i].teamName);
-    console.log("points", individualPoints);
+    // console.log("team", dataArray[i].teamName);
+    // console.log("points", individualPoints);
 
     dataArray[i][assignKey] = individualPoints;
   }
-  return dataArray;
+  // return sorted array by trifectaPoints
+  return sortArrayBy(dataArray, assignKey, "highToLow");
 };
 
 export { assignFootballTrifectaPoints };

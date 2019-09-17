@@ -19,7 +19,7 @@ const deleteAndInsert = (dispatch, action, collection, data) => {
       collection
         .insertMany(data)
         .then(result1 => {
-          console.log(`Trifecta Baseball Standings documents inserted!`);
+          console.log(`Trifecta Mongo db documents inserted!`);
           dispatch(action(data));
         })
         .catch(err1 => {
