@@ -1,10 +1,12 @@
 import axios from "axios";
 import round from "lodash/round";
 
-const footballStandingsScraper = () => {
+const footballStandingsScraper = year => {
   return axios
     .get(
-      "http://fantasy.espn.com/apis/v3/games/ffl/seasons/2019/segments/0/leagues/154802?view=standings"
+      "http://fantasy.espn.com/apis/v3/games/ffl/seasons/" +
+        year +
+        "/segments/0/leagues/154802?view=standings"
     )
     .then(response => {
       const standingsArray = [];

@@ -96,10 +96,10 @@ const assignRotoCategoryPoints = rotoStandings => {
 
 const scrapeBaseballStandings = year => {
   return async function(dispatch) {
-    const h2hStandingsScrape = await h2hStandingsScraper();
+    const h2hStandingsScrape = await h2hStandingsScraper(year);
     dispatch(actions.scrapeH2HBaseballStandingsStart);
 
-    const rotoStandingsScrape = await rotoStatsScraper();
+    const rotoStandingsScrape = await rotoStatsScraper(year);
     dispatch(actions.scrapeRotoBaseballStandingsStart);
 
     if (h2hStandingsScrape) {
