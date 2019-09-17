@@ -39,7 +39,7 @@ const actions = {
 
 const scrapeBasketballStandings = year => {
   return async function(dispatch) {
-    const standings = await basketballStandingsScraper();
+    const standings = await basketballStandingsScraper(year);
     dispatch(
       actions.setBasketballStandingsLastScraped(
         format(new Date(), "M/D/YY h:mm:ss")

@@ -1,10 +1,12 @@
 import axios from "axios";
 import round from "lodash/round";
 
-const h2hStandingsScraper = () => {
+const h2hStandingsScraper = year => {
   return axios
     .get(
-      "http://fantasy.espn.com/apis/v3/games/flb/seasons/2019/segments/0/leagues/109364?view=standings"
+      "http://fantasy.espn.com/apis/v3/games/flb/seasons/" +
+        year +
+        "/segments/0/leagues/109364?view=standings"
     )
     .then(response => {
       const standingsArray = [];
@@ -23,10 +25,12 @@ const h2hStandingsScraper = () => {
     });
 };
 
-const rotoStatsScraper = () => {
+const rotoStatsScraper = year => {
   return axios
     .get(
-      "http://fantasy.espn.com/apis/v3/games/flb/seasons/2019/segments/0/leagues/109364?view=standings"
+      "http://fantasy.espn.com/apis/v3/games/flb/seasons/" +
+        year +
+        "/segments/0/leagues/109364?view=standings"
     )
     .then(response => {
       const standingsArray = [];

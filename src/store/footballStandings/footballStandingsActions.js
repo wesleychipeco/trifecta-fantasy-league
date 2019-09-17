@@ -33,7 +33,7 @@ const actions = {
 
 const scrapeFootballStandings = year => {
   return async function(dispatch) {
-    const footballStandingsScraped = await footballStandingsScraper();
+    const footballStandingsScraped = await footballStandingsScraper(year);
     dispatch(actions.scrapeFootballStandingsStart);
 
     if (footballStandingsScraped) {
