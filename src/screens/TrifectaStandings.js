@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
-
+import { Navbar } from "../components/Navbar";
 import { getTrifectaStandingsStateSelectors } from "../store/trifectaStandings/trifectaStandingsReducer";
 import {
   calculateTrifectaStandings,
@@ -150,7 +150,7 @@ class TrifectaStandings extends PureComponent {
   };
 
   render() {
-    const { navigation, trifectaStandings, lastScraped } = this.props;
+    const { navigation, trifectaStandings } = this.props;
 
     const headerRowHeight = 75;
     const totalHeight = 500;
@@ -188,8 +188,9 @@ class TrifectaStandings extends PureComponent {
 
     return (
       <View style={styles.container}>
+        <Navbar navigation={navigation} />
         <Text style={styles.welcome}>Trifecta Standings!</Text>
-        <Text>{lastScraped}</Text>
+        {/* <Text>{lastScraped}</Text> */}
         <View style={{ alignItems: "center", marginVertical: 10 }}>
           <Text style={{ alignSelf: "flex-start" }}>Trifecta Standings</Text>
           <Row
@@ -205,6 +206,7 @@ class TrifectaStandings extends PureComponent {
             totalwidth={totalWidth}
             widthArray={widthArray}
             objectKeys={objectKeys}
+            numberOfLines={2}
           />
         </View>
 
