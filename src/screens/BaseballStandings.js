@@ -1,8 +1,9 @@
 import React, { PureComponent } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
+import { Navbar } from "../components/Navbar";
 
 import { getBaseballStandingsStateSelectors } from "../store/baseballStandings/baseballStandingsReducer";
 import {
@@ -335,7 +336,6 @@ class BaseballStandings extends PureComponent {
       h2hStandings,
       rotoStandings,
       rotoStats,
-      lastScraped,
     } = this.props;
     const { seasonStarted, inSeason } = this.state;
 
@@ -545,6 +545,7 @@ class BaseballStandings extends PureComponent {
 
     return (
       <View style={styles.container}>
+        <Navbar navigation={navigation} />
         <View
           style={{
             justifyContent: "center",
@@ -553,7 +554,7 @@ class BaseballStandings extends PureComponent {
           }}
         >
           <Text style={styles.welcome}>Baseball Standings!</Text>
-          <Text>{lastScraped}</Text>
+          {/* <Text>{lastScraped}</Text> */}
         </View>
         <View style={{ alignItems: "center", marginVertical: 10 }}>
           <Text style={{ alignSelf: "flex-start" }}>Trifecta Standings</Text>
@@ -628,18 +629,6 @@ class BaseballStandings extends PureComponent {
             />
           </View>
         </View>
-        <Button
-          title="Go to 2019 Basketball Standings!"
-          onPress={() =>
-            navigation.navigate("BasketballStandings", { year: "2019" })
-          }
-        />
-        <Button
-          title="Go to 2019 Football Standings!"
-          onPress={() =>
-            navigation.navigate("FootballStandings", { year: "2019" })
-          }
-        />
       </View>
     );
   }

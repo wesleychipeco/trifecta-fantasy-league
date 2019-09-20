@@ -1,53 +1,52 @@
 import React from "react";
-import { View, Text, Platform, StyleSheet, Button } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
+import { Navbar } from "../components/Navbar";
 
-const instructions = Platform.select({
-  web: "Your browser will automatically refresh as soon as you save the file.",
-});
+const homeText =
+  "Version 2.0 will be very different, namely not being based on ESPN website scraping, rather using data APIs. Practically, this means shorter load times and more reliable (hopefully) website performance. It is not known or guaranteed which features will return, continue, or be introduced, though you can see my timeline/plans for it below";
+
+const featureList = [
+  "+ Past Trifecta Standings",
+  "+ Historical Head to Head Owner Matchups",
+  "+ Trade History",
+  "+ Owner Trophy Case",
+  "+ Add onto/continue some features from v1.0",
+  "    - Football coach rankings",
+  "    - Recaps of each season per owner",
+  "+ Constant visual improvements",
+];
+
+const caveatText =
+  "Unfortunately, due to new data source, at this moment individual player data will be more difficult (players are identified by an id number rather than name), as of now, roster stats and acquisition value, etc are on hold";
 
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.welcome}>
-        Welcome to React Native Web universal app!
-      </Text>
-      <Text style={styles.instructions}>
-        This component is shared between web and react environment. To see how
-        it works, just edit the HomeScreen.js
-      </Text>
-      <Text style={styles.instructions}>{instructions}</Text>
-      <Button
-        title="Go to 2019 Trifecta Standings!"
-        onPress={() =>
-          navigation.navigate("TrifectaStandings", { year: "2019" })
-        }
-      />
-      <Button
-        title="Go to 2019 Baseball Standings!"
-        onPress={() =>
-          navigation.navigate("BaseballStandings", { year: "2019" })
-        }
-      />
-      <Button
-        title="Go to 2019 Basketball Standings!"
-        onPress={() =>
-          navigation.navigate("BasketballStandings", { year: "2019" })
-        }
-      />
-      <Button
-        title="Go to 2019 Football Standings!"
-        onPress={() =>
-          navigation.navigate("FootballStandings", { year: "2019" })
-        }
-      />
-      <Button
+      <Navbar navigation={navigation} />
+      <View style={styles.header}>
+        <Text style={styles.welcome}>
+          Welcome to the Chips and Markers Trifecta Fantasy League website 2.0!
+        </Text>
+        <Text style={styles.instructions}>{homeText}</Text>
+      </View>
+      {/* <Button
         title="Go to Second!"
         onPress={() => navigation.navigate("Second")}
       />
       <Button
         title="Das Modal"
         onPress={() => navigation.navigate("DasModal")}
-      />
+      /> */}
+      <View style={styles.future}>
+        <View style={styles.timeline}>
+          <Text>Timeline</Text>
+          <FlatList
+            data={featureList}
+            renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
+          />
+        </View>
+        <Text style={styles.item}>{caveatText}</Text>
+      </View>
     </View>
   );
 };
@@ -55,19 +54,34 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#F5FCFF",
   },
+  header: {
+    width: "80%",
+    marginVertical: 20,
+  },
   welcome: {
-    fontSize: 20,
+    fontSize: 30,
     textAlign: "center",
-    margin: 10,
   },
   instructions: {
     textAlign: "center",
-    color: "#333333",
-    marginBottom: 5,
+    fontSize: 16,
+  },
+  timeline: {
+    alignSelf: "center",
+    marginVertical: 20,
+  },
+  future: {
+    width: "80%",
+    marginVertical: 20,
+  },
+  item: {
+    fontSize: 16,
+    alignSelf: "flex-start",
+    textAlign: "center",
   },
 });
 

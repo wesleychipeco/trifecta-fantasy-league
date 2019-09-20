@@ -7,7 +7,6 @@ import { ModalContainer } from "react-router-modal";
 import { Stitch, AnonymousCredential } from "mongodb-stitch-react-native-sdk";
 
 import HomeScreen from "./screens/HomeScreen";
-import TopNav from "./TopNav";
 import SecondScreen from "./screens/SecondScreen";
 import UserScreen from "./screens/UserScreen";
 import DasModalScreen from "./screens/DasModalScreen";
@@ -105,7 +104,6 @@ class App extends Component {
 
     return (
       <View style={{ height: "100vh", width: "100vw" }}>
-        <TopNav />
         {WebRoutesGenerator({ routeMap })}
         <ModalContainer />
       </View>

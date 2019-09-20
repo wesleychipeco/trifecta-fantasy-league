@@ -8,7 +8,7 @@ export class Cell extends PureComponent {
       PropTypes.string,
       PropTypes.number,
       PropTypes.element,
-    ]).isRequired,
+    ]),
     height: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
     flex: PropTypes.number,

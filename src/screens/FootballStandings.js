@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 
@@ -14,6 +14,7 @@ import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections
 import { returnMongoCollection } from "../databaseManagement";
 import { sortArrayBy } from "../utils";
 import { LinkText } from "../components/LinkText";
+import { Navbar } from "../components/Navbar";
 
 class FootballStandings extends PureComponent {
   constructor(props) {
@@ -151,7 +152,7 @@ class FootballStandings extends PureComponent {
   };
 
   render() {
-    const { navigation, footballStandings, lastScraped } = this.props;
+    const { navigation, footballStandings } = this.props;
     const { seasonStarted, inSeason } = this.state;
 
     if (seasonStarted === false) {
@@ -216,8 +217,9 @@ class FootballStandings extends PureComponent {
 
     return (
       <View style={styles.container}>
+        <Navbar navigation={navigation} />
         <Text style={styles.welcome}>Football Standings!</Text>
-        <Text>{lastScraped}</Text>
+        {/* <Text>{lastScraped}</Text> */}
         <View style={{ alignItems: "center", marginVertical: 10 }}>
           <Text style={{ alignSelf: "flex-start" }}>Football Standings</Text>
           <Row
@@ -235,19 +237,6 @@ class FootballStandings extends PureComponent {
             objectKeys={objectKeys}
           />
         </View>
-
-        <Button
-          title="Go to 2019 Basketball Standings!"
-          onPress={() =>
-            navigation.navigate("BasketballStandings", { year: "2019" })
-          }
-        />
-        <Button
-          title="Go to 2019 Baseball Standings!"
-          onPress={() =>
-            navigation.navigate("BaseballStandings", { year: "2019" })
-          }
-        />
       </View>
     );
   }
