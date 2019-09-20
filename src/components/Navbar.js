@@ -6,7 +6,7 @@ export class Navbar extends PureComponent {
     const { navigation } = this.props;
     return (
       <View style={styles.navbar}>
-        <Button title="Home" onPress={() => navigation.navigate("/")} />
+        <Button title="Home" onPress={() => navigation.navigate("Home")} />
         <Button
           title="2019 Trifecta Standings"
           onPress={() =>
