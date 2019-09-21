@@ -18,6 +18,10 @@ sudo apt install yarn
 To open tunnel:
 
 sign up for free ngrok account
+`yarn add ngrok`
+manually add authtoken to `/home/ubuntu/ngrok.yml`
+run `ngrok http 3000 -bind-tls=true` from `/home/ubuntu`
+
 follow instructions at: https://dashboard.ngrok.com/get-started
 change remote_addr in configuration file to 0.0.0.0:8091
 access dashboard at AWS hostname port 8091
