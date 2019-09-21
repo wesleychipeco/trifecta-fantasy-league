@@ -209,19 +209,6 @@ class TrifectaStandings extends PureComponent {
             numberOfLines={2}
           />
         </View>
-
-        <Button
-          title="Go to 2019 Baseball Standings!"
-          onPress={() =>
-            navigation.navigate("BaseballStandings", { year: "2019" })
-          }
-        />
-        <Button
-          title="Go to 2019 Football Standings!"
-          onPress={() =>
-            navigation.navigate("FootballStandings", { year: "2019" })
-          }
-        />
       </View>
     );
   }
