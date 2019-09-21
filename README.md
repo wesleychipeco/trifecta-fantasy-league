@@ -1,3 +1,31 @@
+### CREATE AWS INSTANCE
+Ubuntu
+Create security groups to expose ports 3000, 8091 to all IPs
+
+### INSTALL
+sudo apt install git
+git clone https://github.com/wesleychipeco/trifecta-fantasy-league.git
+Install node https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/
+sudo apt-get install curl
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+sudo apt-get update
+sudo apt-get install -y nodejs
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt update
+sudo apt install yarn
+
+To open tunnel:
+
+sign up for free ngrok account
+`yarn add ngrok`
+manually add authtoken to `/home/ubuntu/ngrok.yml`
+run `ngrok http 3000 -bind-tls=true` from `/home/ubuntu`
+
+follow instructions at: https://dashboard.ngrok.com/get-started
+change remote_addr in configuration file to 0.0.0.0:8091
+access dashboard at AWS hostname port 8091
+
 ## Create each collection in MongoDB first, and add rules in Stitch ##
 + If in season -> pull data via API -> save to mongo & save to redux
 + If not in season or in season and already scraped today -> pull data via mongo -> save to redux
