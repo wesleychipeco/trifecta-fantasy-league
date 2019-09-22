@@ -30,6 +30,10 @@ import {
   deleteAndInsert,
   findAndSaveToRedux,
 } from "../../databaseManagement";
+import {
+  retriveOwnerIdsOwnerNamesArray,
+  addOwnerNames,
+} from "../../computators/addOwnerNames";
 
 const actions = {
   scrapeH2HBaseballStandingsStart: createAction(
@@ -102,6 +106,8 @@ const scrapeBaseballStandings = year => {
     const rotoStandingsScrape = await rotoStatsScraper(year);
     dispatch(actions.scrapeRotoBaseballStandingsStart);
 
+    const ownerIdsOwnerNamesArray = await retriveOwnerIdsOwnerNamesArray();
+
     if (h2hStandingsScrape) {
       dispatch(actions.scrapeH2HBaseballStandingsSuccess);
       if (rotoStandingsScrape) {
@@ -114,13 +120,18 @@ const scrapeBaseballStandings = year => {
         const rotoStats = [...rotoStandingsScrape];
 
         // H2H Standings
-        const h2hStandings = await assignRankPoints(
+        const h2hStandingsWithoutNames = await assignRankPoints(
           h2hStandingsScrape,
           "winPer",
           "highToLow",
           "h2hTrifectaPoints",
           10,
           1
+        );
+
+        const h2hStandings = await addOwnerNames(
+          ownerIdsOwnerNamesArray,
+          h2hStandingsWithoutNames
         );
 
         // Roto Standings
@@ -206,6 +217,7 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
 
       combinedStandings.teamName = teamName;
       combinedStandings.ownerIds = teamH2H.ownerIds;
+      combinedStandings.ownerNames = teamH2H.ownerNames;
       combinedStandings.h2hTrifectaPoints = h2hPoints;
       combinedStandings.rotoTrifectaPoints = rotoPoints;
       combinedStandings.trifectaPoints = h2hPoints + rotoPoints;

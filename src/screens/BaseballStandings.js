@@ -352,11 +352,12 @@ class BaseballStandings extends PureComponent {
 
     ///// Trifecta Standings /////
     const trifectaStandingsHeaderRowHeight = 75;
-    const trifectaStandingsTotalHeight = 250;
-    const trifectaStandingsTotalWidth = inSeason ? 500 : 700;
-    const trifectaStandingsWidthArray = [200, 100, 100, 100];
+    const trifectaStandingsTotalHeight = 500;
+    const trifectaStandingsTotalWidth = inSeason ? 700 : 900;
+    const trifectaStandingsWidthArray = [200, 200, 100, 100, 100];
     const trifectaStandingsObjectKeys = [
       "teamName",
+      "ownerNames",
       "h2hTrifectaPoints",
       "rotoTrifectaPoints",
       "trifectaPoints",
@@ -365,6 +366,7 @@ class BaseballStandings extends PureComponent {
     // Create header row for Trifecta Standings Table
     const trifectaStandingsHeaderRowMap = [
       { title: "Team Name", onPress: this.noop },
+      { title: "Owner(s)", onPress: this.noop },
       {
         title: "H2H Trifecta Points",
         onPress: this.sortTrifectaStandingsbyH2HPoints,
