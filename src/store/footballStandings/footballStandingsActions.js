@@ -16,6 +16,10 @@ import {
   returnMongoCollection,
   findAndSaveToRedux,
 } from "../../databaseManagement";
+import {
+  retriveOwnerIdsOwnerNamesArray,
+  addOwnerNames,
+} from "../../computators/addOwnerNames";
 
 const actions = {
   scrapeFootballStandingsStart: createAction(SCRAPE_FOOTBALL_STANDINGS_START),
@@ -34,6 +38,7 @@ const actions = {
 const scrapeFootballStandings = year => {
   return async function(dispatch) {
     const footballStandingsScraped = await footballStandingsScraper(year);
+    const ownerIdsOwnerNamesArray = await retriveOwnerIdsOwnerNamesArray();
     dispatch(actions.scrapeFootballStandingsStart);
 
     if (footballStandingsScraped) {
@@ -44,13 +49,18 @@ const scrapeFootballStandings = year => {
       );
       dispatch(actions.scrapeFootballStandingsSuccess);
 
-      const footballStandings = await assignFootballTrifectaPoints(
+      const footballStandingsWithoutNames = await assignFootballTrifectaPoints(
         footballStandingsScraped,
         "winPer",
         "highToLow",
         "trifectaPoints",
         20,
         2
+      );
+
+      const footballStandings = await addOwnerNames(
+        ownerIdsOwnerNamesArray,
+        footballStandingsWithoutNames
       );
 
       const footballStandingsCollection = returnMongoCollection(

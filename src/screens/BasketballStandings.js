@@ -159,10 +159,11 @@ class BasketballStandings extends PureComponent {
 
     const headerRowHeight = 75;
     const totalHeight = 500;
-    const totalWidth = inSeason ? 700 : 900;
-    const widthArray = [200, 100, 100, 100, 100, 100];
+    const totalWidth = inSeason ? 900 : 1100;
+    const widthArray = [200, 200, 100, 100, 100, 100, 100];
     const objectKeys = [
       "teamName",
+      "ownerNames",
       "wins",
       "losses",
       "ties",
@@ -172,6 +173,7 @@ class BasketballStandings extends PureComponent {
 
     const headerRowMap = [
       { title: "Team Name", onPress: this.noop },
+      { title: "Owner(s)", onPress: this.noop },
       { title: "Wins", onPress: this.sortBasketballStandingsByWins },
       { title: "Losses", onPress: this.sortBasketballStandingsByLosses },
       { title: "Ties", onPress: this.sortBasketballStandingsByTies },

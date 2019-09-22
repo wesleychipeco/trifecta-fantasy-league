@@ -12,6 +12,10 @@ import {
   findAndSaveToRedux,
 } from "../../databaseManagement";
 import { sum, sortArrayBy } from "../../utils";
+import {
+  retriveOwnerIdsOwnerNamesArray,
+  returnOwnerNamesArray,
+} from "../../computators/addOwnerNames";
 
 const actions = {
   saveCalculatedTrifectaStandings: createAction(
@@ -48,15 +52,6 @@ const retrieveOwnersPerTeamArray = year => {
   return teamList;
 };
 
-const retriveOwnerIdsOwnerNamesArray = () => {
-  const ownerIdsCollection = returnMongoCollection("ownerIds");
-  const ownerIds = ownerIdsCollection
-    .find({}, { projection: { _id: 0 } })
-    .asArray()
-    .then(docs => docs);
-  return ownerIds;
-};
-
 const checkSameArray = (array1, array2) => {
   const arrayLengthCondition = array1.length === array2.length;
   const arrayValuesCondtion =
@@ -72,17 +67,6 @@ const returnSportTrifectaPoints = (sportStandings, ownersPerTeam) => {
   return sportStandings.find(sportsTeam =>
     checkSameArray(sportsTeam.ownerIds, ownersPerTeam)
   ).totalTrifectaPoints;
-};
-
-const returnOwnerNamesArray = (ownerIdsOwnerNamesArray, ownersPerTeam) => {
-  const ownerNames = [];
-  ownersPerTeam.forEach(ownerId => {
-    const ownerName = ownerIdsOwnerNamesArray.find(
-      ownerIdsOwnerNames => ownerIdsOwnerNames.ownerId === ownerId
-    ).ownerName;
-    ownerNames.push(ownerName);
-  });
-  return ownerNames;
 };
 
 const sumTrifectaPoints = (
