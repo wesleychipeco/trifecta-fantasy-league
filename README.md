@@ -1,6 +1,7 @@
 ### CREATE AWS INSTANCE
 Ubuntu
 Create security groups to expose ports 3000, 8091 to all IPs
+ssh -v -i .\Downloads\trifectav2.pem ubuntu@ec2-54-183-130-154.us-west-1.compute.amazonaws.com
 
 ### INSTALL
 `sudo apt install git`
