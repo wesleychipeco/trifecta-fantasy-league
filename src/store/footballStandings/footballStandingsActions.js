@@ -66,6 +66,7 @@ const scrapeFootballStandings = year => {
       const footballStandingsCollection = returnMongoCollection(
         "footballStandings" + year
       );
+      console.log("fs", footballStandings);
 
       deleteAndInsert(
         dispatch,
