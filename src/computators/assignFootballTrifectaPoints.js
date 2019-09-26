@@ -70,7 +70,6 @@ const assignFootballTrifectaPoints = (
 
       // If all teams who are tied have been distributed, reset initializing variables
       if (tiedTeamsTimesDistributed === sameRecords) {
-        console.log("CLAERRRRR");
         tiedTeams = [];
         tiedTeamsPointsHold = [];
         tiedTeamsTimesDistributed = 0;
@@ -79,12 +78,13 @@ const assignFootballTrifectaPoints = (
     // else no same records, distribute points
     else {
       individualPoints = points;
+      tiedTeams = [];
     }
 
     // at the end of each loop of each team, decrease the number of points
     points -= pointsIncrement;
-    console.log("team", dataArray[i].teamName);
-    console.log("points", individualPoints);
+    // console.log("team", dataArray[i].teamName);
+    // console.log("points", individualPoints);
 
     dataArray[i][assignKey] = individualPoints;
   }
