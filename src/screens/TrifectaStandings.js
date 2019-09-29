@@ -11,7 +11,7 @@ import {
 } from "../store/trifectaStandings/trifectaStandingsActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/trifectaStandings";
-import { sortArrayBy } from "../utils";
+import { sortArrayBy, isYearInPast } from "../utils";
 import { LinkText } from "../components/LinkText";
 import { returnMongoCollection } from "../databaseManagement";
 
@@ -31,7 +31,12 @@ class TrifectaStandings extends PureComponent {
   }
 
   componentDidMount() {
-    const { lastScraped, navigation } = this.props;
+    const {
+      lastScraped,
+      navigation,
+      calculateTrifectaStandings,
+      displayTrifectaStandings,
+    } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
     const seasonVariablesCollection = returnMongoCollection("seasonVariables");
@@ -39,36 +44,42 @@ class TrifectaStandings extends PureComponent {
       .find({}, { projection: { _id: 0 } })
       .asArray()
       .then(seasonVariables => {
-        const basketballSeasonVariables = seasonVariables[0].basketball;
-        const basketballSeasonEnded = this.isSeasonEnded(
-          basketballSeasonVariables
-        );
+        const { currentYear } = seasonVariables[0];
 
-        const baseballSeasonVariables = seasonVariables[0].baseball;
-        const baseballSeasonEnded = this.isSeasonEnded(baseballSeasonVariables);
+        if (isYearInPast(year, currentYear) || lastScraped) {
+          displayTrifectaStandings(year);
+        } else {
+          const basketballSeasonVariables = seasonVariables[0].basketball;
+          const basketballSeasonEnded = this.isSeasonEnded(
+            basketballSeasonVariables
+          );
 
-        const footballSeasonVariables = seasonVariables[0].football;
-        const footballSeasonEnded = this.isSeasonEnded(footballSeasonVariables);
+          const baseballSeasonVariables = seasonVariables[0].baseball;
+          const baseballSeasonEnded = this.isSeasonEnded(
+            baseballSeasonVariables
+          );
 
-        this.setState({
-          basketballSeasonEnded,
-          baseballSeasonEnded,
-          footballSeasonEnded,
-          basketballStandings: {
-            sortedColumn: "totalTrifectaPoints",
-            highToLow: true,
-          },
-        });
+          const footballSeasonVariables = seasonVariables[0].football;
+          const footballSeasonEnded = this.isSeasonEnded(
+            footballSeasonVariables
+          );
 
-        if (!lastScraped) {
-          this.props.calculateTrifectaStandings(
+          this.setState({
+            basketballSeasonEnded,
+            baseballSeasonEnded,
+            footballSeasonEnded,
+            basketballStandings: {
+              sortedColumn: "totalTrifectaPoints",
+              highToLow: true,
+            },
+          });
+
+          calculateTrifectaStandings(
             year,
             basketballSeasonEnded,
             baseballSeasonEnded,
             footballSeasonEnded
           );
-        } else {
-          this.props.displayTrifectaStandings(year);
         }
       });
   }

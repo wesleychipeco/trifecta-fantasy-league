@@ -79,7 +79,7 @@ const scrapeFootballStandings = year => {
   };
 };
 
-const displayFootballStandings = year => {
+const displayFootballStandings = (year, sortColumn = "totalTrifectaPoints") => {
   return async function(dispatch) {
     const footballStandingsCollection = returnMongoCollection(
       "footballStandings" + year
@@ -89,7 +89,7 @@ const displayFootballStandings = year => {
       dispatch,
       actions.saveExistingFootballStandings,
       footballStandingsCollection,
-      "trifectaPoints"
+      sortColumn
     );
   };
 };

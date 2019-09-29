@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import { View, Button, StyleSheet } from "react-native";
-import { StandingsDropdown } from "./StandingsDropdown";
+import { StandingsDropdownPre2019 } from "./StandingsDropdownPre2019";
+import { StandingsDropdownPost2019 } from "./StandingsDropdownPost2019";
 
 export class Navbar extends PureComponent {
   render() {
@@ -8,7 +9,18 @@ export class Navbar extends PureComponent {
     return (
       <View style={styles.navbar}>
         <Button title="Home" onPress={() => navigation.navigate("Home")} />
-        <StandingsDropdown year="2019" navigation={navigation} />
+        <StandingsDropdownPost2019 year="2019" navigation={navigation} />
+        <StandingsDropdownPre2019
+          year1="2017"
+          year2="2018"
+          navigation={navigation}
+        />
+        <Button
+          title="2018 Football Standings"
+          onPress={() =>
+            navigation.navigate("FootballStandings", { year: "2018" })
+          }
+        />
       </View>
     );
   }

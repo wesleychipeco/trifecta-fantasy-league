@@ -12,7 +12,7 @@ import {
 } from "../store/basketballStandings/basketballStandingsActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/basketballStandings";
-import { sortArrayBy } from "../utils";
+import { sortArrayBy, isYearInPast } from "../utils";
 import { LinkText } from "../components/LinkText";
 import { returnMongoCollection } from "../databaseManagement";
 
@@ -39,26 +39,35 @@ class BasketballStandings extends PureComponent {
       .find({}, { projection: { _id: 0 } })
       .asArray()
       .then(seasonVariables => {
+        const { currentYear } = seasonVariables[0];
         const { seasonStarted, inSeason } = seasonVariables[0].basketball;
+        const {
+          scrapeBasketballStandings,
+          displayBasketballStandings,
+        } = this.props;
 
-        const defaultSortColumn = inSeason
-          ? "trifectaPoints"
-          : "totalTrifectaPoints";
+        if (isYearInPast(year, currentYear)) {
+          displayBasketballStandings(year);
+        } else {
+          const defaultSortColumn = inSeason
+            ? "trifectaPoints"
+            : "totalTrifectaPoints";
 
-        this.setState({
-          seasonStarted,
-          inSeason,
-          basketballStandings: {
-            sortedColumn: defaultSortColumn,
-            highToLow: true,
-          },
-        });
+          this.setState({
+            seasonStarted,
+            inSeason,
+            basketballStandings: {
+              sortedColumn: defaultSortColumn,
+              highToLow: true,
+            },
+          });
 
-        if (seasonStarted) {
-          if (inSeason && !lastScraped) {
-            this.props.scrapeBasketballStandings(year);
-          } else {
-            this.props.displayBasketballStandings(year);
+          if (seasonStarted) {
+            if (inSeason && !lastScraped) {
+              scrapeBasketballStandings(year);
+            } else {
+              displayBasketballStandings(year, defaultSortColumn);
+            }
           }
         }
       });

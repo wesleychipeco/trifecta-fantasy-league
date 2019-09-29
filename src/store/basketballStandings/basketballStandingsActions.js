@@ -49,7 +49,10 @@ const scrapeBasketballStandings = year => {
   };
 };
 
-const displayBasketballStandings = year => {
+const displayBasketballStandings = (
+  year,
+  sortColumn = "totalTrifectaPoints"
+) => {
   return async function(dispatch) {
     // connect to mongo
     const basketballStandings = returnMongoCollection(
@@ -60,7 +63,7 @@ const displayBasketballStandings = year => {
       dispatch,
       actions.saveExistingBasketballStandings,
       basketballStandings,
-      "totalTrifectaPoints"
+      sortColumn
     );
   };
 };

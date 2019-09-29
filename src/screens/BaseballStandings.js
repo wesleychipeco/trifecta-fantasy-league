@@ -13,7 +13,7 @@ import {
 } from "../store/baseballStandings/baseballStandingsActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/baseballStandings";
-import { sortArrayBy } from "../utils/";
+import { sortArrayBy, isYearInPast } from "../utils/";
 import { returnMongoCollection } from "../databaseManagement";
 
 class BaseballStandings extends PureComponent {
@@ -50,26 +50,35 @@ class BaseballStandings extends PureComponent {
       .find({}, { projection: { _id: 0 } })
       .asArray()
       .then(seasonVariables => {
+        const { currentYear } = seasonVariables[0];
         const { seasonStarted, inSeason } = seasonVariables[0].baseball;
+        const {
+          scrapeBaseballStandings,
+          displayBaseballStandings,
+        } = this.props;
 
-        const defaultSortColumn = inSeason
-          ? "trifectaPoints"
-          : "totalTrifectaPoints";
+        if (isYearInPast(year, currentYear)) {
+          displayBaseballStandings(year);
+        } else {
+          const defaultSortColumn = inSeason
+            ? "trifectaPoints"
+            : "totalTrifectaPoints";
 
-        this.setState({
-          seasonStarted,
-          inSeason,
-          trifectaStandings: {
-            sortedColumn: defaultSortColumn,
-            highToLow: true,
-          },
-        });
+          this.setState({
+            seasonStarted,
+            inSeason,
+            trifectaStandings: {
+              sortedColumn: defaultSortColumn,
+              highToLow: true,
+            },
+          });
 
-        if (seasonStarted) {
-          if (inSeason && !lastScraped) {
-            this.props.scrapeBaseballStandings(year);
-          } else {
-            this.props.displayBaseballStandings(year);
+          if (seasonStarted) {
+            if (inSeason && !lastScraped) {
+              scrapeBaseballStandings(year);
+            } else {
+              displayBaseballStandings(year, defaultSortColumn);
+            }
           }
         }
       });
