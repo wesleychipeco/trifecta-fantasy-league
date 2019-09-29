@@ -7,4 +7,6 @@ const sortArrayBy = (array, sortKey, sortDirection) =>
     ? array.sort((a, b) => (a[sortKey] < b[sortKey] ? 1 : -1))
     : array.sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1));
 
-export { sum, sortArrayBy };
+const isYearInPast = (year, currentYear) => Number(year) < Number(currentYear);
+
+export { sum, sortArrayBy, isYearInPast };

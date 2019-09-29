@@ -12,7 +12,7 @@ import {
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/footballStandings";
 import { returnMongoCollection } from "../databaseManagement";
-import { sortArrayBy } from "../utils";
+import { sortArrayBy, isYearInPast } from "../utils";
 import { LinkText } from "../components/LinkText";
 import { Navbar } from "../components/Navbar";
 
@@ -39,26 +39,35 @@ class FootballStandings extends PureComponent {
       .find({}, { projection: { _id: 0 } })
       .asArray()
       .then(seasonVariables => {
+        const { currentYear } = seasonVariables[0];
         const { seasonStarted, inSeason } = seasonVariables[0].football;
+        const {
+          scrapeFootballStandings,
+          displayFootballStandings,
+        } = this.props;
 
-        const defaultSortColumn = inSeason
-          ? "trifectaPoints"
-          : "totalTrifectaPoints";
+        if (isYearInPast(year, currentYear)) {
+          displayFootballStandings(year);
+        } else {
+          const defaultSortColumn = inSeason
+            ? "trifectaPoints"
+            : "totalTrifectaPoints";
 
-        this.setState({
-          seasonStarted,
-          inSeason,
-          footballStandings: {
-            sortedColumn: defaultSortColumn,
-            highToLow: true,
-          },
-        });
+          this.setState({
+            seasonStarted,
+            inSeason,
+            footballStandings: {
+              sortedColumn: defaultSortColumn,
+              highToLow: true,
+            },
+          });
 
-        if (seasonStarted) {
-          if (inSeason && !lastScraped) {
-            this.props.scrapeFootballStandings(year);
-          } else {
-            this.props.displayFootballStandings(year);
+          if (seasonStarted) {
+            if (inSeason && !lastScraped) {
+              scrapeFootballStandings(year);
+            } else {
+              displayFootballStandings(year, defaultSortColumn);
+            }
           }
         }
       });

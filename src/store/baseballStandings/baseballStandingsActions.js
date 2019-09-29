@@ -229,7 +229,7 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
   }
 };
 
-const displayBaseballStandings = year => {
+const displayBaseballStandings = (year, sortColumn = "totalTrifectaPoints") => {
   return async function(dispatch) {
     // connect to mongo
     const baseballH2HStandings = returnMongoCollection(
@@ -266,7 +266,7 @@ const displayBaseballStandings = year => {
       dispatch,
       actions.saveExistingTrifectaStandings,
       baseballTrifectaStandings,
-      "totalTrifectaPoints"
+      sortColumn
     );
   };
 };
