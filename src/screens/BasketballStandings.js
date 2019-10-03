@@ -208,14 +208,16 @@ class BasketballStandings extends PureComponent {
       );
     }
     const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
+    const year = navigation.getParam("year", "No year was defined!");
+    const title = `${year} Basketball Standings!`;
 
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
-        <Text style={styles.welcome}>Basketball Standings!</Text>
+        <Text style={styles.welcome}>{title}</Text>
         {/* <Text>{lastScraped}</Text> */}
         <View style={{ alignItems: "center", marginVertical: 10 }}>
-          <Text style={{ alignSelf: "flex-start" }}>Basketball Standings</Text>
+          {/* <Text style={{ alignSelf: "flex-start" }}>Basketball Standings</Text> */}
           <Row
             data={headerRow}
             height={headerRowHeight}
