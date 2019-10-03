@@ -9,7 +9,8 @@ import {
 
 export class StandingsDropdownPre2019 extends PureComponent {
   static propTypes = {
-    year: PropTypes.string.isRequired,
+    year1: PropTypes.string.isRequired,
+    year2: PropTypes.string.isRequired,
     navigation: PropTypes.object.isRequired,
   };
 
