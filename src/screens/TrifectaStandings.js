@@ -20,6 +20,7 @@ class TrifectaStandings extends PureComponent {
     super(props);
 
     this.state = {
+      year: null,
       basketballSeasonEnded: null,
       baseballSeasonEnded: null,
       footballSeasonEnded: null,
@@ -31,6 +32,21 @@ class TrifectaStandings extends PureComponent {
   }
 
   componentDidMount() {
+    this.retrieveData();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const year = this.props.navigation.getParam("year", "No year was defined!");
+    this.setState({
+      year,
+    });
+
+    if (prevState.year !== this.state.year) {
+      this.retrieveData();
+    }
+  }
+
+  retrieveData = () => {
     const {
       lastScraped,
       navigation,
@@ -82,7 +98,7 @@ class TrifectaStandings extends PureComponent {
           );
         }
       });
-  }
+  };
 
   isSeasonEnded = seasonVariables => {
     const { seasonStarted, inSeason } = seasonVariables;

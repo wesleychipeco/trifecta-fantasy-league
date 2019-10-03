@@ -21,6 +21,7 @@ class FootballStandings extends PureComponent {
     super(props);
 
     this.state = {
+      year: null,
       seasonStarted: null,
       inSeason: null,
       footballStandings: {
@@ -31,6 +32,21 @@ class FootballStandings extends PureComponent {
   }
 
   componentDidMount() {
+    this.retrieveData();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const year = this.props.navigation.getParam("year", "No year was defined!");
+    this.setState({
+      year,
+    });
+
+    if (prevState.year !== this.state.year) {
+      this.retrieveData();
+    }
+  }
+
+  retrieveData = () => {
     const { lastScraped, navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
@@ -71,7 +87,7 @@ class FootballStandings extends PureComponent {
           }
         }
       });
-  }
+  };
 
   sortTableByColumn = (tableArray, columnKey) => {
     const { sortTable } = this.props;
