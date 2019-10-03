@@ -196,14 +196,21 @@ class TrifectaStandings extends PureComponent {
     ];
 
     const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
+    const year = navigation.getParam("year", "No year was defined!");
+
+    let title;
+    if (Number(year) < 2019) {
+      title = `${year - 1} - ${year} Trifecta Standings!`;
+    } else {
+      title = `${year} Trifecta Standings!`;
+    }
 
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
-        <Text style={styles.welcome}>Trifecta Standings!</Text>
+        <Text style={styles.welcome}>{title}</Text>
         {/* <Text>{lastScraped}</Text> */}
         <View style={{ alignItems: "center", marginVertical: 10 }}>
-          <Text style={{ alignSelf: "flex-start" }}>Trifecta Standings</Text>
           <Row
             data={headerRow}
             height={headerRowHeight}

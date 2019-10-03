@@ -15,6 +15,16 @@ export class Navbar extends PureComponent {
           year2="2018"
           navigation={navigation}
         />
+        <StandingsDropdownPre2019
+          year1="2016"
+          year2="2017"
+          navigation={navigation}
+        />
+        <StandingsDropdownPre2019
+          year1="2015"
+          year2="2016"
+          navigation={navigation}
+        />
         <Button
           title="2018 Football Standings"
           onPress={() =>

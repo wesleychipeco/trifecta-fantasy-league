@@ -553,6 +553,8 @@ class BaseballStandings extends PureComponent {
     const rotoStatsHeaderRow = rotoStatsHeaderRowMap.map(
       this.renderHeaderRowColumn
     );
+    const year = navigation.getParam("year", "No year was defined!");
+    const title = `${year} Baseball Standings!`;
 
     return (
       <View style={styles.container}>
@@ -564,7 +566,7 @@ class BaseballStandings extends PureComponent {
             marginBottom: 10,
           }}
         >
-          <Text style={styles.welcome}>Baseball Standings!</Text>
+          <Text style={styles.welcome}>{title}</Text>
           {/* <Text>{lastScraped}</Text> */}
         </View>
         <View style={{ alignItems: "center", marginVertical: 10 }}>
