@@ -64,9 +64,10 @@ const triggerStyles = {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FF0000",
+    backgroundColor: "#007FFF",
     borderWidth: 3,
     borderColor: "#000000",
+    padding: 5,
   },
   // triggerWrapper: {
   //   flex: 1,
@@ -74,6 +75,7 @@ const triggerStyles = {
   //   margin: 2,
   // },
   triggerText: {
+    fontFamily: "Arial",
     color: "white",
   },
 };
@@ -88,9 +90,12 @@ const optionsStyles = {
   */
   optionsWrapper: {
     borderWidth: 3,
-    borderColor: "green",
+    borderColor: "#000000",
   },
   optionWrapper: {
-    backgroundColor: "#66cccc",
+    backgroundColor: "#DCDCDC",
+  },
+  optionText: {
+    fontFamily: "Arial",
   },
 };

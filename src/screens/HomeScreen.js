@@ -7,7 +7,7 @@ const homeText =
   "Version 2.0 will be very different, namely not being based on ESPN website scraping, rather using data APIs. Practically, this means shorter load times and more reliable (hopefully) website performance. It is not known or guaranteed which features will return, continue, or be introduced, though you can see my timeline/plans for it below";
 
 const featureList = [
-  "+ Past Trifecta Standings",
+  "+ Past Trifecta Standings - Released 10/3",
   "+ Historical Head to Head Owner Matchups",
   "+ Trade History",
   "+ Owner Trophy Case",
