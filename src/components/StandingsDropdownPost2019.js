@@ -17,7 +17,7 @@ export class StandingsDropdownPost2019 extends PureComponent {
   render() {
     const { navigation, year } = this.props;
 
-    const dropdownText = year + " Standings";
+    const dropdownText = "+ " + year + " Standings";
 
     return (
       <Menu>
