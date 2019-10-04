@@ -18,7 +18,7 @@ export class StandingsDropdownPre2019 extends PureComponent {
   render() {
     const { navigation, year1, year2 } = this.props;
 
-    const dropdownText = year1 + "-" + year2 + " Standings";
+    const dropdownText = "+ " + year1 + "-" + year2 + " Standings";
 
     return (
       <Menu>

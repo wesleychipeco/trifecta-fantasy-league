@@ -124,8 +124,8 @@ const navbarStyles = StyleSheet.create({
     width: "100%",
   },
   button: {
-    borderWidth: 3,
-    borderColor: "#000",
+    borderWidth: 2,
+    borderColor: "#000000",
     backgroundColor: "#007FFF",
     padding: 5,
   },
@@ -146,8 +146,8 @@ const triggerStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#007FFF",
-    borderWidth: 3,
-    borderColor: "#000000",
+    // borderWidth: 3,
+    // borderColor: "#000000",
     padding: 5,
   },
   triggerText: {
