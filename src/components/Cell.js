@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import PropTypes from "prop-types";
+import { cellStyles as styles } from "../styles/globalStyles";
 
 export class Cell extends PureComponent {
   static propTypes = {
@@ -60,8 +61,3 @@ export class Cell extends PureComponent {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  cell: { justifyContent: "center", alignItems: "center" },
-  text: { backgroundColor: "transparent", textAlign: "center" },
-});

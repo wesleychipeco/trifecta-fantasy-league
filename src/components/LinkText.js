@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import PropTypes from "prop-types";
+import { linkTextStyles as styles } from "../styles/globalStyles";
 
 export class LinkText extends PureComponent {
   static propTypes = {
@@ -29,15 +30,3 @@ export class LinkText extends PureComponent {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  text: {
-    textAlign: "center",
-    textDecorationLine: "underline",
-  },
-});

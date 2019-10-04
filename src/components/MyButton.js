@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import PropTypes from "prop-types";
+import { myButtonStyles as styles } from "../styles/globalStyles";
 
 export class MyButton extends PureComponent {
   static propTypes = {
@@ -29,15 +30,3 @@ export class MyButton extends PureComponent {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  text: {
-    textAlign: "center",
-    fontFamily: "Arial",
-  },
-});

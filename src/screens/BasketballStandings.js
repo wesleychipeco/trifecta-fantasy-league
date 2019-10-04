@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { Navbar } from "../components/Navbar";
@@ -12,9 +12,10 @@ import {
 } from "../store/basketballStandings/basketballStandingsActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/basketballStandings";
-import { sortArrayBy, isYearInPast } from "../utils";
+import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
 import { LinkText } from "../components/LinkText";
 import { returnMongoCollection } from "../databaseManagement";
+import { standingsStyles as styles } from "../styles/globalStyles";
 
 class BasketballStandings extends PureComponent {
   constructor(props) {
@@ -62,7 +63,7 @@ class BasketballStandings extends PureComponent {
           displayBasketballStandings,
         } = this.props;
 
-        if (isYearInPast(year, currentYear)) {
+        if (isYear1BeforeYear2(year, currentYear)) {
           displayBasketballStandings(year);
         } else {
           const defaultSortColumn = inSeason
@@ -161,7 +162,7 @@ class BasketballStandings extends PureComponent {
         key={title}
         title={title}
         onPress={onPress}
-        textStyles={{ color: "#0041C2" }}
+        textStyles={styles.headerText}
       />
     );
   };
@@ -230,16 +231,15 @@ class BasketballStandings extends PureComponent {
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
-        <Text style={styles.welcome}>{title}</Text>
+        <Text style={styles.title}>{title}</Text>
         {/* <Text>{lastScraped}</Text> */}
-        <View style={{ alignItems: "center", marginVertical: 10 }}>
-          {/* <Text style={{ alignSelf: "flex-start" }}>Basketball Standings</Text> */}
+        <View style={styles.table}>
           <Row
             data={headerRow}
             height={headerRowHeight}
             totalWidth={totalWidth}
             widthArray={widthArray}
-            rowStyle={{ backgroundColor: "#BEBEBE" }}
+            rowStyle={styles.header}
           />
           <Rows
             data={basketballStandings}
@@ -253,19 +253,6 @@ class BasketballStandings extends PureComponent {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
-  },
-});
 
 const mapStateToProps = state => {
   const {

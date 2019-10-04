@@ -6,6 +6,7 @@ import {
   MenuOption,
   MenuTrigger,
 } from "react-native-popup-menu";
+import { triggerStyles, optionsStyles } from "../styles/globalStyles";
 
 export class StandingsDropdownPre2019 extends PureComponent {
   static propTypes = {
@@ -52,50 +53,3 @@ export class StandingsDropdownPre2019 extends PureComponent {
     );
   }
 }
-
-const triggerStyles = {
-  /*
-    - triggerOuterWrapper
-    - triggerWrapper
-    - triggerText
-    - triggerTouchable
-  */
-  triggerOuterWrapper: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#007FFF",
-    borderWidth: 3,
-    borderColor: "#000000",
-    padding: 5,
-  },
-  // triggerWrapper: {
-  //   flex: 1,
-  //   backgroundColor: "blue",
-  //   margin: 2,
-  // },
-  triggerText: {
-    fontFamily: "Arial",
-    color: "white",
-  },
-};
-
-const optionsStyles = {
-  /*
-    - optionsWrapper
-    - optionsContainer
-    - optionWrapper
-    - optionText
-    - optionTouchable
-  */
-  optionsWrapper: {
-    borderWidth: 3,
-    borderColor: "#000000",
-  },
-  optionWrapper: {
-    backgroundColor: "#DCDCDC",
-  },
-  optionText: {
-    fontFamily: "Arial",
-  },
-};

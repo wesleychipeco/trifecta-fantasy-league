@@ -1,8 +1,9 @@
 import React, { PureComponent } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import PropTypes from "prop-types";
 import { sum } from "../utils";
 import { Cell } from "./Cell";
+import { rowStyles as styles } from "../styles/globalStyles";
 
 export class Row extends PureComponent {
   // totalheight: sets the outer "table" height independent of each row height
@@ -49,7 +50,7 @@ export class Row extends PureComponent {
       // If there are objectKeys, use them to pull data from object
       if (objectKeys) {
         return (
-          <View style={[{ height, width }, RowStyles.row, rowStyle]}>
+          <View style={[{ height, width }, styles.row, rowStyle]}>
             {objectKeys.map((objectKey, i) => {
               const cellFlex = flexArray ? flexArray[i] : widthArray ? null : 1;
               const cellWidth = widthArray
@@ -71,7 +72,7 @@ export class Row extends PureComponent {
       }
       // if there are no objectKeys, just display the elements in data
       return (
-        <View style={[{ height, width }, RowStyles.row, rowStyle]}>
+        <View style={[{ height, width }, styles.row, rowStyle]}>
           {data.map((data, i) => {
             const cellFlex = flexArray ? flexArray[i] : widthArray ? null : 1;
             const cellWidth = widthArray
@@ -128,7 +129,7 @@ export class Rows extends PureComponent {
             width,
             height,
             ...rowsStyle,
-            ...RowStyles.rows,
+            ...styles.rows,
           }}
         >
           {data.map((row, i) => {
@@ -154,12 +155,3 @@ export class Rows extends PureComponent {
     return null;
   }
 }
-
-const RowStyles = StyleSheet.create({
-  rows: {
-    justifyContent: "center",
-  },
-  row: {
-    flexDirection: "row",
-  },
-});
