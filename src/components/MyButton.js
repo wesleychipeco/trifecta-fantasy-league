@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import { TouchableOpacity, Text } from "react-native";
 import PropTypes from "prop-types";
-import { linkTextStyles as styles } from "../styles/globalStyles";
+import { myButtonStyles as styles } from "../styles/globalStyles";
 
-export class LinkText extends PureComponent {
+export class MyButton extends PureComponent {
   static propTypes = {
     title: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired,

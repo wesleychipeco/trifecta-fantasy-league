@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { Navbar } from "../components/Navbar";
@@ -11,9 +11,10 @@ import {
 } from "../store/trifectaStandings/trifectaStandingsActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/trifectaStandings";
-import { sortArrayBy, isYearInPast } from "../utils";
+import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
 import { LinkText } from "../components/LinkText";
 import { returnMongoCollection } from "../databaseManagement";
+import { standingsStyles as styles } from "../styles/globalStyles";
 
 class TrifectaStandings extends PureComponent {
   constructor(props) {
@@ -62,7 +63,7 @@ class TrifectaStandings extends PureComponent {
       .then(seasonVariables => {
         const { currentYear } = seasonVariables[0];
 
-        if (isYearInPast(year, currentYear) || lastScraped) {
+        if (isYear1BeforeYear2(year, currentYear) || lastScraped) {
           displayTrifectaStandings(year);
         } else {
           const basketballSeasonVariables = seasonVariables[0].basketball;
@@ -171,25 +172,30 @@ class TrifectaStandings extends PureComponent {
         key={title}
         title={title}
         onPress={onPress}
-        textStyles={{ color: "#0041C2" }}
+        textStyles={styles.headerText}
       />
     );
   };
 
   render() {
     const { navigation, trifectaStandings } = this.props;
+    const year = navigation.getParam("year", "No year was defined!");
 
     const headerRowHeight = 75;
     const totalHeight = 500;
     const totalWidth = 600;
     const widthArray = [200, 100, 100, 100, 100];
+
     const objectKeys = [
       "ownerNames",
       "basketballTrifectaPoints",
       "baseballTrifectaPoints",
-      "footballTrifectaPoints",
       "totalTrifectaPoints",
     ];
+
+    const indexToAdd = isYear1BeforeYear2(year, "2019") ? 1 : 3;
+
+    objectKeys.splice(indexToAdd, 0, "footballTrifectaPoints");
 
     const headerRowMap = [
       { title: "Owner(s)", onPress: this.noop },
@@ -202,37 +208,34 @@ class TrifectaStandings extends PureComponent {
         onPress: this.sortTrifectaStandingsByBaseball,
       },
       {
-        title: "Football Trifecta Points",
-        onPress: this.sortTrifectaStandingsByFootball,
-      },
-      {
         title: "Total Trifecta Points",
         onPress: this.sortTrifectaStandingsByTotal,
       },
     ];
 
-    const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
-    const year = navigation.getParam("year", "No year was defined!");
+    headerRowMap.splice(indexToAdd, 0, {
+      title: "Football Trifecta Points",
+      onPress: this.sortTrifectaStandingsByFootball,
+    });
 
-    let title;
-    if (Number(year) < 2019) {
-      title = `${year - 1} - ${year} Trifecta Standings!`;
-    } else {
-      title = `${year} Trifecta Standings!`;
-    }
+    const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
+
+    const title = isYear1BeforeYear2(year, "2019")
+      ? `${year - 1} - ${year} Trifecta Standings!`
+      : `${year} Trifecta Standings!`;
 
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
-        <Text style={styles.welcome}>{title}</Text>
+        <Text style={styles.title}>{title}</Text>
         {/* <Text>{lastScraped}</Text> */}
-        <View style={{ alignItems: "center", marginVertical: 10 }}>
+        <View style={styles.table}>
           <Row
             data={headerRow}
             height={headerRowHeight}
             totalWidth={totalWidth}
             widthArray={widthArray}
-            rowStyle={{ backgroundColor: "#BEBEBE" }}
+            rowStyle={styles.header}
           />
           <Rows
             data={trifectaStandings}
@@ -247,19 +250,6 @@ class TrifectaStandings extends PureComponent {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
-  },
-});
 
 const mapStateToProps = state => {
   const {

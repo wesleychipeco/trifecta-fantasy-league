@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
@@ -13,8 +13,9 @@ import {
 } from "../store/baseballStandings/baseballStandingsActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/baseballStandings";
-import { sortArrayBy, isYearInPast } from "../utils/";
+import { sortArrayBy, isYear1BeforeYear2 } from "../utils/";
 import { returnMongoCollection } from "../databaseManagement";
+import { standingsStyles as styles } from "../styles/globalStyles";
 
 class BaseballStandings extends PureComponent {
   constructor(props) {
@@ -73,7 +74,7 @@ class BaseballStandings extends PureComponent {
           displayBaseballStandings,
         } = this.props;
 
-        if (isYearInPast(year, currentYear)) {
+        if (isYear1BeforeYear2(year, currentYear)) {
           displayBaseballStandings(year);
         } else {
           const defaultSortColumn = inSeason
@@ -349,7 +350,7 @@ class BaseballStandings extends PureComponent {
         key={title}
         title={title}
         onPress={onPress}
-        textStyles={{ color: "#0041C2" }}
+        textStyles={styles.headerText}
       />
     );
   };
@@ -575,24 +576,18 @@ class BaseballStandings extends PureComponent {
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: 10,
-          }}
-        >
-          <Text style={styles.welcome}>{title}</Text>
+        <View style={styles.tables}>
+          <Text style={styles.title}>{title}</Text>
           {/* <Text>{lastScraped}</Text> */}
         </View>
-        <View style={{ alignItems: "center", marginVertical: 10 }}>
-          <Text style={{ alignSelf: "flex-start" }}>Trifecta Standings</Text>
+        <View style={styles.table}>
+          <Text style={styles.subtext}>Trifecta Standings</Text>
           <Row
             data={trifectaStandingsHeaderRow}
             height={trifectaStandingsHeaderRowHeight}
             totalWidth={trifectaStandingsTotalWidth}
             widthArray={trifectaStandingsWidthArray}
-            rowStyle={{ backgroundColor: "#BEBEBE" }}
+            rowStyle={styles.header}
           />
           <Rows
             data={trifectaStandings}
@@ -602,14 +597,14 @@ class BaseballStandings extends PureComponent {
             objectKeys={trifectaStandingsObjectKeys}
           />
         </View>
-        <View style={{ alignItems: "center", marginVertical: 10 }}>
-          <Text style={{ alignSelf: "flex-start" }}>H2H Standings</Text>
+        <View style={styles.table}>
+          <Text style={styles.subtext}>H2H Standings</Text>
           <Row
             data={h2hStandingsHeaderRow}
             height={h2hStandingsHeaderRowHeight}
             totalwidth={h2hStandingsTotalWidth}
             widthArray={h2hStandingsWidthArray}
-            rowStyle={{ backgroundColor: "#BEBEBE" }}
+            rowStyle={styles.header}
             numberOfLines={2}
           />
           <Rows
@@ -620,14 +615,14 @@ class BaseballStandings extends PureComponent {
             objectKeys={h2hStandingsObjectKeys}
           />
         </View>
-        <View style={{ alignItems: "center", marginVertical: 10 }}>
-          <Text style={{ alignSelf: "flex-start" }}>Roto Standings</Text>
+        <View style={styles.table}>
+          <Text style={styles.subtext}>Roto Standings</Text>
           <Row
             data={rotoStandingsHeaderRow}
             height={rotoStandingsHeaderRowHeight}
             totalwidth={rotoStandingsTotalWidth}
             widthArray={rotoStandingsWidthArray}
-            rowStyle={{ backgroundColor: "#BEBEBE" }}
+            rowStyle={styles.header}
             numberOfLines={2}
           />
           <Rows
@@ -638,14 +633,14 @@ class BaseballStandings extends PureComponent {
             objectKeys={rotoStandingsObjectKeys}
             numberOfLines={2}
           />
-          <View style={{ alignItems: "center", marginVertical: 10 }}>
-            <Text style={{ alignSelf: "flex-start" }}>Roto Stats</Text>
+          <View style={styles.table}>
+            <Text style={styles.subtext}>Roto Stats</Text>
             <Row
               data={rotoStatsHeaderRow}
               height={rotoStatsHeaderRowHeight}
               totalwidth={rotoStatsTotalWidth}
               widthArray={rotoStatsWidthArray}
-              rowStyle={{ backgroundColor: "#BEBEBE" }}
+              rowStyle={styles.header}
               numberOfLines={2}
             />
             <Rows
@@ -662,19 +657,6 @@ class BaseballStandings extends PureComponent {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
-  },
-});
 
 const mapStateToProps = state => {
   const {

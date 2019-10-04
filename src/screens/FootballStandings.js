@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 
@@ -12,9 +12,10 @@ import {
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/footballStandings";
 import { returnMongoCollection } from "../databaseManagement";
-import { sortArrayBy, isYearInPast } from "../utils";
+import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
 import { LinkText } from "../components/LinkText";
 import { Navbar } from "../components/Navbar";
+import { standingsStyles as styles } from "../styles/globalStyles";
 
 class FootballStandings extends PureComponent {
   constructor(props) {
@@ -62,7 +63,7 @@ class FootballStandings extends PureComponent {
           displayFootballStandings,
         } = this.props;
 
-        if (isYearInPast(year, currentYear)) {
+        if (isYear1BeforeYear2(year, currentYear)) {
           displayFootballStandings(year);
         } else {
           const defaultSortColumn = inSeason
@@ -171,9 +172,22 @@ class FootballStandings extends PureComponent {
         key={title}
         title={title}
         onPress={onPress}
-        textStyles={{ color: "#0041C2" }}
+        textStyles={styles.headerText}
       />
     );
+  };
+
+  shouldRenderSubtext = () => {
+    const { navigation } = this.props;
+    const year = navigation.getParam("year", "No year was defined!");
+
+    const subtext =
+      "Due to sport re-arrangement in the Trifecta cycle, 2018 Football is not part of any Trifecta season and for variety, was an auction draft";
+
+    if (Number(year) === 2018) {
+      return <Text style={styles.subtext}>{subtext}</Text>;
+    }
+    return null;
   };
 
   render() {
@@ -247,16 +261,16 @@ class FootballStandings extends PureComponent {
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
-        <Text style={styles.welcome}>{title}</Text>
+        <Text style={styles.title}>{title}</Text>
         {/* <Text>{lastScraped}</Text> */}
-        <View style={{ alignItems: "center", marginVertical: 10 }}>
-          {/* <Text style={{ alignSelf: "flex-start" }}>Football Standings</Text> */}
+        <View style={styles.table}>
+          {this.shouldRenderSubtext()}
           <Row
             data={headerRow}
             height={headerRowHeight}
             totalWidth={totalWidth}
             widthArray={widthArray}
-            rowStyle={{ backgroundColor: "#BEBEBE" }}
+            rowStyle={styles.header}
           />
           <Rows
             data={footballStandings}
@@ -270,19 +284,6 @@ class FootballStandings extends PureComponent {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10,
-  },
-});
 
 const mapStateToProps = state => {
   const {
