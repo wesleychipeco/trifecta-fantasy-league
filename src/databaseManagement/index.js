@@ -1,4 +1,5 @@
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
+import { sortArrayBy } from "../utils";
 
 const returnMongoCollection = collectionName => {
   const stitchAppClient = Stitch.defaultAppClient;
@@ -34,22 +35,30 @@ const findAndSaveToRedux = (
   action,
   collection,
   defaultSortColumn,
-  defaultSortDirection = true
+  extractKey = ""
 ) => {
-  const sortDirection = defaultSortDirection ? -1 : 1;
-
-  collection
-    .find(
-      {},
-      { projection: { _id: 0 }, sort: { [defaultSortColumn]: sortDirection } }
-    )
-    .asArray()
-    .then(docs => {
-      dispatch(action(docs));
-    })
-    .catch(err => {
-      console.log("error!", err);
-    });
+  if (extractKey) {
+    collection
+      .find({}, { projection: { _id: 0 } })
+      .asArray()
+      .then(docs => {
+        const extractedArray = docs[0][extractKey];
+        dispatch(action(sortArrayBy(extractedArray, defaultSortColumn, true)));
+      })
+      .catch(err => {
+        console.log("error!", err);
+      });
+  } else {
+    collection
+      .find({}, { projection: { _id: 0 }, sort: { [defaultSortColumn]: -1 } })
+      .asArray()
+      .then(docs => {
+        dispatch(action(docs));
+      })
+      .catch(err => {
+        console.log("error!", err);
+      });
+  }
 };
 
 const filterIdField = array => {

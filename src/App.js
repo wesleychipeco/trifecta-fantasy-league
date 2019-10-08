@@ -14,6 +14,7 @@ import BaseballStandings from "./screens/BaseballStandings";
 import BasketballStandings from "./screens/BasketballStandings";
 import FootballStandings from "./screens/FootballStandings";
 import TrifectaStandings from "./screens/TrifectaStandings";
+import Matchups from "./screens/Matchups";
 
 const routeMap = {
   Home: {
@@ -40,6 +41,10 @@ const routeMap = {
     component: TrifectaStandings,
     path: "/standings/trifecta/:year?",
     exact: true,
+  },
+  Matchups: {
+    component: Matchups,
+    path: "/matchups/:ownerNumber?/:year?",
   },
   Second: {
     component: SecondScreen,
