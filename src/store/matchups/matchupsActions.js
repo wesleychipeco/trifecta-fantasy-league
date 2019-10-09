@@ -8,7 +8,7 @@ import {
 } from "./matchupsActionTypes";
 import {
   returnMongoCollection,
-  deleteAndInsert,
+  // deleteAndInsert,
   findAndSaveToRedux,
 } from "../../databaseManagement";
 

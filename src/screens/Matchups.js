@@ -44,7 +44,8 @@ class Matchups extends PureComponent {
   }
 
   retrieveData = () => {
-    const { lastScraped, navigation } = this.props;
+    // const { lastScraped, navigation } = this.props;
+    const { navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
     const seasonVariablesCollection = returnMongoCollection("seasonVariables");
@@ -53,11 +54,6 @@ class Matchups extends PureComponent {
       .asArray()
       .then(seasonVariables => {
         const { currentYear } = seasonVariables[0];
-        // const { seasonStarted, inSeason } = seasonVariables[0].baseball;
-        // const {
-        //   scrapeBaseballStandings,
-        //   displayBaseballStandings,
-        // } = this.props;
         const { displayMatchups } = this.props;
 
         if (isYear1BeforeYear2(year, currentYear)) {
@@ -233,6 +229,11 @@ class Matchups extends PureComponent {
     );
   };
 
+  convertSubtractRevert = year2 => {
+    const year1 = Number(year2) - 1;
+    return [year1.toString(), year2.toString()];
+  };
+
   render() {
     const {
       navigation,
@@ -241,6 +242,7 @@ class Matchups extends PureComponent {
       baseballMatchups,
       footballMatchups,
     } = this.props;
+    const year = navigation.getParam("year", "No year was defined!");
 
     if (
       !totalMatchups ||
@@ -377,10 +379,18 @@ class Matchups extends PureComponent {
       this.renderHeaderRowColumn
     );
 
+    let title;
+    if (isYear1BeforeYear2(year, "2019")) {
+      const yearArray = this.convertSubtractRevert(year);
+      title = `${yearArray[0]}-${yearArray[1]} Owner Head-to-Head Matchups`;
+    } else {
+      title = `${year} Owner Head-to-Head Matchups`;
+    }
+
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
-        <Text style={styles.title}>Matchups!</Text>
+        <Text style={styles.title}>{title}</Text>
         <View style={styles.tables}>
           <View style={styles.table}>
             <Text style={styles.subtext}>Total Matchups</Text>

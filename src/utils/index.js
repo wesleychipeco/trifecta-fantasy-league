@@ -10,17 +10,20 @@ const sortArrayBy = (array, sortKey, sortDirection) =>
 const sortArrayBySecondaryParameter = (
   array,
   primarySortKey,
-  primarySortDirection,
-  secondarySortKey,
-  secondarySortDirection
-) => {
-  // if sortDirection === true => highToLow
-  // if sortDirection === false => lowToHigh
-
-  array.sort((a, b) => a[primarySortKey]);
-};
+  secondarySortKey
+) =>
+  // Only for both going from high to low
+  array.sort((a, b) =>
+    a[primarySortKey] < b[primarySortKey]
+      ? 1
+      : a[primarySortKey] === b[primarySortKey]
+      ? a[secondarySortKey] < b[secondarySortKey]
+        ? 1
+        : -1
+      : -1
+  );
 
 const isYear1BeforeYear2 = (year, currentYear) =>
   Number(year) < Number(currentYear);
 
-export { sum, sortArrayBy, isYear1BeforeYear2 };
+export { sum, sortArrayBy, sortArrayBySecondaryParameter, isYear1BeforeYear2 };
