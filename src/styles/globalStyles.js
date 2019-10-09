@@ -1,6 +1,4 @@
-import { StyleSheet } from "react-native";
-
-const cellStyles = StyleSheet.create({
+const cellStyles = {
   cell: {
     justifyContent: "center",
     alignItems: "center",
@@ -9,18 +7,18 @@ const cellStyles = StyleSheet.create({
     backgroundColor: "transparent",
     textAlign: "center",
   },
-});
+};
 
-const rowStyles = StyleSheet.create({
+const rowStyles = {
   rows: {
     justifyContent: "center",
   },
   row: {
     flexDirection: "row",
   },
-});
+};
 
-const linkTextStyles = StyleSheet.create({
+const linkTextStyles = {
   container: {
     backgroundColor: "transparent",
     justifyContent: "center",
@@ -30,9 +28,9 @@ const linkTextStyles = StyleSheet.create({
     textAlign: "center",
     textDecorationLine: "underline",
   },
-});
+};
 
-const myButtonStyles = StyleSheet.create({
+const myButtonStyles = {
   container: {
     backgroundColor: "transparent",
     justifyContent: "center",
@@ -42,9 +40,9 @@ const myButtonStyles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Arial",
   },
-});
+};
 
-const homeScreenStyles = StyleSheet.create({
+const homeScreenStyles = {
   container: {
     justifyContent: "flex-start",
     alignItems: "center",
@@ -81,9 +79,9 @@ const homeScreenStyles = StyleSheet.create({
       alignSelf: "center",
     },
   },
-});
+};
 
-const standingsStyles = StyleSheet.create({
+const standingsStyles = {
   container: {
     justifyContent: "center",
     alignItems: "center",
@@ -114,9 +112,9 @@ const standingsStyles = StyleSheet.create({
   headerText: {
     color: "#0041C2",
   },
-});
+};
 
-const navbarStyles = StyleSheet.create({
+const navbarStyles = {
   container: {
     flexDirection: "row",
     justifyContent: "space-evenly",
@@ -132,7 +130,7 @@ const navbarStyles = StyleSheet.create({
   text: {
     color: "#FFFFFF",
   },
-});
+};
 
 /*
   - triggerOuterWrapper
@@ -140,7 +138,7 @@ const navbarStyles = StyleSheet.create({
   - triggerText
   - triggerTouchable
 */
-const triggerStyles = StyleSheet.create({
+const triggerStyles = {
   triggerOuterWrapper: {
     flex: 1,
     justifyContent: "center",
@@ -154,7 +152,7 @@ const triggerStyles = StyleSheet.create({
     fontFamily: "Arial",
     color: "white",
   },
-});
+};
 
 /*
 - optionsWrapper
@@ -163,7 +161,7 @@ const triggerStyles = StyleSheet.create({
 - optionText
 - optionTouchable
 */
-const optionsStyles = StyleSheet.create({
+const optionsStyles = {
   optionsWrapper: {
     borderWidth: 3,
     borderColor: "#000000",
@@ -174,7 +172,40 @@ const optionsStyles = StyleSheet.create({
   optionText: {
     fontFamily: "Arial",
   },
-});
+};
+
+const matchupsStyles = {
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF",
+  },
+  title: {
+    fontSize: 20,
+    textAlign: "center",
+    marginTop: 10,
+  },
+  subtext: {
+    alignSelf: "flex-start",
+    marginBottom: 5,
+    fontSize: 14,
+  },
+  tables: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  table: {
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  header: {
+    backgroundColor: "#BEBEBE",
+  },
+  headerText: {
+    color: "#0041C2",
+  },
+};
 
 export {
   cellStyles,
@@ -186,4 +217,5 @@ export {
   navbarStyles,
   triggerStyles,
   optionsStyles,
+  matchupsStyles,
 };
