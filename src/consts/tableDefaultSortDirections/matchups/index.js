@@ -22,6 +22,9 @@ const tableDefaultSortDirections = {
     losses: true,
     ties: true,
     winPer: true,
+    pointsFor: true,
+    pointsAgainst: true,
+    pointsDiff: true,
   },
 };
 
