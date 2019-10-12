@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import { View } from "react-native";
-import { StandingsDropdownPre2019 } from "./StandingsDropdownPre2019";
 import { StandingsDropdownPost2019 } from "./StandingsDropdownPost2019";
 import { MyButton } from "./MyButton";
 import { navbarStyles as styles } from "../styles/globalStyles";
@@ -17,26 +16,15 @@ export class Navbar extends PureComponent {
           textStyles={styles.text}
         />
         <StandingsDropdownPost2019 year="2019" navigation={navigation} />
-        <StandingsDropdownPre2019
-          year1="2017"
-          year2="2018"
-          navigation={navigation}
-        />
-        <StandingsDropdownPre2019
-          year1="2016"
-          year2="2017"
-          navigation={navigation}
-        />
-        <StandingsDropdownPre2019
-          year1="2015"
-          year2="2016"
-          navigation={navigation}
+        <MyButton
+          title="Trifecta Standings"
+          onPress={() => navigation.navigate("StandingsHomeScreen")}
+          touchableStyles={styles.button}
+          textStyles={styles.text}
         />
         <MyButton
-          title="2018 Football Standings"
-          onPress={() =>
-            navigation.navigate("FootballStandings", { year: "2018" })
-          }
+          title="Owner Matchups"
+          onPress={() => navigation.navigate("MatchupsHomeScreen")}
           touchableStyles={styles.button}
           textStyles={styles.text}
         />
