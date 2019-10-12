@@ -10,16 +10,23 @@ import HomeScreen from "./screens/HomeScreen";
 import SecondScreen from "./screens/SecondScreen";
 import UserScreen from "./screens/UserScreen";
 import DasModalScreen from "./screens/DasModalScreen";
+import StandingsHomeScreen from "./screens/StandingsHomeScreen";
 import BaseballStandings from "./screens/BaseballStandings";
 import BasketballStandings from "./screens/BasketballStandings";
 import FootballStandings from "./screens/FootballStandings";
 import TrifectaStandings from "./screens/TrifectaStandings";
+import MatchupsHomeScreen from "./screens/MatchupsHomeScreen";
 import Matchups from "./screens/Matchups";
 
 const routeMap = {
   Home: {
     component: HomeScreen,
     path: "/",
+    exact: true,
+  },
+  StandingsHomeScreen: {
+    component: StandingsHomeScreen,
+    path: "/standingshome",
     exact: true,
   },
   BaseballStandings: {
@@ -42,9 +49,15 @@ const routeMap = {
     path: "/standings/trifecta/:year?",
     exact: true,
   },
+  MatchupsHomeScreen: {
+    component: MatchupsHomeScreen,
+    path: "/matchupshome",
+    exact: true,
+  },
   Matchups: {
     component: Matchups,
     path: "/matchups/:ownerNumber?/:year?",
+    exact: true,
   },
   Second: {
     component: SecondScreen,

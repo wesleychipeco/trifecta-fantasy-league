@@ -34,49 +34,55 @@ const findAndSaveToRedux = (
   dispatch,
   action,
   collection,
-  defaultSortColumn,
-  extractKey = ""
+  defaultSortColumn = true
 ) => {
-  if (extractKey) {
-    if (extractKey === "footballMatchups") {
-      collection
-        .find({}, { projection: { _id: 0 } })
-        .asArray()
-        .then(docs => {
-          const extractedArray = docs[0][extractKey];
-          dispatch(
-            action(
-              sortArrayBySecondaryParameter(
-                extractedArray,
-                defaultSortColumn,
-                "pointsDiff"
-              )
-            )
-          );
-        })
-        .catch(err => {
-          console.log("error!", err);
-        });
-    } else {
-      collection
-        .find({}, { projection: { _id: 0 } })
-        .asArray()
-        .then(docs => {
-          const extractedArray = docs[0][extractKey];
-          dispatch(
-            action(sortArrayBy(extractedArray, defaultSortColumn, true))
-          );
-        })
-        .catch(err => {
-          console.log("error!", err);
-        });
-    }
-  } else {
+  collection
+    .find({}, { projection: { _id: 0 }, sort: { [defaultSortColumn]: -1 } })
+    .asArray()
+    .then(docs => {
+      dispatch(action(docs));
+    })
+    .catch(err => {
+      console.log("error!", err);
+    });
+};
+
+const findAndMatchupsSaveToRedux = (
+  dispatch,
+  action,
+  collection,
+  year,
+  defaultSortColumn,
+  extractKey
+) => {
+  const findQuery = { year };
+  const findProjection = { projection: { _id: 0 } };
+  if (extractKey === "footballMatchups") {
     collection
-      .find({}, { projection: { _id: 0 }, sort: { [defaultSortColumn]: -1 } })
+      .find(findQuery, findProjection)
       .asArray()
       .then(docs => {
-        dispatch(action(docs));
+        const extractedArray = docs[0][extractKey];
+        dispatch(
+          action(
+            sortArrayBySecondaryParameter(
+              extractedArray,
+              defaultSortColumn,
+              "pointsDiff"
+            )
+          )
+        );
+      })
+      .catch(err => {
+        console.log("error!", err);
+      });
+  } else {
+    collection
+      .find(findQuery, findProjection)
+      .asArray()
+      .then(docs => {
+        const extractedArray = docs[0][extractKey];
+        dispatch(action(sortArrayBy(extractedArray, defaultSortColumn, true)));
       })
       .catch(err => {
         console.log("error!", err);
@@ -102,5 +108,6 @@ export {
   returnMongoCollection,
   deleteAndInsert,
   findAndSaveToRedux,
+  findAndMatchupsSaveToRedux,
   filterIdField,
 };

@@ -9,7 +9,7 @@ import {
 import {
   returnMongoCollection,
   // deleteAndInsert,
-  findAndSaveToRedux,
+  findAndMatchupsSaveToRedux,
 } from "../../databaseManagement";
 
 const actions = {
@@ -26,34 +26,38 @@ const displayMatchups = (year, ownerNumber) => {
   return async function(dispatch) {
     //connect to mongo
     const ownerCollection = returnMongoCollection(
-      "owner" + ownerNumber + "Matchups" + year
+      "owner" + ownerNumber + "Matchups"
     );
 
-    findAndSaveToRedux(
+    findAndMatchupsSaveToRedux(
       dispatch,
       actions.saveExistingTotalMatchups,
       ownerCollection,
+      year,
       "totalWinPer",
       "totalMatchups"
     );
-    findAndSaveToRedux(
+    findAndMatchupsSaveToRedux(
       dispatch,
       actions.saveExistingBasketballMatchups,
       ownerCollection,
+      year,
       "winPer",
       "basketballMatchups"
     );
-    findAndSaveToRedux(
+    findAndMatchupsSaveToRedux(
       dispatch,
       actions.saveExistingBaseballMatchups,
       ownerCollection,
+      year,
       "winPer",
       "baseballMatchups"
     );
-    findAndSaveToRedux(
+    findAndMatchupsSaveToRedux(
       dispatch,
       actions.saveExistingFootballMatchups,
       ownerCollection,
+      year,
       "winPer",
       "footballMatchups"
     );

@@ -47,6 +47,10 @@ class Matchups extends PureComponent {
     // const { lastScraped, navigation } = this.props;
     const { navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
+    const ownerNumber = navigation.getParam(
+      "ownerNumber",
+      "No ownerNumber was defined!"
+    );
 
     const seasonVariablesCollection = returnMongoCollection("seasonVariables");
     seasonVariablesCollection
@@ -57,7 +61,7 @@ class Matchups extends PureComponent {
         const { displayMatchups } = this.props;
 
         if (isYear1BeforeYear2(year, currentYear)) {
-          displayMatchups(year, "2");
+          displayMatchups(year, ownerNumber);
         }
         // else {
         //   const defaultSortColumn = inSeason
