@@ -24,16 +24,16 @@ export class MatchupsHomeScreen extends PureComponent {
   render() {
     const { navigation } = this.props;
     const ownerNames = [
-      "Marcus Lam",
-      "Wesley Chipeco",
-      "Kevin Okamoto, Joshua Liu",
-      "Bryan Kuh",
-      "Joshua Apostol",
-      "Joshua Aguirre",
-      "Tim Fong",
-      "Ryan Tomimitsu",
-      "Nick Wang",
-      "Wayne Fong",
+      "Marcus Lam's",
+      "Wesley Chipeco's",
+      "Kevin Okamoto & Joshua Liu's",
+      "Bryan Kuh's",
+      "Joshua Apostol's",
+      "Joshua Aguirre's",
+      "Tim Fong's",
+      "Ryan Tomimitsu's",
+      "Nick Wang's",
+      "Wayne Fong's",
     ];
 
     return (
