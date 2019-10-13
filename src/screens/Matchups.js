@@ -238,6 +238,46 @@ class Matchups extends PureComponent {
     return [year1.toString(), year2.toString()];
   };
 
+  nameMatching = ownerNumber => {
+    let ownerName;
+    switch (ownerNumber) {
+      case "1":
+        ownerName = "Marcus Lam";
+        break;
+      case "2":
+        ownerName = "Wesley Chipeco";
+        break;
+      case "3":
+        ownerName = "Kevin Okamoto & Joshua Liu";
+        break;
+      case "4":
+        ownerName = "Bryan Kuh";
+        break;
+      case "5":
+        ownerName = "Joshua Apostol";
+        break;
+      case "6":
+        ownerName = "Joshua Aguirre";
+        break;
+      case "7":
+        ownerName = "Tim Fong";
+        break;
+      case "8":
+        ownerName = "Ryan Tomimitsu";
+        break;
+      case "9":
+        ownerName = "Nick Wang";
+        break;
+      case "10":
+        ownerName = "Wayne Fong";
+        break;
+      default:
+        ownerName = "";
+        break;
+    }
+    return ownerName;
+  };
+
   render() {
     const {
       navigation,
@@ -247,6 +287,7 @@ class Matchups extends PureComponent {
       footballMatchups,
     } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
+    const ownerNumber = navigation.getParam("ownerNumber", "No owner number");
 
     if (
       !totalMatchups ||
@@ -383,12 +424,15 @@ class Matchups extends PureComponent {
       this.renderHeaderRowColumn
     );
 
+    const ownerName = this.nameMatching(ownerNumber);
     let title;
     if (isYear1BeforeYear2(year, "2019")) {
       const yearArray = this.convertSubtractRevert(year);
-      title = `${yearArray[0]}-${yearArray[1]} Owner Head-to-Head Matchups`;
+      title = `${ownerName}'s ${yearArray[0]}-${
+        yearArray[1]
+      } Owner Head-to-Head Matchups`;
     } else {
-      title = `${year} Owner Head-to-Head Matchups`;
+      title = `${ownerName}'s ${year} Owner Head-to-Head Matchups`;
     }
 
     return (
