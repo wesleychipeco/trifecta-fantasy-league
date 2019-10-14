@@ -27,8 +27,7 @@ import { format } from "date-fns";
 import { sortArrayBy } from "../../utils";
 import {
   returnMongoCollection,
-  deleteAndInsert,
-  findAndSaveToRedux,
+  findAndSaveMatchupsToRedux,
 } from "../../databaseManagement";
 import {
   retriveOwnerIdsOwnerNamesArray,
@@ -148,44 +147,82 @@ const scrapeBaseballStandings = year => {
         );
 
         // connect to mongo
-        const baseballTrifectaStandingsCollection = returnMongoCollection(
-          "baseballStandings" + year
+        const baseballStandingsCollection = returnMongoCollection(
+          "baseballStandings"
         );
-        const baseballH2HStandingsCollection = returnMongoCollection(
-          "baseballH2HStandings" + year
-        );
-        const baseballRotoStandingsCollection = returnMongoCollection(
-          "baseballRotoStandings" + year
-        );
-        const baseballRotoStatsCollection = returnMongoCollection(
-          "baseballRotoStats" + year
+        // const baseballTrifectaStandingsCollection = returnMongoCollection(
+        //   "baseballStandings" + year
+        // );
+        // const baseballH2HStandingsCollection = returnMongoCollection(
+        //   "baseballH2HStandings" + year
+        // );
+        // const baseballRotoStandingsCollection = returnMongoCollection(
+        //   "baseballRotoStandings" + year
+        // );
+        // const baseballRotoStatsCollection = returnMongoCollection(
+        //   "baseballRotoStats" + year
+        // );
+
+        const compiledStandings = {
+          year,
+          trifectaStandings: calculateTrifectaBaseballStandings(
+            h2hStandings,
+            rotoStandings
+          ),
+          h2hStandings,
+          rotoStandings,
+          rotoStats,
+        };
+
+        dispatch(actions.saveScrapedH2HStandings(h2hStandings));
+        dispatch(actions.saveScrapedRotoStandings(rotoStandings));
+        dispatch(actions.saveScrapedRotoStats(rotoStats));
+        dispatch(
+          actions.saveScrapedTrifectaStandings(
+            calculateTrifectaBaseballStandings(h2hStandings, rotoStandings)
+          )
         );
 
-        // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
-        deleteAndInsert(
-          dispatch,
-          actions.saveScrapedH2HStandings,
-          baseballH2HStandingsCollection,
-          h2hStandings
-        );
-        deleteAndInsert(
-          dispatch,
-          actions.saveScrapedRotoStandings,
-          baseballRotoStandingsCollection,
-          rotoStandings
-        );
-        deleteAndInsert(
-          dispatch,
-          actions.saveScrapedRotoStats,
-          baseballRotoStatsCollection,
-          rotoStats
-        );
-        deleteAndInsert(
-          dispatch,
-          actions.saveScrapedTrifectaStandings,
-          baseballTrifectaStandingsCollection,
-          calculateTrifectaBaseballStandings(h2hStandings, rotoStandings)
-        );
+        baseballStandingsCollection
+          .deleteOne({ year })
+          .then(result => {
+            console.log(`Deleted ${result.deletedCount} documents`);
+            baseballStandingsCollection
+              .insertOne(compiledStandings)
+              .then(result1 => {
+                console.log("Baseball Standings document inserted!");
+              })
+              .catch(err1 => {
+                console.log(`Failed to insert document: ${err1}`);
+              });
+          })
+          .catch(err => console.log(`Failed to delete documents: ${err}`));
+
+        // // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
+        // deleteAndInsert(
+        //   dispatch,
+        //   actions.saveScrapedH2HStandings,
+        //   baseballH2HStandingsCollection,
+        //   h2hStandings
+        // );
+        // deleteAndInsert(
+        //   dispatch,
+        //   actions.saveScrapedRotoStandings,
+        //   baseballRotoStandingsCollection,
+        //   rotoStandings
+        // );
+        // deleteAndInsert(
+        //   dispatch,
+        //   actions.saveScrapedRotoStats,
+        //   baseballRotoStatsCollection,
+        //   rotoStats
+        // );
+        // deleteAndInsert(
+        //   dispatch,
+        //   actions.saveScrapedTrifectaStandings,
+        //   baseballTrifectaStandingsCollection,
+        //   calculateTrifectaBaseballStandings(h2hStandings, rotoStandings)
+        // );
       } else {
         dispatch(actions.scrapeRotoBaseballStandingsFailed);
       }
@@ -232,41 +269,49 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
 const displayBaseballStandings = (year, sortColumn = "totalTrifectaPoints") => {
   return async function(dispatch) {
     // connect to mongo
-    const baseballH2HStandings = returnMongoCollection(
-      "baseballH2HStandings" + year
-    );
-    const baseballRotoStandings = returnMongoCollection(
-      "baseballRotoStandings" + year
-    );
-    const baseballRotoStats = returnMongoCollection("baseballRotoStats" + year);
-    const baseballTrifectaStandings = returnMongoCollection(
-      "baseballStandings" + year
+    // const baseballH2HStandings = returnMongoCollection(
+    //   "baseballH2HStandings" + year
+    // );
+    // const baseballRotoStandings = returnMongoCollection(
+    //   "baseballRotoStandings" + year
+    // );
+    // const baseballRotoStats = returnMongoCollection("baseballRotoStats" + year);
+    const baseballStandingsCollection = returnMongoCollection(
+      "baseballStandings"
     );
 
     // Pull and save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
-    findAndSaveToRedux(
+    findAndSaveMatchupsToRedux(
       dispatch,
       actions.saveExistingH2HStandings,
-      baseballH2HStandings,
-      "h2hTrifectaPoints"
+      baseballStandingsCollection,
+      year,
+      "h2hTrifectaPoints",
+      "h2hStandings"
     );
-    findAndSaveToRedux(
+    findAndSaveMatchupsToRedux(
       dispatch,
       actions.saveExistingRotoStandings,
-      baseballRotoStandings,
-      "rotoTrifectaPoints"
+      baseballStandingsCollection,
+      year,
+      "rotoTrifectaPoints",
+      "rotoStandings"
     );
-    findAndSaveToRedux(
+    findAndSaveMatchupsToRedux(
       dispatch,
       actions.saveExistingRotoStats,
-      baseballRotoStats,
-      "R"
+      baseballStandingsCollection,
+      year,
+      "R",
+      "rotoStats"
     );
-    findAndSaveToRedux(
+    findAndSaveMatchupsToRedux(
       dispatch,
       actions.saveExistingTrifectaStandings,
-      baseballTrifectaStandings,
-      sortColumn
+      baseballStandingsCollection,
+      year,
+      sortColumn,
+      "trifectaStandings"
     );
   };
 };

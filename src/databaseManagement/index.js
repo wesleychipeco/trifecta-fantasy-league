@@ -30,6 +30,42 @@ const deleteAndInsert = (dispatch, action, collection, data) => {
     .catch(err => console.log(`Failed to delete documents: ${err}`));
 };
 
+const deleteAndInsertOne = (dispatch, action, collection, year, data, key) => {
+  collection
+    .deleteOne({ year })
+    .then(result => {
+      console.log(`Deleted ${result.deletedCount} documents.`);
+      collection
+        .insertOne(data)
+        .then(result1 => {
+          console.log(`Trifecta Mongo db documents inserted!`);
+          dispatch(action(data[key]));
+        })
+        .catch(err1 => {
+          console.log(`Failed to insert documents: ${err1}`);
+        });
+    })
+    .catch(err => console.log(`Failed to delete documents: ${err}`));
+};
+
+const deleteAndInsertToRedux = (dispatch, action, collection, data) => {
+  collection
+    .deleteMany({})
+    .then(result => {
+      console.log(`Deleted ${result.deletedCount} documents.`);
+      collection
+        .insertMany(data)
+        .then(result1 => {
+          console.log(`Trifecta Mongo db documents inserted!`);
+          dispatch(action(data));
+        })
+        .catch(err1 => {
+          console.log(`Failed to insert documents: ${err1}`);
+        });
+    })
+    .catch(err => console.log(`Failed to delete documents: ${err}`));
+};
+
 const findAndSaveToRedux = (
   dispatch,
   action,
@@ -47,7 +83,7 @@ const findAndSaveToRedux = (
     });
 };
 
-const findAndMatchupsSaveToRedux = (
+const findAndSaveMatchupsToRedux = (
   dispatch,
   action,
   collection,
@@ -90,6 +126,25 @@ const findAndMatchupsSaveToRedux = (
   }
 };
 
+const findAndSaveBaseballStandingstoRedux = (
+  dispatch,
+  action,
+  collection,
+  defaultSortColumn,
+  extractKey
+) => {
+  collection
+    .find({}, { projection: { _id: 0 } })
+    .asArray()
+    .then(docs => {
+      const extractedArray = docs[0][extractKey];
+      dispatch(action(sortArrayBy(extractedArray, defaultSortColumn, true)));
+    })
+    .catch(err => {
+      console.log("error!", err);
+    });
+};
+
 const filterIdField = array => {
   const filteredArray = [];
   array.forEach(eachPayload => {
@@ -107,7 +162,10 @@ const filterIdField = array => {
 export {
   returnMongoCollection,
   deleteAndInsert,
+  deleteAndInsertOne,
+  deleteAndInsertToRedux,
   findAndSaveToRedux,
-  findAndMatchupsSaveToRedux,
+  findAndSaveMatchupsToRedux,
+  findAndSaveBaseballStandingstoRedux,
   filterIdField,
 };
