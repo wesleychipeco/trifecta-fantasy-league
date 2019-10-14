@@ -28,6 +28,7 @@ import { sortArrayBy } from "../../utils";
 import {
   returnMongoCollection,
   findAndSaveMatchupsToRedux,
+  deleteAndInsertOne,
 } from "../../databaseManagement";
 import {
   retriveOwnerIdsOwnerNamesArray,
@@ -150,18 +151,6 @@ const scrapeBaseballStandings = year => {
         const baseballStandingsCollection = returnMongoCollection(
           "baseballStandings"
         );
-        // const baseballTrifectaStandingsCollection = returnMongoCollection(
-        //   "baseballStandings" + year
-        // );
-        // const baseballH2HStandingsCollection = returnMongoCollection(
-        //   "baseballH2HStandings" + year
-        // );
-        // const baseballRotoStandingsCollection = returnMongoCollection(
-        //   "baseballRotoStandings" + year
-        // );
-        // const baseballRotoStatsCollection = returnMongoCollection(
-        //   "baseballRotoStats" + year
-        // );
 
         const compiledStandings = {
           year,
@@ -174,6 +163,7 @@ const scrapeBaseballStandings = year => {
           rotoStats,
         };
 
+        // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings to redux & save once to Mongo
         dispatch(actions.saveScrapedH2HStandings(h2hStandings));
         dispatch(actions.saveScrapedRotoStandings(rotoStandings));
         dispatch(actions.saveScrapedRotoStats(rotoStats));
@@ -183,46 +173,15 @@ const scrapeBaseballStandings = year => {
           )
         );
 
-        baseballStandingsCollection
-          .deleteOne({ year })
-          .then(result => {
-            console.log(`Deleted ${result.deletedCount} documents`);
-            baseballStandingsCollection
-              .insertOne(compiledStandings)
-              .then(result1 => {
-                console.log("Baseball Standings document inserted!");
-              })
-              .catch(err1 => {
-                console.log(`Failed to insert document: ${err1}`);
-              });
-          })
-          .catch(err => console.log(`Failed to delete documents: ${err}`));
-
-        // // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
-        // deleteAndInsert(
-        //   dispatch,
-        //   actions.saveScrapedH2HStandings,
-        //   baseballH2HStandingsCollection,
-        //   h2hStandings
-        // );
-        // deleteAndInsert(
-        //   dispatch,
-        //   actions.saveScrapedRotoStandings,
-        //   baseballRotoStandingsCollection,
-        //   rotoStandings
-        // );
-        // deleteAndInsert(
-        //   dispatch,
-        //   actions.saveScrapedRotoStats,
-        //   baseballRotoStatsCollection,
-        //   rotoStats
-        // );
-        // deleteAndInsert(
-        //   dispatch,
-        //   actions.saveScrapedTrifectaStandings,
-        //   baseballTrifectaStandingsCollection,
-        //   calculateTrifectaBaseballStandings(h2hStandings, rotoStandings)
-        // );
+        deleteAndInsertOne(
+          null,
+          null,
+          baseballStandingsCollection,
+          year,
+          compiledStandings,
+          null,
+          false
+        );
       } else {
         dispatch(actions.scrapeRotoBaseballStandingsFailed);
       }
@@ -269,13 +228,6 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
 const displayBaseballStandings = (year, sortColumn = "totalTrifectaPoints") => {
   return async function(dispatch) {
     // connect to mongo
-    // const baseballH2HStandings = returnMongoCollection(
-    //   "baseballH2HStandings" + year
-    // );
-    // const baseballRotoStandings = returnMongoCollection(
-    //   "baseballRotoStandings" + year
-    // );
-    // const baseballRotoStats = returnMongoCollection("baseballRotoStats" + year);
     const baseballStandingsCollection = returnMongoCollection(
       "baseballStandings"
     );

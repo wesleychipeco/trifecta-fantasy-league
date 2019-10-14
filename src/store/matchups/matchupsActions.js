@@ -8,7 +8,6 @@ import {
 } from "./matchupsActionTypes";
 import {
   returnMongoCollection,
-  // deleteAndInsert,
   findAndSaveMatchupsToRedux,
 } from "../../databaseManagement";
 

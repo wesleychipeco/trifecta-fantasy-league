@@ -78,7 +78,8 @@ const scrapeFootballStandings = year => {
         footballStandingsCollection,
         year,
         compiledStandings,
-        "footballStandings"
+        "footballStandings",
+        true
       );
     } else {
       dispatch(actions.scrapeFootballStandingsFailed);

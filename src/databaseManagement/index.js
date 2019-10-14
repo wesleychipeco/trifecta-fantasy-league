@@ -12,25 +12,15 @@ const returnMongoCollection = collectionName => {
   return db.collection(collectionName);
 };
 
-const deleteAndInsert = (dispatch, action, collection, data) => {
-  collection
-    .deleteMany({})
-    .then(result => {
-      console.log(`Deleted ${result.deletedCount} documents.`);
-      collection
-        .insertMany(data)
-        .then(result1 => {
-          console.log(`Trifecta Mongo db documents inserted!`);
-          dispatch(action(data));
-        })
-        .catch(err1 => {
-          console.log(`Failed to insert documents: ${err1}`);
-        });
-    })
-    .catch(err => console.log(`Failed to delete documents: ${err}`));
-};
-
-const deleteAndInsertOne = (dispatch, action, collection, year, data, key) => {
+const deleteAndInsertOne = (
+  dispatch,
+  action,
+  collection,
+  year,
+  data,
+  key,
+  shouldDispatch
+) => {
   collection
     .deleteOne({ year })
     .then(result => {
@@ -38,49 +28,16 @@ const deleteAndInsertOne = (dispatch, action, collection, year, data, key) => {
       collection
         .insertOne(data)
         .then(result1 => {
-          console.log(`Trifecta Mongo db documents inserted!`);
-          dispatch(action(data[key]));
+          console.log(`Mongo db documents inserted!`);
+          if (shouldDispatch) {
+            dispatch(action(data[key]));
+          }
         })
         .catch(err1 => {
           console.log(`Failed to insert documents: ${err1}`);
         });
     })
     .catch(err => console.log(`Failed to delete documents: ${err}`));
-};
-
-const deleteAndInsertToRedux = (dispatch, action, collection, data) => {
-  collection
-    .deleteMany({})
-    .then(result => {
-      console.log(`Deleted ${result.deletedCount} documents.`);
-      collection
-        .insertMany(data)
-        .then(result1 => {
-          console.log(`Trifecta Mongo db documents inserted!`);
-          dispatch(action(data));
-        })
-        .catch(err1 => {
-          console.log(`Failed to insert documents: ${err1}`);
-        });
-    })
-    .catch(err => console.log(`Failed to delete documents: ${err}`));
-};
-
-const findAndSaveToRedux = (
-  dispatch,
-  action,
-  collection,
-  defaultSortColumn = true
-) => {
-  collection
-    .find({}, { projection: { _id: 0 }, sort: { [defaultSortColumn]: -1 } })
-    .asArray()
-    .then(docs => {
-      dispatch(action(docs));
-    })
-    .catch(err => {
-      console.log("error!", err);
-    });
 };
 
 const findAndSaveMatchupsToRedux = (
@@ -161,10 +118,7 @@ const filterIdField = array => {
 
 export {
   returnMongoCollection,
-  deleteAndInsert,
   deleteAndInsertOne,
-  deleteAndInsertToRedux,
-  findAndSaveToRedux,
   findAndSaveMatchupsToRedux,
   findAndSaveBaseballStandingstoRedux,
   filterIdField,
