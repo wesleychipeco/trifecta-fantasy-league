@@ -22,6 +22,7 @@ class TrifectaStandings extends PureComponent {
 
     this.state = {
       year: null,
+      currentYear: null,
       basketballSeasonEnded: null,
       baseballSeasonEnded: null,
       footballSeasonEnded: null,
@@ -62,6 +63,14 @@ class TrifectaStandings extends PureComponent {
       .asArray()
       .then(seasonVariables => {
         const { currentYear } = seasonVariables[0];
+        this.setState({
+          year,
+          currentYear,
+          trifectaStandings: {
+            sortedColumn: "totalTrifectaPoints",
+            highToLow: true,
+          },
+        });
 
         if (isYear1BeforeYear2(year, currentYear) || lastScraped) {
           displayTrifectaStandings(year);
@@ -85,10 +94,6 @@ class TrifectaStandings extends PureComponent {
             basketballSeasonEnded,
             baseballSeasonEnded,
             footballSeasonEnded,
-            basketballStandings: {
-              sortedColumn: "totalTrifectaPoints",
-              highToLow: true,
-            },
           });
 
           calculateTrifectaStandings(
@@ -139,24 +144,24 @@ class TrifectaStandings extends PureComponent {
 
   sortTrifectaStandingsByBasketball = () => {
     const { trifectaStandings } = this.props;
-    const { basketballSeasonEnded } = this.state;
-    if (basketballSeasonEnded) {
+    const { basketballSeasonEnded, year, currentYear } = this.state;
+    if (basketballSeasonEnded || isYear1BeforeYear2(year, currentYear)) {
       this.sortTableByColumn(trifectaStandings, "basketballTrifectaPoints");
     }
   };
 
   sortTrifectaStandingsByBaseball = () => {
     const { trifectaStandings } = this.props;
-    const { baseballSeasonEnded } = this.state;
-    if (baseballSeasonEnded) {
+    const { baseballSeasonEnded, year, currentYear } = this.state;
+    if (baseballSeasonEnded || isYear1BeforeYear2(year, currentYear)) {
       this.sortTableByColumn(trifectaStandings, "baseballTrifectaPoints");
     }
   };
 
   sortTrifectaStandingsByFootball = () => {
     const { trifectaStandings } = this.props;
-    const { footballSeasonEnded } = this.state;
-    if (footballSeasonEnded) {
+    const { footballSeasonEnded, year, currentYear } = this.state;
+    if (footballSeasonEnded || isYear1BeforeYear2(year, currentYear)) {
       this.sortTableByColumn(trifectaStandings, "footballTrifectaPoints");
     }
   };

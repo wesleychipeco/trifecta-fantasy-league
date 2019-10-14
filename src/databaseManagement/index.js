@@ -12,16 +12,26 @@ const returnMongoCollection = collectionName => {
   return db.collection(collectionName);
 };
 
-const deleteAndInsert = (dispatch, action, collection, data) => {
+const deleteInsertDispatch = (
+  dispatch,
+  action,
+  collection,
+  year,
+  data,
+  key,
+  shouldDispatch
+) => {
   collection
-    .deleteMany({})
+    .deleteOne({ year })
     .then(result => {
       console.log(`Deleted ${result.deletedCount} documents.`);
       collection
-        .insertMany(data)
+        .insertOne(data)
         .then(result1 => {
-          console.log(`Trifecta Mongo db documents inserted!`);
-          dispatch(action(data));
+          console.log(`Mongo db documents inserted!`);
+          if (shouldDispatch) {
+            dispatch(action(data[key]));
+          }
         })
         .catch(err1 => {
           console.log(`Failed to insert documents: ${err1}`);
@@ -30,24 +40,7 @@ const deleteAndInsert = (dispatch, action, collection, data) => {
     .catch(err => console.log(`Failed to delete documents: ${err}`));
 };
 
-const findAndSaveToRedux = (
-  dispatch,
-  action,
-  collection,
-  defaultSortColumn = true
-) => {
-  collection
-    .find({}, { projection: { _id: 0 }, sort: { [defaultSortColumn]: -1 } })
-    .asArray()
-    .then(docs => {
-      dispatch(action(docs));
-    })
-    .catch(err => {
-      console.log("error!", err);
-    });
-};
-
-const findAndMatchupsSaveToRedux = (
+const findFromMongoSaveToRedux = (
   dispatch,
   action,
   collection,
@@ -106,8 +99,7 @@ const filterIdField = array => {
 
 export {
   returnMongoCollection,
-  deleteAndInsert,
-  findAndSaveToRedux,
-  findAndMatchupsSaveToRedux,
+  deleteInsertDispatch,
+  findFromMongoSaveToRedux,
   filterIdField,
 };

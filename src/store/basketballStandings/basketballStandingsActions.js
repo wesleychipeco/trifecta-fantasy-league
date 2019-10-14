@@ -12,7 +12,7 @@ import { basketballStandingsScraper } from "../../scrapers/basketballStandings";
 import { format } from "date-fns";
 import {
   returnMongoCollection,
-  findAndSaveToRedux,
+  findFromMongoSaveToRedux,
 } from "../../databaseManagement";
 
 const actions = {
@@ -55,15 +55,15 @@ const displayBasketballStandings = (
 ) => {
   return async function(dispatch) {
     // connect to mongo
-    const basketballStandings = returnMongoCollection(
-      "basketballStandings" + year
-    );
+    const basketballStandings = returnMongoCollection("basketballStandings");
 
-    findAndSaveToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingBasketballStandings,
       basketballStandings,
-      sortColumn
+      year,
+      sortColumn,
+      "basketballStandings"
     );
   };
 };

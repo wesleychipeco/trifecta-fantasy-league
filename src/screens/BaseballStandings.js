@@ -285,63 +285,63 @@ class BaseballStandings extends PureComponent {
 
   // Roto Stats Table sort methods
   sortRotoStandingsByR = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "R", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "R", "rotoStats");
   };
 
   sortRotoStandingsByHR = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "HR", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "HR", "rotoStats");
   };
 
   sortRotoStandingsByRBI = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "RBI", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "RBI", "rotoStats");
   };
 
   sortRotoStandingsByK = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "K", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "K", "rotoStats");
   };
 
   sortRotoStandingsBySB = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "SB", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "SB", "rotoStats");
   };
 
   sortRotoStandingsByOBP = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "OBP", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "OBP", "rotoStats");
   };
 
   sortRotoStandingsBySO = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "SO", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "SO", "rotoStats");
   };
 
   sortRotoStandingsByQS = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "QS", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "QS", "rotoStats");
   };
 
   sortRotoStandingsByW = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "W", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "W", "rotoStats");
   };
 
   sortRotoStandingsBySV = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "SV", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "SV", "rotoStats");
   };
 
   sortRotoStandingsByERA = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "ERA", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "ERA", "rotoStats");
   };
 
   sortRotoStandingsByWHIP = () => {
-    const { rotoStandings } = this.props;
-    this.sortTableByColumn(rotoStandings, "WHIP", "rotoStats");
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "WHIP", "rotoStats");
   };
 
   renderHeaderRowColumn = ({ title, onPress }) => {

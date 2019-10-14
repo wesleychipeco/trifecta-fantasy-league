@@ -8,8 +8,8 @@ import {
 import { format } from "date-fns";
 import {
   returnMongoCollection,
-  deleteAndInsert,
-  findAndSaveToRedux,
+  findFromMongoSaveToRedux,
+  deleteInsertDispatch,
 } from "../../databaseManagement";
 import { sum, sortArrayBy } from "../../utils";
 import {
@@ -29,13 +29,19 @@ const actions = {
 };
 
 const retrieveSportStandings = (year, sport) => {
-  const collection = returnMongoCollection(sport + "Standings" + year);
+  const standingsName = sport + "Standings";
+  const collection = returnMongoCollection(standingsName);
+  const trifectaPointsKey =
+    sport === "baseball" ? "trifectaStandings" : standingsName;
+
+  const projection1 = trifectaPointsKey + ".ownerIds";
+  const projection2 = trifectaPointsKey + ".totalTrifectaPoints";
 
   const sportsStandings = collection
-    .find({}, { projection: { ownerIds: 1, totalTrifectaPoints: 1 } })
+    .find({ year }, { projection: { [projection1]: 1, [projection2]: 1 } })
     .asArray()
     .then(docs => {
-      return docs;
+      return docs[0][trifectaPointsKey];
     })
     .catch(err => {
       console.log("error finding sports standings", err);
@@ -186,6 +192,7 @@ const calculateTrifectaStandings = (
           format(new Date(), "M/D/YY h:mm:ss")
         )
       );
+
       const trifectaStandings = sortArrayBy(
         sumTrifectaPoints(
           ownerIdsPerTeamArray,
@@ -195,15 +202,22 @@ const calculateTrifectaStandings = (
         "totalTrifectaPoints",
         "highToLow"
       );
+      const compiledStandings = {
+        year,
+        trifectaStandings,
+      };
 
       const trifectaStandingsCollection = returnMongoCollection(
-        "trifectaStandings" + year
+        "trifectaStandings"
       );
-      deleteAndInsert(
+      deleteInsertDispatch(
         dispatch,
         actions.saveCalculatedTrifectaStandings,
         trifectaStandingsCollection,
-        trifectaStandings
+        year,
+        compiledStandings,
+        "trifectaStandings",
+        true
       );
     } else {
       console.log("Error compiling trifectaStandingsSportsArray!");
@@ -214,14 +228,16 @@ const calculateTrifectaStandings = (
 const displayTrifectaStandings = year => {
   return async function(dispatch) {
     const trifectaStandingsCollection = returnMongoCollection(
-      "trifectaStandings" + year
+      "trifectaStandings"
     );
 
-    findAndSaveToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingTrifectaStandings,
       trifectaStandingsCollection,
-      "totalTrifectaPoints"
+      year,
+      "totalTrifectaPoints",
+      "trifectaStandings"
     );
   };
 };

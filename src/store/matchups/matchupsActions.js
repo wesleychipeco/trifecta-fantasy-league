@@ -8,8 +8,7 @@ import {
 } from "./matchupsActionTypes";
 import {
   returnMongoCollection,
-  // deleteAndInsert,
-  findAndMatchupsSaveToRedux,
+  findFromMongoSaveToRedux,
 } from "../../databaseManagement";
 
 const actions = {
@@ -29,7 +28,7 @@ const displayMatchups = (year, ownerNumber) => {
       "owner" + ownerNumber + "Matchups"
     );
 
-    findAndMatchupsSaveToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingTotalMatchups,
       ownerCollection,
@@ -37,7 +36,7 @@ const displayMatchups = (year, ownerNumber) => {
       "totalWinPer",
       "totalMatchups"
     );
-    findAndMatchupsSaveToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingBasketballMatchups,
       ownerCollection,
@@ -45,7 +44,7 @@ const displayMatchups = (year, ownerNumber) => {
       "winPer",
       "basketballMatchups"
     );
-    findAndMatchupsSaveToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingBaseballMatchups,
       ownerCollection,
@@ -53,7 +52,7 @@ const displayMatchups = (year, ownerNumber) => {
       "winPer",
       "baseballMatchups"
     );
-    findAndMatchupsSaveToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingFootballMatchups,
       ownerCollection,
