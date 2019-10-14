@@ -27,8 +27,8 @@ import { format } from "date-fns";
 import { sortArrayBy } from "../../utils";
 import {
   returnMongoCollection,
-  findAndSaveMatchupsToRedux,
-  deleteAndInsertOne,
+  findFromMongoSaveToRedux,
+  deleteInsertDispatch,
 } from "../../databaseManagement";
 import {
   retriveOwnerIdsOwnerNamesArray,
@@ -173,7 +173,7 @@ const scrapeBaseballStandings = year => {
           )
         );
 
-        deleteAndInsertOne(
+        deleteInsertDispatch(
           null,
           null,
           baseballStandingsCollection,
@@ -233,7 +233,7 @@ const displayBaseballStandings = (year, sortColumn = "totalTrifectaPoints") => {
     );
 
     // Pull and save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings
-    findAndSaveMatchupsToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingH2HStandings,
       baseballStandingsCollection,
@@ -241,7 +241,7 @@ const displayBaseballStandings = (year, sortColumn = "totalTrifectaPoints") => {
       "h2hTrifectaPoints",
       "h2hStandings"
     );
-    findAndSaveMatchupsToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingRotoStandings,
       baseballStandingsCollection,
@@ -249,7 +249,7 @@ const displayBaseballStandings = (year, sortColumn = "totalTrifectaPoints") => {
       "rotoTrifectaPoints",
       "rotoStandings"
     );
-    findAndSaveMatchupsToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingRotoStats,
       baseballStandingsCollection,
@@ -257,7 +257,7 @@ const displayBaseballStandings = (year, sortColumn = "totalTrifectaPoints") => {
       "R",
       "rotoStats"
     );
-    findAndSaveMatchupsToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingTrifectaStandings,
       baseballStandingsCollection,

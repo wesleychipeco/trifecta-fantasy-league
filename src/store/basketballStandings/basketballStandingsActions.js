@@ -12,7 +12,7 @@ import { basketballStandingsScraper } from "../../scrapers/basketballStandings";
 import { format } from "date-fns";
 import {
   returnMongoCollection,
-  findAndSaveMatchupsToRedux,
+  findFromMongoSaveToRedux,
 } from "../../databaseManagement";
 
 const actions = {
@@ -57,7 +57,7 @@ const displayBasketballStandings = (
     // connect to mongo
     const basketballStandings = returnMongoCollection("basketballStandings");
 
-    findAndSaveMatchupsToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingBasketballStandings,
       basketballStandings,

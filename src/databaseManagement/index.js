@@ -12,7 +12,7 @@ const returnMongoCollection = collectionName => {
   return db.collection(collectionName);
 };
 
-const deleteAndInsertOne = (
+const deleteInsertDispatch = (
   dispatch,
   action,
   collection,
@@ -40,7 +40,7 @@ const deleteAndInsertOne = (
     .catch(err => console.log(`Failed to delete documents: ${err}`));
 };
 
-const findAndSaveMatchupsToRedux = (
+const findFromMongoSaveToRedux = (
   dispatch,
   action,
   collection,
@@ -118,8 +118,8 @@ const filterIdField = array => {
 
 export {
   returnMongoCollection,
-  deleteAndInsertOne,
-  findAndSaveMatchupsToRedux,
+  deleteInsertDispatch,
+  findFromMongoSaveToRedux,
   findAndSaveBaseballStandingstoRedux,
   filterIdField,
 };

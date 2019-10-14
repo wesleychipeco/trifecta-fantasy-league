@@ -12,9 +12,9 @@ import { footballStandingsScraper } from "../../scrapers/footballStandings";
 import { format } from "date-fns";
 import { assignFootballTrifectaPoints } from "../../computators/assignFootballTrifectaPoints";
 import {
-  deleteAndInsertOne,
+  deleteInsertDispatch,
   returnMongoCollection,
-  findAndSaveMatchupsToRedux,
+  findFromMongoSaveToRedux,
 } from "../../databaseManagement";
 import {
   retriveOwnerIdsOwnerNamesArray,
@@ -72,7 +72,7 @@ const scrapeFootballStandings = year => {
         footballStandings,
       };
 
-      deleteAndInsertOne(
+      deleteInsertDispatch(
         dispatch,
         actions.saveScrapedFootballStandings,
         footballStandingsCollection,
@@ -93,7 +93,7 @@ const displayFootballStandings = (year, sortColumn = "totalTrifectaPoints") => {
       "footballStandings"
     );
 
-    findAndSaveMatchupsToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingFootballStandings,
       footballStandingsCollection,

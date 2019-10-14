@@ -8,8 +8,8 @@ import {
 import { format } from "date-fns";
 import {
   returnMongoCollection,
-  findAndSaveMatchupsToRedux,
-  deleteAndInsertOne,
+  findFromMongoSaveToRedux,
+  deleteInsertDispatch,
 } from "../../databaseManagement";
 import { sum, sortArrayBy } from "../../utils";
 import {
@@ -210,7 +210,7 @@ const calculateTrifectaStandings = (
       const trifectaStandingsCollection = returnMongoCollection(
         "trifectaStandings"
       );
-      deleteAndInsertOne(
+      deleteInsertDispatch(
         dispatch,
         actions.saveCalculatedTrifectaStandings,
         trifectaStandingsCollection,
@@ -231,7 +231,7 @@ const displayTrifectaStandings = year => {
       "trifectaStandings"
     );
 
-    findAndSaveMatchupsToRedux(
+    findFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingTrifectaStandings,
       trifectaStandingsCollection,
