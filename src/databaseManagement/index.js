@@ -83,25 +83,6 @@ const findFromMongoSaveToRedux = (
   }
 };
 
-const findAndSaveBaseballStandingstoRedux = (
-  dispatch,
-  action,
-  collection,
-  defaultSortColumn,
-  extractKey
-) => {
-  collection
-    .find({}, { projection: { _id: 0 } })
-    .asArray()
-    .then(docs => {
-      const extractedArray = docs[0][extractKey];
-      dispatch(action(sortArrayBy(extractedArray, defaultSortColumn, true)));
-    })
-    .catch(err => {
-      console.log("error!", err);
-    });
-};
-
 const filterIdField = array => {
   const filteredArray = [];
   array.forEach(eachPayload => {
@@ -120,6 +101,5 @@ export {
   returnMongoCollection,
   deleteInsertDispatch,
   findFromMongoSaveToRedux,
-  findAndSaveBaseballStandingstoRedux,
   filterIdField,
 };
