@@ -3,8 +3,14 @@ import {
   SCRAPE_BASKETBALL_STANDINGS_START,
   SCRAPE_BASKETBALL_STANDINGS_SUCCESS,
   SCRAPE_BASKETBALL_STANDINGS_FAILED,
-  SAVE_SCRAPED_BASKETBALL_STANDINGS,
-  SAVE_EXISTING_BASKETBALL_STANDINGS,
+  SAVE_SCRAPED_H2H_STANDINGS,
+  SAVE_SCRAPED_ROTO_STATS,
+  SAVE_SCRAPED_ROTO_STANDINGS,
+  SAVE_SCRAPED_TRIFECTA_STANDINGS,
+  SAVE_EXISTING_H2H_STANDINGS,
+  SAVE_EXISTING_ROTO_STATS,
+  SAVE_EXISTING_ROTO_STANDINGS,
+  SAVE_EXISTING_TRIFECTA_STANDINGS,
   SORT_BASKETBALL_STANDINGS_TABLE,
   SET_BASKETBALL_STANDINGS_LAST_SCRAPED,
 } from "./basketballStandingsActionTypes";
@@ -15,7 +21,10 @@ const BASKETBALL_STANDINGS_STATE_PATH = "basketballStandings";
 const initialState = {
   basketballStandingsLoading: false,
   basketballStandingsSuccess: false,
-  basketballStandings: [],
+  h2hStandings: [],
+  rotoStandings: [],
+  rotoStats: [],
+  trifectaStandings: [],
   lastScraped: null,
 };
 
@@ -44,19 +53,50 @@ const basketballStandingsReducer = (state = initialState, action) => {
         basketballStandingsSuccess: false,
       };
     }
-    case SAVE_SCRAPED_BASKETBALL_STANDINGS: {
+    case SAVE_SCRAPED_H2H_STANDINGS:
       const filteredPayload = filterIdField(payload);
       return {
         ...state,
-        basketballStandings: filteredPayload,
+        h2hStandings: filteredPayload,
       };
-    }
-    case SAVE_EXISTING_BASKETBALL_STANDINGS: {
+    case SAVE_SCRAPED_ROTO_STANDINGS:
+      const filteredPayload = filterIdField(payload);
       return {
         ...state,
-        basketballStandings: payload,
+        rotoStandings: filteredPayload,
       };
-    }
+    case SAVE_SCRAPED_ROTO_STATS:
+      const filteredPayload = filterIdField(payload);
+      return {
+        ...state,
+        rotoStats: filteredPayload,
+      };
+    case SAVE_SCRAPED_TRIFECTA_STANDINGS:
+      const filteredPayload = filterIdField(payload);
+      return {
+        ...state,
+        trifectaStandings: filteredPayload,
+      };
+    case SAVE_EXISTING_H2H_STANDINGS:
+      return {
+        ...state,
+        h2hStandings: payload,
+      };
+    case SAVE_EXISTING_ROTO_STANDINGS:
+      return {
+        ...state,
+        rotoStandings: payload,
+      };
+    case SAVE_EXISTING_ROTO_STATS:
+      return {
+        ...state,
+        rotoStats: payload,
+      };
+    case SAVE_EXISTING_TRIFECTA_STANDINGS:
+      return {
+        ...state,
+        trifectaStandings: payload,
+      };
     case SET_BASKETBALL_STANDINGS_LAST_SCRAPED: {
       return {
         ...state,
@@ -64,9 +104,10 @@ const basketballStandingsReducer = (state = initialState, action) => {
       };
     }
     case SORT_BASKETBALL_STANDINGS_TABLE: {
+      const [standings, tableType] = payload;
       return {
         ...state,
-        basketballStandings: payload,
+        [tableType]: standings,
       };
     }
     default:

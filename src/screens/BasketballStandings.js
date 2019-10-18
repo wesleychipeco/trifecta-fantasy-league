@@ -79,11 +79,19 @@ class BasketballStandings extends PureComponent {
             },
           });
 
-          if (seasonStarted) {
-            if (inSeason && !lastScraped) {
-              scrapeBasketballStandings(year);
-            } else {
-              displayBasketballStandings(year, defaultSortColumn);
+          const { basketballAhead } = seasonVariables[0];
+          if (basketballAhead) {
+            const yearAhead = Number(year) + 1;
+            scrapeBasketballStandings(yearAhead.toString());
+          }
+          // if NOT in the basketball ahead season
+          else {
+            if (seasonStarted) {
+              if (inSeason && !lastScraped) {
+                scrapeBasketballStandings(year);
+              } else {
+                displayBasketballStandings(year, defaultSortColumn);
+              }
             }
           }
         }
