@@ -15,10 +15,7 @@ import {
   SORT_BASKETBALL_STANDINGS_TABLE,
   SET_BASKETBALL_STANDINGS_LAST_SCRAPED,
 } from "./basketballStandingsActionTypes";
-import {
-  h2hStandingsScraper,
-  rotoStatsScraper,
-} from "../../scrapers/basketballStandings";
+import { basketballStandingsScraper } from "../../scrapers/basketballStandings";
 import { format } from "date-fns";
 import {
   returnMongoCollection,
@@ -124,8 +121,10 @@ const calculateTrifectaBasketballStandings = (h2hStandings, rotoStandings) => {
 const scrapeBasketballStandings = year => {
   return async function(dispatch) {
     dispatch(actions.scrapeBasketballStandingsStart);
-    const h2hStandingsScrape = await h2hStandingsScraper(year);
-    const rotoStatsScrape = await rotoStatsScraper(year);
+    const [
+      h2hStandingsScrape,
+      rotoStatsScrape,
+    ] = await basketballStandingsScraper(year);
 
     const ownerIdsOwnerNamesArray = await retriveOwnerIdsOwnerNamesArray();
 

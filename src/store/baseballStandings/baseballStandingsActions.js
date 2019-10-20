@@ -17,10 +17,7 @@ import {
   SET_BASEBALL_STANDINGS_LAST_SCRAPED,
   SORT_BASEBALL_STANDINGS_TABLE,
 } from "./baseballStandingsActionTypes";
-import {
-  h2hStandingsScraper,
-  rotoStatsScraper,
-} from "../../scrapers/baseballStandings";
+import { baseballStandingsScraper } from "../../scrapers/baseballStandings";
 import { assignRankPoints } from "../../computators/assignRankPoints";
 import { sumBaseballRotoPoints } from "../../computators/sumRotoPoints";
 import { format } from "date-fns";
@@ -100,24 +97,25 @@ const assignRotoCategoryPoints = rotoStandings => {
 
 const scrapeBaseballStandings = year => {
   return async function(dispatch) {
-    const h2hStandingsScrape = await h2hStandingsScraper(year);
+    const [
+      h2hStandingsScrape,
+      rotoStatsScrape,
+    ] = await baseballStandingsScraper(year);
     dispatch(actions.scrapeH2HBaseballStandingsStart);
-
-    const rotoStandingsScrape = await rotoStatsScraper(year);
     dispatch(actions.scrapeRotoBaseballStandingsStart);
 
     const ownerIdsOwnerNamesArray = await retriveOwnerIdsOwnerNamesArray();
 
     if (h2hStandingsScrape) {
       dispatch(actions.scrapeH2HBaseballStandingsSuccess);
-      if (rotoStandingsScrape) {
+      if (rotoStatsScrape) {
         dispatch(
           actions.setBaseballStandingsLastScraped(
             format(new Date(), "M/D/YY h:mm:ss")
           )
         );
         dispatch(actions.scrapeRotoBaseballStandingsSuccess);
-        const rotoStats = [...rotoStandingsScrape];
+        const rotoStats = [...rotoStatsScrape];
 
         // H2H Standings
         const h2hStandingsWithoutNames = await assignRankPoints(
