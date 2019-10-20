@@ -11,6 +11,7 @@ import {
   SAVE_EXISTING_ROTO_STATS,
   SAVE_EXISTING_ROTO_STANDINGS,
   SAVE_EXISTING_TRIFECTA_STANDINGS,
+  SAVE_EXISTING_BASKETBALL_STANDINGS,
   SORT_BASKETBALL_STANDINGS_TABLE,
   SET_BASKETBALL_STANDINGS_LAST_SCRAPED,
 } from "./basketballStandingsActionTypes";
@@ -30,7 +31,7 @@ import {
   retriveOwnerIdsOwnerNamesArray,
   addOwnerNames,
 } from "../../computators/addOwnerNames";
-import { sortArrayBy } from "../../utils";
+import { sortArrayBy, isYear1BeforeYear2 } from "../../utils";
 
 const actions = {
   scrapeBasketballStandingsStart: createAction(
@@ -50,6 +51,9 @@ const actions = {
   saveExistingRotoStats: createAction(SAVE_EXISTING_ROTO_STATS),
   saveExistingRotoStandings: createAction(SAVE_EXISTING_ROTO_STANDINGS),
   saveExistingTrifectaStandings: createAction(SAVE_EXISTING_TRIFECTA_STANDINGS),
+  saveExistingBasketballStandings: createAction(
+    SAVE_EXISTING_BASKETBALL_STANDINGS
+  ),
   sortBasketballStandingsTable: createAction(SORT_BASKETBALL_STANDINGS_TABLE),
   setBasketballStandingsLastScraped: createAction(
     SET_BASKETBALL_STANDINGS_LAST_SCRAPED
@@ -108,7 +112,9 @@ const calculateTrifectaBasketballStandings = (h2hStandings, rotoStandings) => {
       combinedStandings.ownerNames = teamH2H.ownerNames;
       combinedStandings.h2hTrifeactaPoints = h2hPoints;
       combinedStandings.rotoTrifectaPoints = rotoPoints;
-      combinedStandings.trifectaStandings;
+      combinedStandings.trifectaStandings = h2hPoints + rotoPoints;
+
+      combinedStandingsArray.push(combinedStandings);
     });
 
     return sortArrayBy(combinedStandingsArray, "trifectaPoints", true);
@@ -206,16 +212,53 @@ const displayBasketballStandings = (
 ) => {
   return async function(dispatch) {
     // connect to mongo
-    const basketballStandings = returnMongoCollection("basketballStandings");
-
-    findFromMongoSaveToRedux(
-      dispatch,
-      actions.saveExistingBasketballStandings,
-      basketballStandings,
-      year,
-      sortColumn,
+    const basketballStandingsCollection = returnMongoCollection(
       "basketballStandings"
     );
+
+    if (isYear1BeforeYear2(year, "2020")) {
+      findFromMongoSaveToRedux(
+        dispatch,
+        actions.saveExistingBasketballStandings,
+        basketballStandingsCollection,
+        year,
+        sortColumn,
+        "basketballStandings"
+      );
+    } else {
+      findFromMongoSaveToRedux(
+        dispatch,
+        actions.saveExistingH2HStandings,
+        basketballStandingsCollection,
+        year,
+        "h2hTrifectaPoints",
+        "h2hStandings"
+      );
+      findFromMongoSaveToRedux(
+        dispatch,
+        actions.saveExistingRotoStandings,
+        basketballStandingsCollection,
+        year,
+        "rotoTrifectaPoints",
+        "rotoStandings"
+      );
+      findFromMongoSaveToRedux(
+        dispatch,
+        actions.saveExistingRotoStats,
+        basketballStandingsCollection,
+        year,
+        "PTS",
+        "rotoStats"
+      );
+      findFromMongoSaveToRedux(
+        dispatch,
+        actions.saveExistingTrifectaStandings,
+        basketballStandingsCollection,
+        year,
+        sortColumn,
+        "trifectaStandings"
+      );
+    }
   };
 };
 

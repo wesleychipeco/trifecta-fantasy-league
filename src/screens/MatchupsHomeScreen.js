@@ -7,7 +7,6 @@ export class MatchupsHomeScreen extends PureComponent {
   renderButton = (ownerName, index) => {
     const { navigation } = this.props;
     const ownerNumber = (index + 1).toString();
-    console.log(ownerName);
     return (
       <Button
         title={ownerName + " 2018 Matchups"}

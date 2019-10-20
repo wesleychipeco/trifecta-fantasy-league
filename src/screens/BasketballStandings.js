@@ -25,6 +25,22 @@ class BasketballStandings extends PureComponent {
       year: null,
       seasonStarted: null,
       inSeason: null,
+      trifectaStandings: {
+        sortedColumn: null,
+        highToLow: null,
+      },
+      h2hStandings: {
+        sortedColumn: "h2hTrifectaPoints",
+        highToLow: true,
+      },
+      rotoStandings: {
+        sortedColumn: "rotoTrifectaPoints",
+        highToLow: true,
+      },
+      rotoStats: {
+        sortedColumn: "teamName",
+        highToLow: true,
+      },
       basketballStandings: {
         sortedColumn: null,
         highToLow: null,
@@ -73,7 +89,7 @@ class BasketballStandings extends PureComponent {
           this.setState({
             seasonStarted,
             inSeason,
-            basketballStandings: {
+            trifectaStandings: {
               sortedColumn: defaultSortColumn,
               highToLow: true,
             },
@@ -98,37 +114,224 @@ class BasketballStandings extends PureComponent {
       });
   };
 
-  sortTableByColumn = (tableArray, columnKey) => {
+  sortTableByColumn = (
+    tableArray,
+    columnKey,
+    tableType = "basketballStandings"
+  ) => {
     const { sortTable } = this.props;
-    const { sortedColumn, highToLow } = this.state.basketballStandings;
+    const { sortedColumn, highToLow } = this.state[tableType];
 
     const tableArraySorted = [...tableArray];
 
     if (sortedColumn === columnKey) {
       this.setState({
-        basketballStandings: {
+        [tableType]: {
           sortedColumn: columnKey,
           highToLow: !highToLow,
         },
       });
-      sortTable(sortArrayBy(tableArraySorted, columnKey, !highToLow));
+      sortTable([
+        sortArrayBy(tableArraySorted, columnKey, !highToLow),
+        tableType,
+      ]);
     } else {
       const columnDefaultSortDirection =
         tableDefaultSortDirections.basketballStandings[columnKey];
       this.setState({
-        basketballStandings: {
+        [tableType]: {
           sortedColumn: columnKey,
           highToLow: columnDefaultSortDirection,
         },
       });
-      sortTable(
-        sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection)
-      );
+      sortTable([
+        sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection),
+        tableType,
+      ]);
     }
   };
 
   noop = () => {};
 
+  // Trifecta Standings Table sort methods
+  sortTrifectaStandingsByH2HPoints = () => {
+    const { trifectaStandings } = this.props;
+    this.sortTableByColumn(
+      trifectaStandings,
+      "h2hTrifectaPoints",
+      "trifectaStandings"
+    );
+  };
+
+  sortTrifectaStandingsByRotoPoints = () => {
+    const { trifectaStandings } = this.props;
+    this.sortTableByColumn(
+      trifectaStandings,
+      "rotoTrifectaPoints",
+      "trifectaStandings"
+    );
+  };
+
+  sortTrifectaStandingsByTrifectaPoints = () => {
+    const { trifectaStandings } = this.props;
+    this.sortTableByColumn(
+      trifectaStandings,
+      "trifectaPoints",
+      "trifectaStandings"
+    );
+  };
+
+  sortTrifectaStandingsByPlayoffPoints = () => {
+    const { trifectaStandings } = this.props;
+    this.sortTableByColumn(
+      trifectaStandings,
+      "playoffPoints",
+      "trifectaStandings"
+    );
+  };
+
+  sortTrifectaStandingsByTotalTrifectaPoints = () => {
+    const { trifectaStandings } = this.props;
+    this.sortTableByColumn(
+      trifectaStandings,
+      "totalTrifectaPoints",
+      "trifectaStandings"
+    );
+  };
+
+  // H2H Standings Table sort methods
+  sortH2HStandingsByWins = () => {
+    const { h2hStandings } = this.props;
+    this.sortTableByColumn(h2hStandings, "wins", "h2hStandings");
+  };
+
+  sortH2HStandingsByLosses = () => {
+    const { h2hStandings } = this.props;
+    this.sortTableByColumn(h2hStandings, "losses", "h2hStandings");
+  };
+
+  sortH2HStandingsByTies = () => {
+    const { h2hStandings } = this.props;
+    this.sortTableByColumn(h2hStandings, "ties", "h2hStandings");
+  };
+
+  sortH2HStandingsByWinPer = () => {
+    const { h2hStandings } = this.props;
+    this.sortTableByColumn(h2hStandings, "winPer", "h2hStandings");
+  };
+
+  sortH2HStandingsByTrifectaPoints = () => {
+    const { h2hStandings } = this.props;
+    this.sortTableByColumn(h2hStandings, "h2hTrifectaPoints", "h2hStandings");
+  };
+
+  // Roto Standings Table sort methods
+  sortRotoStandingsByFGPERPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "FGPERPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsByFTPERPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "FTPERPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsByTHREEPMPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "THREEPMPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsByREBPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "REBPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsByASTPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "ASTPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsBySTLPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "STLPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsByBLKPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "BLKPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsByTOPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "TOPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsByPTSPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "PTSPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsByRotoPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(rotoStandings, "totalPoints", "rotoStandings");
+  };
+
+  sortRotoStandingsByTrifectaPoints = () => {
+    const { rotoStandings } = this.props;
+    this.sortTableByColumn(
+      rotoStandings,
+      "rotoTrifectaPoints",
+      "rotoStandings"
+    );
+  };
+
+  // Roto Stats table sort methods
+  sortRotoStatsByFGPER = () => {
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "FGPER", "rotoStats");
+  };
+
+  sortRotoStatsByFTPER = () => {
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "FTPER", "rotoStats");
+  };
+
+  sortRotoStatsByTHREEPM = () => {
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "THREEPM", "rotoStats");
+  };
+
+  sortRotoStatsByREB = () => {
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "REB", "rotoStats");
+  };
+
+  sortRotoStatsByAST = () => {
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "AST", "rotoStats");
+  };
+
+  sortRotoStatsBySTL = () => {
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "STL", "rotoStats");
+  };
+
+  sortRotoStatsByBLK = () => {
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "BLK", "rotoStats");
+  };
+
+  sortRotoStatsByTO = () => {
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "TO", "rotoStats");
+  };
+
+  sortRotoStatsByPTS = () => {
+    const { rotoStats } = this.props;
+    this.sortTableByColumn(rotoStats, "PTS", "rotoStats");
+  };
+
+  // OLD - Basketball standings table sort methods
   sortBasketballStandingsByWins = () => {
     const { basketballStandings } = this.props;
     this.sortTableByColumn(basketballStandings, "wins");
@@ -176,8 +379,16 @@ class BasketballStandings extends PureComponent {
   };
 
   render() {
-    const { navigation, basketballStandings } = this.props;
+    const {
+      navigation,
+      trifectaStandings,
+      h2hStandings,
+      rotoStandings,
+      rotoStats,
+      basketballStandings,
+    } = this.props;
     const { seasonStarted, inSeason } = this.state;
+    const year = navigation.getParam("year", "No year was defined!");
 
     if (seasonStarted === false) {
       return (
@@ -187,41 +398,297 @@ class BasketballStandings extends PureComponent {
       );
     }
 
-    if (!basketballStandings) {
+    const isAfter2020 = !isYear1BeforeYear2(year, "2020");
+
+    const standingsConditional = isAfter2020
+      ? !h2hStandings || !rotoStandings || !rotoStats || !trifectaStandings
+      : !basketballStandings;
+
+    if (standingsConditional) {
       return null;
     }
 
-    const headerRowHeight = 75;
-    const totalHeight = 500;
-    const totalWidth = inSeason ? 900 : 1100;
-    const widthArray = [200, 200, 100, 100, 100, 100, 100];
-    const objectKeys = [
-      "teamName",
-      "ownerNames",
-      "wins",
-      "losses",
-      "ties",
-      "winPer",
-      "trifectaPoints",
-    ];
+    if (isAfter2020) {
+      ///// Trifecta Standings /////
+      const trifectaStandingsHeaderRowHeight = 75;
+      const trifectaStandingsTotalHeight = 500;
+      const trifectaStandingsTotalWidth = inSeason ? 700 : 900;
+      const trifectaStandingsWidthArray = [200, 200, 100, 100, 100];
+      const trifectaStandingsObjectKeys = [
+        "teamName",
+        "ownerNames",
+        "h2hTrifectaPoints",
+        "rotoTrifectaPoints",
+        "trifectaPoints",
+      ];
 
-    const headerRowMap = [
-      { title: "Team Name", onPress: this.noop },
-      { title: "Owner(s)", onPress: this.noop },
-      { title: "Wins", onPress: this.sortBasketballStandingsByWins },
-      { title: "Losses", onPress: this.sortBasketballStandingsByLosses },
-      { title: "Ties", onPress: this.sortBasketballStandingsByTies },
-      { title: "Win %", onPress: this.sortBasketballStandingsByWinPer },
-      {
-        title: "Trifecta Points",
-        onPress: this.sortBasketballStandingsByTrifectaPoints,
-      },
-    ];
-    // If not in season, add in playoff points and total trifecta points
-    if (!inSeason) {
-      widthArray.push(100, 100);
-      objectKeys.push("playoffPoints", "totalTrifectaPoints");
-      headerRowMap.push(
+      // Create header row for Trifecta Standings Table
+      const trifectaStandingsHeaderRowMap = [
+        { title: "Team Name", onPress: this.noop },
+        { title: "Owner(s)", onPress: this.noop },
+        {
+          title: "H2H Trifecta Points",
+          onPress: this.sortTrifectaStandingsbyH2HPoints,
+        },
+        {
+          title: "Roto Trifecta Points",
+          onPress: this.sortTrifectaStandingsByRotoPoints,
+        },
+        {
+          title: "Regular Season Trifecta Points",
+          onPress: this.sortTrifectaStandingsByTrifectaPoints,
+        },
+      ];
+
+      if (!inSeason) {
+        trifectaStandingsWidthArray.push(100, 100);
+        trifectaStandingsObjectKeys.push(
+          "playoffPoints",
+          "totalTrifectaPoints"
+        );
+        trifectaStandingsHeaderRowMap.push(
+          {
+            title: "Playoff Points",
+            onPress: this.sortTrifectaStandingsByPlayoffPoints,
+          },
+          {
+            title: "Total Trifecta Points",
+            onPress: this.sortTrifectaStandingsByTotalTrifectaPoints,
+          }
+        );
+      }
+
+      const trifectaStandingsHeaderRow = trifectaStandingsHeaderRowMap.map(
+        this.renderHeaderRowColumn
+      );
+
+      ///// H2H Standings /////
+      const h2hStandingsHeaderRowHeight = 75;
+      const h2hStandingsTotalHeight = 500;
+      const h2hStandingsTotalWidth = 700;
+      const h2hStandingsWidthArray = [200, 100, 100, 100, 100, 100];
+      const h2hStandingsObjectKeys = [
+        "teamName",
+        "wins",
+        "losses",
+        "ties",
+        "winPer",
+        "h2hTrifectaPoints",
+      ];
+      // Create header row for H2H Standings Table
+      const h2hStandingsHeaderRowMap = [
+        { title: "Team Name", onPress: this.noop },
+        { title: "Wins", onPress: this.sortH2HStandingsByWins },
+        { title: "Losses", onPress: this.sortH2HStandingsByLosses },
+        { title: "Ties", onPress: this.sortH2HStandingsByTies },
+        { title: "Win %", onPress: this.sortH2HStandingsByWinPer },
+        {
+          title: "H2H Trifecta Points",
+          onPress: this.sortH2HStandingsByTrifectaPoints,
+        },
+      ];
+      const h2hStandingsHeaderRow = h2hStandingsHeaderRowMap.map(
+        this.renderHeaderRowColumn
+      );
+
+      ///// ROTO STANDINGS /////
+      const rotoStandingsHeaderRowHeight = 75;
+      const rotoStandingsTotalHeight = 500;
+      const rotoStandingsTotalWidth = 1025;
+      const rotoStandingsWidthArray = [
+        200,
+        75,
+        75,
+        75,
+        75,
+        75,
+        75,
+        75,
+        75,
+        75,
+        75,
+        75,
+      ];
+      const rotoStandingsObjectKeys = [
+        "teamName",
+        "FGPERPoints",
+        "FTPERPoints",
+        "THREEPMPoints",
+        "REBPoints",
+        "ASTPoints",
+        "STLPoints",
+        "BLKPoints",
+        "TOPoints",
+        "PTSPoints",
+        "totalPoints",
+        "rotoTrifectaPoints",
+      ];
+      // Create header row for Roto Standings Table
+      const rotoStandingsHeaderRowMap = [
+        { title: "Team Name", onPress: this.noop },
+        { title: "FG %", onPress: this.sortRotoStandingsByFGPERPoints },
+        { title: "FT %", onPress: this.sortRotoStandingsByFTPERPoints },
+        { title: "3PM", onPress: this.sortRotoStandingsByTRHEEPMPoints },
+        { title: "REB", onPress: this.sortRotoStandingsByREBPoints },
+        { title: "AST", onPress: this.sortRotoStandingsByASTPoints },
+        { title: "STL", onPress: this.sortRotoStandingsBySTLPoints },
+        { title: "BLK", onPress: this.sortRotoStandingsByBLKPoints },
+        { title: "TO", onPress: this.sortRotoStandingsByTOPoints },
+        { title: "PTS", onPress: this.sortRotoStandingsByPTSPoints },
+        { title: "Roto Points", onPress: this.sortRotoStandingsByRotoPoints },
+        {
+          title: "Roto Trifecta Points",
+          onPress: this.sortRotoStandingsByTrifectaPoints,
+        },
+      ];
+      const rotoStandingsHeaderRow = rotoStandingsHeaderRowMap.map(
+        this.renderHeaderRowColumn
+      );
+
+      ///// ROTO STATS /////
+      const rotoStatsHeaderRowHeight = 75;
+      const rotoStatsTotalHeight = 500;
+      const rotoStatsTotalWidth = 875;
+      const rotoStatsWidthArray = [200, 75, 75, 75, 75, 75, 75, 75, 75, 75];
+      const rotoStatsObjectKeys = [
+        "teamName",
+        "FGPER",
+        "FTPER",
+        "THREEPM",
+        "REB",
+        "AST",
+        "STL",
+        "BLK",
+        "TO",
+        "PTS",
+      ];
+      const rotoStatsHeaderRowMap = [
+        { title: "Team Name", onPress: this.noop },
+        { title: "FG %", onPress: this.sortRotoStandingsByFGPER },
+        { title: "FT %", onPress: this.sortRotoStandingsByFTPER },
+        { title: "3PM", onPress: this.sortRotoStandingsByTHREEPM },
+        { title: "REB", onPress: this.sortRotoStandingsByREB },
+        { title: "AST", onPress: this.sortRotoStandingsByAST },
+        { title: "STL", onPress: this.sortRotoStandingsBySTL },
+        { title: "BLK", onPress: this.sortRotoStandingsByBLK },
+        { title: "TO", onPress: this.sortRotoStandingsByTO },
+        { title: "PTS", onPress: this.sortRotoStandingsByPTS },
+      ];
+      const rotoStatsHeaderRow = rotoStatsHeaderRowMap.map(
+        this.renderHeaderRowColumn
+      );
+      const title = `${year} Basketball Standings!`;
+
+      return (
+        <View style={styles.container}>
+          <Navbar navigation={navigation} />
+          <View style={styles.tables}>
+            <Text style={styles.title}>{title}</Text>
+            {/* <Text>{lastScraped}</Text> */}
+          </View>
+          <View style={styles.table}>
+            <Text style={styles.subtext}>Trifecta Standings</Text>
+            <Row
+              data={trifectaStandingsHeaderRow}
+              height={trifectaStandingsHeaderRowHeight}
+              totalWidth={trifectaStandingsTotalWidth}
+              widthArray={trifectaStandingsWidthArray}
+              rowStyle={styles.header}
+            />
+            <Rows
+              data={trifectaStandings}
+              totalheight={trifectaStandingsTotalHeight}
+              totalwidth={trifectaStandingsTotalWidth}
+              widthArray={trifectaStandingsWidthArray}
+              objectKeys={trifectaStandingsObjectKeys}
+            />
+          </View>
+          <View style={styles.table}>
+            <Text style={styles.subtext}>H2H Standings</Text>
+            <Row
+              data={h2hStandingsHeaderRow}
+              height={h2hStandingsHeaderRowHeight}
+              totalwidth={h2hStandingsTotalWidth}
+              widthArray={h2hStandingsWidthArray}
+              rowStyle={styles.header}
+              numberOfLines={2}
+            />
+            <Rows
+              data={h2hStandings}
+              totalheight={h2hStandingsTotalHeight}
+              totalwidth={h2hStandingsTotalWidth}
+              widthArray={h2hStandingsWidthArray}
+              objectKeys={h2hStandingsObjectKeys}
+            />
+          </View>
+          <View style={styles.table}>
+            <Text style={styles.subtext}>Roto Standings</Text>
+            <Row
+              data={rotoStandingsHeaderRow}
+              height={rotoStandingsHeaderRowHeight}
+              totalwidth={rotoStandingsTotalWidth}
+              widthArray={rotoStandingsWidthArray}
+              rowStyle={styles.header}
+              numberOfLines={2}
+            />
+            <Rows
+              data={rotoStandings}
+              totalheight={rotoStandingsTotalHeight}
+              totalwidth={rotoStandingsTotalWidth}
+              widthArray={rotoStandingsWidthArray}
+              objectKeys={rotoStandingsObjectKeys}
+              numberOfLines={2}
+            />
+            <View style={styles.table}>
+              <Text style={styles.subtext}>Roto Stats</Text>
+              <Row
+                data={rotoStatsHeaderRow}
+                height={rotoStatsHeaderRowHeight}
+                totalwidth={rotoStatsTotalWidth}
+                widthArray={rotoStatsWidthArray}
+                rowStyle={styles.header}
+                numberOfLines={2}
+              />
+              <Rows
+                data={rotoStats}
+                totalheight={rotoStatsTotalHeight}
+                totalwidth={rotoStatsTotalWidth}
+                widthArray={rotoStatsWidthArray}
+                objectKeys={rotoStatsObjectKeys}
+                numberOfLines={2}
+              />
+            </View>
+          </View>
+        </View>
+      );
+    } else {
+      const headerRowHeight = 75;
+      const totalHeight = 500;
+      const totalWidth = inSeason ? 900 : 1100;
+      const widthArray = [200, 200, 100, 100, 100, 100, 100, 100, 100];
+      const objectKeys = [
+        "teamName",
+        "ownerNames",
+        "wins",
+        "losses",
+        "ties",
+        "winPer",
+        "trifectaPoints",
+        "playoffPoints",
+        "totalTrifectaPoints",
+      ];
+
+      const headerRowMap = [
+        { title: "Team Name", onPress: this.noop },
+        { title: "Owner(s)", onPress: this.noop },
+        { title: "Wins", onPress: this.sortBasketballStandingsByWins },
+        { title: "Losses", onPress: this.sortBasketballStandingsByLosses },
+        { title: "Ties", onPress: this.sortBasketballStandingsByTies },
+        { title: "Win %", onPress: this.sortBasketballStandingsByWinPer },
+        {
+          title: "Trifecta Points",
+          onPress: this.sortBasketballStandingsByTrifectaPoints,
+        },
         {
           title: "Playoff Points",
           onPress: this.sortBasketballStandingsByPlayoffPoints,
@@ -229,36 +696,35 @@ class BasketballStandings extends PureComponent {
         {
           title: "Total Trifecta Points",
           onPress: this.sortBasketballStandingsByTotalTrifectaPoints,
-        }
+        },
+      ];
+      const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
+      const title = `${year} Basketball Standings!`;
+
+      return (
+        <View style={styles.container}>
+          <Navbar navigation={navigation} />
+          <Text style={styles.title}>{title}</Text>
+          {/* <Text>{lastScraped}</Text> */}
+          <View style={styles.table}>
+            <Row
+              data={headerRow}
+              height={headerRowHeight}
+              totalWidth={totalWidth}
+              widthArray={widthArray}
+              rowStyle={styles.header}
+            />
+            <Rows
+              data={basketballStandings}
+              totalheight={totalHeight}
+              totalwidth={totalWidth}
+              widthArray={widthArray}
+              objectKeys={objectKeys}
+            />
+          </View>
+        </View>
       );
     }
-    const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
-    const year = navigation.getParam("year", "No year was defined!");
-    const title = `${year} Basketball Standings!`;
-
-    return (
-      <View style={styles.container}>
-        <Navbar navigation={navigation} />
-        <Text style={styles.title}>{title}</Text>
-        {/* <Text>{lastScraped}</Text> */}
-        <View style={styles.table}>
-          <Row
-            data={headerRow}
-            height={headerRowHeight}
-            totalWidth={totalWidth}
-            widthArray={widthArray}
-            rowStyle={styles.header}
-          />
-          <Rows
-            data={basketballStandings}
-            totalheight={totalHeight}
-            totalwidth={totalWidth}
-            widthArray={widthArray}
-            objectKeys={objectKeys}
-          />
-        </View>
-      </View>
-    );
   }
 }
 

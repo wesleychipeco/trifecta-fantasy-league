@@ -11,6 +11,7 @@ import {
   SAVE_EXISTING_ROTO_STATS,
   SAVE_EXISTING_ROTO_STANDINGS,
   SAVE_EXISTING_TRIFECTA_STANDINGS,
+  SAVE_EXISTING_BASKETBALL_STANDINGS,
   SORT_BASKETBALL_STANDINGS_TABLE,
   SET_BASKETBALL_STANDINGS_LAST_SCRAPED,
 } from "./basketballStandingsActionTypes";
@@ -31,6 +32,7 @@ const initialState = {
 const basketballStandingsReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
+  let filteredPayload;
   switch (type) {
     case SCRAPE_BASKETBALL_STANDINGS_START: {
       return {
@@ -54,25 +56,25 @@ const basketballStandingsReducer = (state = initialState, action) => {
       };
     }
     case SAVE_SCRAPED_H2H_STANDINGS:
-      const filteredPayload = filterIdField(payload);
+      filteredPayload = filterIdField(payload);
       return {
         ...state,
         h2hStandings: filteredPayload,
       };
     case SAVE_SCRAPED_ROTO_STANDINGS:
-      const filteredPayload = filterIdField(payload);
+      filteredPayload = filterIdField(payload);
       return {
         ...state,
         rotoStandings: filteredPayload,
       };
     case SAVE_SCRAPED_ROTO_STATS:
-      const filteredPayload = filterIdField(payload);
+      filteredPayload = filterIdField(payload);
       return {
         ...state,
         rotoStats: filteredPayload,
       };
     case SAVE_SCRAPED_TRIFECTA_STANDINGS:
-      const filteredPayload = filterIdField(payload);
+      filteredPayload = filterIdField(payload);
       return {
         ...state,
         trifectaStandings: filteredPayload,
@@ -96,6 +98,11 @@ const basketballStandingsReducer = (state = initialState, action) => {
       return {
         ...state,
         trifectaStandings: payload,
+      };
+    case SAVE_EXISTING_BASKETBALL_STANDINGS:
+      return {
+        ...state,
+        basketballStandings: payload,
       };
     case SET_BASKETBALL_STANDINGS_LAST_SCRAPED: {
       return {
