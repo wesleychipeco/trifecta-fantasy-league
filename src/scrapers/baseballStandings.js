@@ -1,7 +1,7 @@
 import axios from "axios";
 import round from "lodash/round";
 
-const h2hStandingsScraper = year => {
+const baseballStandingsScraper = year => {
   return axios
     .get(
       "http://fantasy.espn.com/apis/v3/games/flb/seasons/" +
@@ -9,36 +9,24 @@ const h2hStandingsScraper = year => {
         "/segments/0/leagues/109364?view=standings"
     )
     .then(response => {
-      const standingsArray = [];
+      const h2hStandingsArray = [];
+      const rotoStatsArray = [];
 
       response.data.teams.forEach(team => {
-        standingsArray.push({
-          teamName: team.location + " " + team.nickname,
-          ownerIds: team.owners,
+        const teamName = team.location + " " + team.nickname;
+        const ownerIds = team.owners;
+        h2hStandingsArray.push({
+          teamName,
+          ownerIds,
           wins: team.record.overall.wins,
           losses: team.record.overall.losses,
           ties: team.record.overall.ties,
           winPer: round(team.record.overall.percentage, 3),
         });
-      });
-      return standingsArray;
-    });
-};
 
-const rotoStatsScraper = year => {
-  return axios
-    .get(
-      "http://fantasy.espn.com/apis/v3/games/flb/seasons/" +
-        year +
-        "/segments/0/leagues/109364?view=standings"
-    )
-    .then(response => {
-      const standingsArray = [];
-
-      response.data.teams.forEach(team => {
-        standingsArray.push({
-          teamName: team.location + " " + team.nickname,
-          ownerIds: team.owners,
+        rotoStatsArray.push({
+          teamName,
+          ownerIds,
           R: team.valuesByStat["20"],
           HR: team.valuesByStat["5"],
           RBI: team.valuesByStat["21"],
@@ -54,8 +42,8 @@ const rotoStatsScraper = year => {
         });
       });
 
-      return standingsArray;
+      return [h2hStandingsArray, rotoStatsArray];
     });
 };
 
-export { h2hStandingsScraper, rotoStatsScraper };
+export { baseballStandingsScraper };
