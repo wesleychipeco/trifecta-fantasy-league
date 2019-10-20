@@ -26,6 +26,7 @@ const initialState = {
   rotoStandings: [],
   rotoStats: [],
   trifectaStandings: [],
+  basketballStandings: [],
   lastScraped: null,
 };
 
