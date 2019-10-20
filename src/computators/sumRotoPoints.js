@@ -1,6 +1,6 @@
 import { sum } from "../utils";
 
-const sumRotoPoints = (dataArray, sumKey) => {
+const sumBaseballRotoPoints = (dataArray, sumKey) => {
   dataArray.forEach(team => {
     const filteredStandings = (({
       RPoints,
@@ -35,4 +35,33 @@ const sumRotoPoints = (dataArray, sumKey) => {
   return dataArray;
 };
 
-export { sumRotoPoints };
+const sumBasketballRotoPoints = (dataArray, sumKey) => {
+  dataArray.forEach(team => {
+    const filteredStandings = (({
+      FGPERPoints,
+      FTPERPoints,
+      THREEPMPoints,
+      REBPoints,
+      ASTPoints,
+      STLPoints,
+      BLKPoints,
+      TOPoints,
+      PTSPoints,
+    }) => ({
+      FGPERPoints,
+      FTPERPoints,
+      THREEPMPoints,
+      REBPoints,
+      ASTPoints,
+      STLPoints,
+      BLKPoints,
+      TOPoints,
+      PTSPoints,
+    }))(team);
+
+    team[sumKey] = sum(Object.values(filteredStandings));
+  });
+  return dataArray;
+};
+
+export { sumBaseballRotoPoints, sumBasketballRotoPoints };

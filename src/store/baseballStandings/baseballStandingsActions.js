@@ -22,7 +22,7 @@ import {
   rotoStatsScraper,
 } from "../../scrapers/baseballStandings";
 import { assignRankPoints } from "../../computators/assignRankPoints";
-import { sumRotoPoints } from "../../computators/sumRotoPoints";
+import { sumBaseballRotoPoints } from "../../computators/sumRotoPoints";
 import { format } from "date-fns";
 import { sortArrayBy } from "../../utils";
 import {
@@ -95,7 +95,7 @@ const assignRotoCategoryPoints = rotoStandings => {
     );
   }
 
-  return sumRotoPoints(rotoStandings, "totalPoints");
+  return sumBaseballRotoPoints(rotoStandings, "totalPoints");
 };
 
 const scrapeBaseballStandings = year => {
