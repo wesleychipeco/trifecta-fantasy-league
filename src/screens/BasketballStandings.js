@@ -158,7 +158,6 @@ class BasketballStandings extends PureComponent {
   // Trifecta Standings Table sort methods
   sortTrifectaStandingsByH2HPoints = () => {
     const { trifectaStandings } = this.props;
-    console.log("hey");
     this.sortTableByColumn(
       trifectaStandings,
       "h2hTrifectaPoints",
@@ -444,24 +443,22 @@ class BasketballStandings extends PureComponent {
         },
       ];
 
-      if (!inSeason) {
-        if (!inSeason && !basketballAhead) {
-          trifectaStandingsWidthArray.push(100, 100);
-          trifectaStandingsObjectKeys.push(
-            "playoffPoints",
-            "totalTrifectaPoints"
-          );
-          trifectaStandingsHeaderRowMap.push(
-            {
-              title: "Playoff Points",
-              onPress: this.sortTrifectaStandingsByPlayoffPoints,
-            },
-            {
-              title: "Total Trifecta Points",
-              onPress: this.sortTrifectaStandingsByTotalTrifectaPoints,
-            }
-          );
-        }
+      if (!inSeason && !basketballAhead) {
+        trifectaStandingsWidthArray.push(100, 100);
+        trifectaStandingsObjectKeys.push(
+          "playoffPoints",
+          "totalTrifectaPoints"
+        );
+        trifectaStandingsHeaderRowMap.push(
+          {
+            title: "Playoff Points",
+            onPress: this.sortTrifectaStandingsByPlayoffPoints,
+          },
+          {
+            title: "Total Trifecta Points",
+            onPress: this.sortTrifectaStandingsByTotalTrifectaPoints,
+          }
+        );
       }
 
       const trifectaStandingsHeaderRow = trifectaStandingsHeaderRowMap.map(
