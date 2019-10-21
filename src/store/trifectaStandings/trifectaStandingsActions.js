@@ -32,7 +32,7 @@ const retrieveSportStandings = (year, sport) => {
   const standingsName = sport + "Standings";
   const collection = returnMongoCollection(standingsName);
   const trifectaPointsKey =
-    sport === "baseball" ? "trifectaStandings" : standingsName;
+    sport === "football" ? standingsName : "trifectaStandings";
 
   const projection1 = trifectaPointsKey + ".ownerIds";
   const projection2 = trifectaPointsKey + ".totalTrifectaPoints";
