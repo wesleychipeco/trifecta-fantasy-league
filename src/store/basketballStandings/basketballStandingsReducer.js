@@ -127,6 +127,10 @@ const getBasketballStandingsStateSelectors = function(rootState) {
   const state = getStateSlice(rootState, BASKETBALL_STANDINGS_STATE_PATH);
 
   return {
+    getTrifectaStandings: () => state.trifectaStandings,
+    getH2HStandings: () => state.h2hStandings,
+    getRotoStandings: () => state.rotoStandings,
+    getRotoStats: () => state.rotoStats,
     getBasketballStandings: () => state.basketballStandings,
     getLastScraped: () => state.lastScraped,
   };

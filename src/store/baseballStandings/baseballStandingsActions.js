@@ -134,7 +134,7 @@ const scrapeBaseballStandings = year => {
 
         // Roto Standings
         const rotoStandingsWithRotoPoints = assignRotoCategoryPoints(
-          rotoStandingsScrape
+          rotoStatsScrape
         );
         const rotoStandings = await assignRankPoints(
           rotoStandingsWithRotoPoints,

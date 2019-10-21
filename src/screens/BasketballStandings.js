@@ -25,6 +25,7 @@ class BasketballStandings extends PureComponent {
       year: null,
       seasonStarted: null,
       inSeason: null,
+      basketballAhead: null,
       trifectaStandings: {
         sortedColumn: null,
         highToLow: null,
@@ -72,7 +73,7 @@ class BasketballStandings extends PureComponent {
       .find({}, { projection: { _id: 0 } })
       .asArray()
       .then(seasonVariables => {
-        const { currentYear } = seasonVariables[0];
+        const { currentYear, basketballAhead } = seasonVariables[0];
         const { seasonStarted, inSeason } = seasonVariables[0].basketball;
         const {
           scrapeBasketballStandings,
@@ -82,23 +83,24 @@ class BasketballStandings extends PureComponent {
         if (isYear1BeforeYear2(year, currentYear)) {
           displayBasketballStandings(year);
         } else {
-          const defaultSortColumn = inSeason
-            ? "trifectaPoints"
-            : "totalTrifectaPoints";
+          const defaultSortColumn =
+            inSeason || basketballAhead
+              ? "trifectaPoints"
+              : "totalTrifectaPoints";
 
           this.setState({
             seasonStarted,
             inSeason,
+            basketballAhead,
             trifectaStandings: {
               sortedColumn: defaultSortColumn,
               highToLow: true,
             },
           });
 
-          const { basketballAhead } = seasonVariables[0];
+          // if IN basketball ahead season
           if (basketballAhead) {
-            const yearAhead = Number(year) + 1;
-            scrapeBasketballStandings(yearAhead.toString());
+            scrapeBasketballStandings(year);
           }
           // if NOT in the basketball ahead season
           else {
@@ -387,7 +389,7 @@ class BasketballStandings extends PureComponent {
       rotoStats,
       basketballStandings,
     } = this.props;
-    const { seasonStarted, inSeason } = this.state;
+    const { seasonStarted, inSeason, basketballAhead } = this.state;
     const year = navigation.getParam("year", "No year was defined!");
 
     if (seasonStarted === false) {
@@ -412,7 +414,8 @@ class BasketballStandings extends PureComponent {
       ///// Trifecta Standings /////
       const trifectaStandingsHeaderRowHeight = 75;
       const trifectaStandingsTotalHeight = 500;
-      const trifectaStandingsTotalWidth = inSeason ? 700 : 900;
+      const trifectaStandingsTotalWidth =
+        inSeason || basketballAhead ? 700 : 900;
       const trifectaStandingsWidthArray = [200, 200, 100, 100, 100];
       const trifectaStandingsObjectKeys = [
         "teamName",
@@ -428,7 +431,7 @@ class BasketballStandings extends PureComponent {
         { title: "Owner(s)", onPress: this.noop },
         {
           title: "H2H Trifecta Points",
-          onPress: this.sortTrifectaStandingsbyH2HPoints,
+          onPress: this.sortTrifectaStandingsByH2HPoints,
         },
         {
           title: "Roto Trifecta Points",
@@ -440,7 +443,7 @@ class BasketballStandings extends PureComponent {
         },
       ];
 
-      if (!inSeason) {
+      if (!inSeason && !basketballAhead) {
         trifectaStandingsWidthArray.push(100, 100);
         trifectaStandingsObjectKeys.push(
           "playoffPoints",
@@ -528,7 +531,7 @@ class BasketballStandings extends PureComponent {
         { title: "Team Name", onPress: this.noop },
         { title: "FG %", onPress: this.sortRotoStandingsByFGPERPoints },
         { title: "FT %", onPress: this.sortRotoStandingsByFTPERPoints },
-        { title: "3PM", onPress: this.sortRotoStandingsByTRHEEPMPoints },
+        { title: "3PM", onPress: this.sortRotoStandingsByTHREEPMPoints },
         { title: "REB", onPress: this.sortRotoStandingsByREBPoints },
         { title: "AST", onPress: this.sortRotoStandingsByASTPoints },
         { title: "STL", onPress: this.sortRotoStandingsBySTLPoints },
@@ -564,15 +567,15 @@ class BasketballStandings extends PureComponent {
       ];
       const rotoStatsHeaderRowMap = [
         { title: "Team Name", onPress: this.noop },
-        { title: "FG %", onPress: this.sortRotoStandingsByFGPER },
-        { title: "FT %", onPress: this.sortRotoStandingsByFTPER },
-        { title: "3PM", onPress: this.sortRotoStandingsByTHREEPM },
-        { title: "REB", onPress: this.sortRotoStandingsByREB },
-        { title: "AST", onPress: this.sortRotoStandingsByAST },
-        { title: "STL", onPress: this.sortRotoStandingsBySTL },
-        { title: "BLK", onPress: this.sortRotoStandingsByBLK },
-        { title: "TO", onPress: this.sortRotoStandingsByTO },
-        { title: "PTS", onPress: this.sortRotoStandingsByPTS },
+        { title: "FG %", onPress: this.sortRotoStatsByFGPER },
+        { title: "FT %", onPress: this.sortRotoStatsByFTPER },
+        { title: "3PM", onPress: this.sortRotoStatsByTHREEPM },
+        { title: "REB", onPress: this.sortRotoStatsByREB },
+        { title: "AST", onPress: this.sortRotoStatsByAST },
+        { title: "STL", onPress: this.sortRotoStatsBySTL },
+        { title: "BLK", onPress: this.sortRotoStatsByBLK },
+        { title: "TO", onPress: this.sortRotoStatsByTO },
+        { title: "PTS", onPress: this.sortRotoStatsByPTS },
       ];
       const rotoStatsHeaderRow = rotoStatsHeaderRowMap.map(
         this.renderHeaderRowColumn
@@ -585,78 +588,78 @@ class BasketballStandings extends PureComponent {
           <View style={styles.tables}>
             <Text style={styles.title}>{title}</Text>
             {/* <Text>{lastScraped}</Text> */}
-          </View>
-          <View style={styles.table}>
-            <Text style={styles.subtext}>Trifecta Standings</Text>
-            <Row
-              data={trifectaStandingsHeaderRow}
-              height={trifectaStandingsHeaderRowHeight}
-              totalWidth={trifectaStandingsTotalWidth}
-              widthArray={trifectaStandingsWidthArray}
-              rowStyle={styles.header}
-            />
-            <Rows
-              data={trifectaStandings}
-              totalheight={trifectaStandingsTotalHeight}
-              totalwidth={trifectaStandingsTotalWidth}
-              widthArray={trifectaStandingsWidthArray}
-              objectKeys={trifectaStandingsObjectKeys}
-            />
-          </View>
-          <View style={styles.table}>
-            <Text style={styles.subtext}>H2H Standings</Text>
-            <Row
-              data={h2hStandingsHeaderRow}
-              height={h2hStandingsHeaderRowHeight}
-              totalwidth={h2hStandingsTotalWidth}
-              widthArray={h2hStandingsWidthArray}
-              rowStyle={styles.header}
-              numberOfLines={2}
-            />
-            <Rows
-              data={h2hStandings}
-              totalheight={h2hStandingsTotalHeight}
-              totalwidth={h2hStandingsTotalWidth}
-              widthArray={h2hStandingsWidthArray}
-              objectKeys={h2hStandingsObjectKeys}
-            />
-          </View>
-          <View style={styles.table}>
-            <Text style={styles.subtext}>Roto Standings</Text>
-            <Row
-              data={rotoStandingsHeaderRow}
-              height={rotoStandingsHeaderRowHeight}
-              totalwidth={rotoStandingsTotalWidth}
-              widthArray={rotoStandingsWidthArray}
-              rowStyle={styles.header}
-              numberOfLines={2}
-            />
-            <Rows
-              data={rotoStandings}
-              totalheight={rotoStandingsTotalHeight}
-              totalwidth={rotoStandingsTotalWidth}
-              widthArray={rotoStandingsWidthArray}
-              objectKeys={rotoStandingsObjectKeys}
-              numberOfLines={2}
-            />
             <View style={styles.table}>
-              <Text style={styles.subtext}>Roto Stats</Text>
+              <Text style={styles.subtext}>Trifecta Standings</Text>
               <Row
-                data={rotoStatsHeaderRow}
-                height={rotoStatsHeaderRowHeight}
-                totalwidth={rotoStatsTotalWidth}
-                widthArray={rotoStatsWidthArray}
+                data={trifectaStandingsHeaderRow}
+                height={trifectaStandingsHeaderRowHeight}
+                totalWidth={trifectaStandingsTotalWidth}
+                widthArray={trifectaStandingsWidthArray}
+                rowStyle={styles.header}
+              />
+              <Rows
+                data={trifectaStandings}
+                totalheight={trifectaStandingsTotalHeight}
+                totalwidth={trifectaStandingsTotalWidth}
+                widthArray={trifectaStandingsWidthArray}
+                objectKeys={trifectaStandingsObjectKeys}
+              />
+            </View>
+            <View style={styles.table}>
+              <Text style={styles.subtext}>H2H Standings</Text>
+              <Row
+                data={h2hStandingsHeaderRow}
+                height={h2hStandingsHeaderRowHeight}
+                totalwidth={h2hStandingsTotalWidth}
+                widthArray={h2hStandingsWidthArray}
                 rowStyle={styles.header}
                 numberOfLines={2}
               />
               <Rows
-                data={rotoStats}
-                totalheight={rotoStatsTotalHeight}
-                totalwidth={rotoStatsTotalWidth}
-                widthArray={rotoStatsWidthArray}
-                objectKeys={rotoStatsObjectKeys}
+                data={h2hStandings}
+                totalheight={h2hStandingsTotalHeight}
+                totalwidth={h2hStandingsTotalWidth}
+                widthArray={h2hStandingsWidthArray}
+                objectKeys={h2hStandingsObjectKeys}
+              />
+            </View>
+            <View style={styles.table}>
+              <Text style={styles.subtext}>Roto Standings</Text>
+              <Row
+                data={rotoStandingsHeaderRow}
+                height={rotoStandingsHeaderRowHeight}
+                totalwidth={rotoStandingsTotalWidth}
+                widthArray={rotoStandingsWidthArray}
+                rowStyle={styles.header}
                 numberOfLines={2}
               />
+              <Rows
+                data={rotoStandings}
+                totalheight={rotoStandingsTotalHeight}
+                totalwidth={rotoStandingsTotalWidth}
+                widthArray={rotoStandingsWidthArray}
+                objectKeys={rotoStandingsObjectKeys}
+                numberOfLines={2}
+              />
+              <View style={styles.table}>
+                <Text style={styles.subtext}>Roto Stats</Text>
+                <Row
+                  data={rotoStatsHeaderRow}
+                  height={rotoStatsHeaderRowHeight}
+                  totalwidth={rotoStatsTotalWidth}
+                  widthArray={rotoStatsWidthArray}
+                  rowStyle={styles.header}
+                  numberOfLines={2}
+                />
+                <Rows
+                  data={rotoStats}
+                  totalheight={rotoStatsTotalHeight}
+                  totalwidth={rotoStatsTotalWidth}
+                  widthArray={rotoStatsWidthArray}
+                  objectKeys={rotoStatsObjectKeys}
+                  numberOfLines={2}
+                />
+              </View>
             </View>
           </View>
         </View>
@@ -730,11 +733,19 @@ class BasketballStandings extends PureComponent {
 
 const mapStateToProps = state => {
   const {
+    getTrifectaStandings,
+    getH2HStandings,
+    getRotoStandings,
+    getRotoStats,
     getBasketballStandings,
     getLastScraped,
   } = getBasketballStandingsStateSelectors(state);
 
   return {
+    trifectaStandings: getTrifectaStandings(),
+    h2hStandings: getH2HStandings(),
+    rotoStandings: getRotoStandings(),
+    rotoStats: getRotoStats(),
     basketballStandings: getBasketballStandings(),
     lastScraped: getLastScraped(),
   };

@@ -101,15 +101,15 @@ const calculateTrifectaBasketballStandings = (h2hStandings, rotoStandings) => {
         rotoLoopingTeam => rotoLoopingTeam.teamName === teamName
       );
 
-      const h2hPoints = teamH2H.h2hTrifeactaPoints;
+      const h2hPoints = teamH2H.h2hTrifectaPoints;
       const rotoPoints = teamRoto.rotoTrifectaPoints;
 
       combinedStandings.teamName = teamName;
       combinedStandings.ownerIds = teamH2H.ownerIds;
       combinedStandings.ownerNames = teamH2H.ownerNames;
-      combinedStandings.h2hTrifeactaPoints = h2hPoints;
+      combinedStandings.h2hTrifectaPoints = h2hPoints;
       combinedStandings.rotoTrifectaPoints = rotoPoints;
-      combinedStandings.trifectaStandings = h2hPoints + rotoPoints;
+      combinedStandings.trifectaPoints = h2hPoints + rotoPoints;
 
       combinedStandingsArray.push(combinedStandings);
     });
@@ -165,7 +165,7 @@ const scrapeBasketballStandings = year => {
       );
 
       // Trifecta Standings
-      const trifectaStandings = calculateTrifectaBasketballStandings(
+      const trifectaStandings = await calculateTrifectaBasketballStandings(
         h2hStandings,
         rotoStandings
       );
