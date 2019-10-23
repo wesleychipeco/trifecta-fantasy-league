@@ -2,7 +2,7 @@ const json = {
   year: "2017",
   totalMatchups: [
     {
-      ownerNames: "Kevin Okamoto",
+      ownerNames: "Kevin Okamoto, Joshua Liu",
       basketballWinPer: 0.5,
       baseballWinPer: 0.333,
       footballWinPer: 1,
