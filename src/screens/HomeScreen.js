@@ -21,6 +21,8 @@ const featureList = [
 const caveatText =
   "Unfortunately, due to new data source, at this moment individual player data will be more difficult (players are identified by an id number rather than name), as of now, roster stats and acquisition value, etc are on hold";
 
+const keyExtractor = (data, index) => index.toString();
+
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
@@ -44,6 +46,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.timeline}>
           <Text>Timeline</Text>
           <FlatList
+            keyExtractor={keyExtractor}
             data={featureList}
             renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
           />
