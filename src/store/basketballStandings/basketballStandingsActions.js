@@ -90,7 +90,7 @@ const calculateTrifectaBasketballStandings = (h2hStandings, rotoStandings) => {
 
     // Loop through H2H Standings, each team
     h2hStandings.forEach(team => {
-      const combinedStandings = [];
+      const combinedStandings = {};
       const { teamName } = team;
 
       const teamH2H = h2hStandings.find(
