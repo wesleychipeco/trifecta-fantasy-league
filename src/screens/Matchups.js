@@ -47,9 +47,9 @@ class Matchups extends PureComponent {
     // const { lastScraped, navigation } = this.props;
     const { navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
-    const ownerNumber = navigation.getParam(
-      "ownerNumber",
-      "No ownerNumber was defined!"
+    const teamNumber = navigation.getParam(
+      "teamNumber",
+      "No teamNumber was defined!"
     );
 
     const seasonVariablesCollection = returnMongoCollection("seasonVariables");
@@ -61,7 +61,7 @@ class Matchups extends PureComponent {
         const { displayMatchups } = this.props;
 
         if (isYear1BeforeYear2(year, currentYear)) {
-          displayMatchups(year, ownerNumber);
+          displayMatchups(year, teamNumber);
         }
         // else {
         //   const defaultSortColumn = inSeason
@@ -238,9 +238,10 @@ class Matchups extends PureComponent {
     return [year1.toString(), year2.toString()];
   };
 
-  nameMatching = ownerNumber => {
+  // TODO - use db to map names to teamNumber
+  nameMatching = teamNumber => {
     let ownerName;
-    switch (ownerNumber) {
+    switch (teamNumber) {
       case "1":
         ownerName = "Marcus Lam";
         break;
@@ -287,7 +288,7 @@ class Matchups extends PureComponent {
       footballMatchups,
     } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
-    const ownerNumber = navigation.getParam("ownerNumber", "No owner number");
+    const teamNumber = navigation.getParam("teamNumber", "No owner number");
 
     if (
       !totalMatchups ||
@@ -424,7 +425,7 @@ class Matchups extends PureComponent {
       this.renderHeaderRowColumn
     );
 
-    const ownerName = this.nameMatching(ownerNumber);
+    const ownerName = this.nameMatching(teamNumber);
     let title;
     if (isYear1BeforeYear2(year, "2019")) {
       const yearArray = this.convertSubtractRevert(year);

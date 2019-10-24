@@ -1,39 +1,52 @@
 import React, { PureComponent } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text } from "react-native";
 import { Navbar } from "../components/Navbar";
 import { homeScreenStyles as styles } from "../styles/globalStyles";
+import { returnMongoCollection } from "../databaseManagement";
+import { MatchupsDropdown } from "../components/MatchupsDropdown";
 
 export class MatchupsHomeScreen extends PureComponent {
-  renderButton = (ownerName, index) => {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      teamObjectsArray: null,
+    };
+  }
+
+  componentDidMount() {
+    const allTimeTeamsCollection = returnMongoCollection("allTimeTeams");
+
+    allTimeTeamsCollection
+      .find({}, { projection: { _id: 0, ownerIds: 0 } })
+      .asArray()
+      .then(teamObjectsArray => {
+        this.setState({
+          teamObjectsArray,
+        });
+      });
+  }
+
+  renderTeamMatchupsDropdown = (teamObject, index) => {
     const { navigation } = this.props;
-    const ownerNumber = (index + 1).toString();
+    const { teamNumber, ownerNames } = teamObject;
+
     return (
-      <Button
-        title={ownerName + " 2018 Matchups"}
-        onPress={() =>
-          navigation.navigate("Matchups", {
-            year: "2018",
-            ownerNumber,
-          })
-        }
+      <MatchupsDropdown
+        key={index}
+        navigation={navigation}
+        teamNumber={teamNumber}
+        ownerNames={ownerNames}
       />
     );
   };
 
   render() {
     const { navigation } = this.props;
-    const ownerNames = [
-      "Marcus Lam's",
-      "Wesley Chipeco's",
-      "Kevin Okamoto & Joshua Liu's",
-      "Bryan Kuh's",
-      "Joshua Apostol's",
-      "Joshua Aguirre's",
-      "Tim Fong's",
-      "Ryan Tomimitsu's",
-      "Nick Wang's",
-      "Wayne Fong's",
-    ];
+
+    if (!this.state.teamObjectsArray) {
+      return null;
+    }
 
     return (
       <View style={styles.container}>
@@ -50,7 +63,7 @@ export class MatchupsHomeScreen extends PureComponent {
             marginTop: 20,
           }}
         >
-          {ownerNames.map(this.renderButton)}
+          {this.state.teamObjectsArray.map(this.renderTeamMatchupsDropdown)}
         </View>
       </View>
     );

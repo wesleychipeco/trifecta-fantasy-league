@@ -56,7 +56,7 @@ const routeMap = {
   },
   Matchups: {
     component: Matchups,
-    path: "/matchups/:ownerNumber?/:year?",
+    path: "/matchups/:teamNumber?/:year?",
     exact: true,
   },
   Second: {
