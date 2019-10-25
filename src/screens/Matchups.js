@@ -21,20 +21,20 @@ class Matchups extends PureComponent {
       baseballSeasonEnded: null,
       footballSeasonEnded: null,
       totalMatchups: {
-        sortedColumn: null,
-        highToLow: null,
+        sortedColumn: "totalWinPer",
+        highToLow: true,
       },
       basketballMatchups: {
-        sortedColumn: null,
-        highToLow: null,
+        sortedColumn: "winPer",
+        highToLow: true,
       },
       baseballMatchups: {
-        sortedColumn: null,
-        highToLow: null,
+        sortedColumn: "winPer",
+        highToLow: true,
       },
       footballMatchups: {
-        sortedColumn: null,
-        highToLow: null,
+        sortedColumn: "winPer",
+        highToLow: true,
       },
     };
   }
@@ -178,7 +178,7 @@ class Matchups extends PureComponent {
     this.sortTableByColumn(baseballMatchups, "ties", "baseballMatchups");
   };
 
-  sortFootballMatchupsByWinPer = () => {
+  sortBaseballMatchupsByWinPer = () => {
     const { baseballMatchups } = this.props;
     this.sortTableByColumn(baseballMatchups, "winPer", "baseballMatchups");
   };
@@ -429,9 +429,9 @@ class Matchups extends PureComponent {
     let title;
     if (isYear1BeforeYear2(year, "2019")) {
       const yearArray = this.convertSubtractRevert(year);
-      title = `${ownerName}'s ${yearArray[0]}-${
-        yearArray[1]
-      } Owner Head-to-Head Matchups`;
+      title = `${ownerName}'s ${yearArray.join(
+        " - "
+      )} Owner Head-to-Head Matchups`;
     } else {
       title = `${ownerName}'s ${year} Owner Head-to-Head Matchups`;
     }

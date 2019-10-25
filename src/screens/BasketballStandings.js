@@ -84,7 +84,7 @@ class BasketballStandings extends PureComponent {
           displayBasketballStandings(year);
         } else {
           const defaultSortColumn =
-            inSeason || basketballAhead
+            inSeason || (basketballAhead && year !== currentYear)
               ? "trifectaPoints"
               : "totalTrifectaPoints";
 
@@ -99,7 +99,7 @@ class BasketballStandings extends PureComponent {
           });
 
           // if IN basketball ahead season
-          if (basketballAhead) {
+          if (basketballAhead && year !== currentYear) {
             scrapeBasketballStandings(year);
           }
           // if NOT in the basketball ahead season
@@ -139,7 +139,7 @@ class BasketballStandings extends PureComponent {
       ]);
     } else {
       const columnDefaultSortDirection =
-        tableDefaultSortDirections.basketballStandings[columnKey];
+        tableDefaultSortDirections[tableType][columnKey];
       this.setState({
         [tableType]: {
           sortedColumn: columnKey,

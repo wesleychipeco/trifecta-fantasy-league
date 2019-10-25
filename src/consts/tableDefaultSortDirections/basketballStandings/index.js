@@ -30,11 +30,11 @@ const tableDefaultSortDirections = {
     FGPER: true,
     FTPER: true,
     THREEPM: true,
-    REB: false,
+    REB: true,
     AST: true,
     STL: true,
     BLK: true,
-    TO: true,
+    TO: false,
     PTS: true,
   },
   basketballStandings: {
