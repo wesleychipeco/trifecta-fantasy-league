@@ -8,6 +8,7 @@ import {
 } from "react-native-popup-menu";
 import { triggerStyles, optionsStyles } from "../styles/globalStyles";
 import { returnMongoCollection } from "../databaseManagement";
+import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
 
 export class MatchupsDropdown extends PureComponent {
   static propTypes = {
@@ -32,24 +33,31 @@ export class MatchupsDropdown extends PureComponent {
       .find({}, { projection: { _id: 0, year: 1 } })
       .asArray()
       .then(ownerMatchupsYearsArray => {
-        // TODO - figure out sort
-        ownerMatchupsYearsArray.sort();
         this.setState({
-          yearsArray: ownerMatchupsYearsArray,
+          yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true),
         });
       });
   }
+
+  convertSubtractRevert = year2 => {
+    const year1 = Number(year2) - 1;
+    return [year1.toString(), year2.toString()];
+  };
 
   renderMatchupsList = (yearObject, index) => {
     const { teamNumber, navigation } = this.props;
     const { year } = yearObject;
 
     // Conditional for text name depending on year (pre/post 2019)
+    const title = isYear1BeforeYear2(year, "2019")
+      ? `${this.convertSubtractRevert(year).join(" - ")} Matchups`
+      : `${year} Matchups`;
+
     return (
       <MenuOption
         key={index}
         onSelect={() => navigation.navigate("Matchups", { year, teamNumber })}
-        text={year + " Matchups"}
+        text={title}
       />
     );
   };
