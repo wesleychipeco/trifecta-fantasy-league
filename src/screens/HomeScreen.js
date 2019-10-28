@@ -11,7 +11,7 @@ const featureList = [
   "+ Past Trifecta Standings - Released 10/3",
   "+ Historical Head to Head Owner Matchups through 2018 - Released 10/28",
   "+ Up-to-date Trifecta Standings - Released 10/28",
-  "+ Trade History",
+  "+ Trade History - Released 10/28",
   "+ Owner Trophy Case",
   "+ Add onto/continue some features from v1.0",
   "    - Football coach rankings",
