@@ -17,6 +17,7 @@ import FootballStandings from "./screens/FootballStandings";
 import TrifectaStandings from "./screens/TrifectaStandings";
 import MatchupsHomeScreen from "./screens/MatchupsHomeScreen";
 import Matchups from "./screens/Matchups";
+import TradeHistory from "./screens/TradeHistory";
 
 const routeMap = {
   Home: {
@@ -57,6 +58,11 @@ const routeMap = {
   Matchups: {
     component: Matchups,
     path: "/matchups/:teamNumber?/:year?",
+    exact: true,
+  },
+  TradeHistory: {
+    component: TradeHistory,
+    path: "/tradehistory",
     exact: true,
   },
   Second: {

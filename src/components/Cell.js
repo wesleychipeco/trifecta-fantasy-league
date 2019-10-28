@@ -9,6 +9,7 @@ export class Cell extends PureComponent {
       PropTypes.string,
       PropTypes.number,
       PropTypes.element,
+      PropTypes.array,
     ]),
     height: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
@@ -40,17 +41,52 @@ export class Cell extends PureComponent {
       ...props
     } = this.props;
 
-    const textDom = React.isValidElement(data) ? (
-      data
-    ) : (
-      <Text
-        style={[styles.text, textStyle]}
-        {...props}
-        numberOfLines={numberOfLines}
-      >
-        {data}
-      </Text>
-    );
+    let textDom;
+
+    // If already a React element (Ex: LinkText), just display
+    if (React.isValidElement(data)) {
+      textDom = data;
+    } else {
+      // If an array
+      if (Array.isArray(data)) {
+        textDom = data.map((string, arrayLength) => {
+          return (
+            <Text
+              key={string}
+              style={[styles.text, textStyle]}
+              {...props}
+              numberOfLines={arrayLength + 1}
+            >
+              {string}
+            </Text>
+          );
+        });
+      }
+      // If a string, put in <Text>
+      else {
+        textDom = (
+          <Text
+            style={[styles.text, textStyle]}
+            {...props}
+            numberOfLines={numberOfLines}
+          >
+            {data}
+          </Text>
+        );
+      }
+    }
+
+    // const textDom = React.isValidElement(data) ? (
+    //   data
+    // ) : (
+    //   <Text
+    //     style={[styles.text, textStyle]}
+    //     {...props}
+    //     numberOfLines={numberOfLines}
+    //   >
+    //     {data}
+    //   </Text>
+    // );
 
     return (
       <View

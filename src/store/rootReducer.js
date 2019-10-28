@@ -13,6 +13,9 @@ import trifectaStandingsReducer, {
 import matchupsReducer, {
   MATCHUPS_STATE_PATCH,
 } from "./matchups/matchupsReducer";
+import tradeHistoryReducer, {
+  TRADE_HISTORY_STATE_PATH,
+} from "./tradeHistory/tradeHistoryReducer";
 
 export default {
   [BASEBALL_STANDINGS_STATE_PATH]: baseballStandingsReducer,
@@ -20,4 +23,5 @@ export default {
   [FOOTBALL_STANDINGS_STATE_PATH]: footballStandingsReducer,
   [TRIFECTA_STANDINGS_STATE_PATH]: trifectaStandingsReducer,
   [MATCHUPS_STATE_PATCH]: matchupsReducer,
+  [TRADE_HISTORY_STATE_PATH]: tradeHistoryReducer,
 };
