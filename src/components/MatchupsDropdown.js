@@ -48,10 +48,15 @@ export class MatchupsDropdown extends PureComponent {
     const { teamNumber, navigation } = this.props;
     const { year } = yearObject;
 
-    // Conditional for text name depending on year (pre/post 2019)
-    const title = isYear1BeforeYear2(year, "2019")
-      ? `${this.convertSubtractRevert(year).join(" - ")} Matchups`
-      : `${year} Matchups`;
+    let title;
+    if (year === "all") {
+      title = `All-Time Matchups`;
+    } else {
+      // Conditional for text name depending on year (pre/post 2019)
+      title = isYear1BeforeYear2(year, "2019")
+        ? `${this.convertSubtractRevert(year).join(" - ")} Matchups`
+        : `${year} Matchups`;
+    }
 
     return (
       <MenuOption

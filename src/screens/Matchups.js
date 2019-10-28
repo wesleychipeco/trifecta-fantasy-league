@@ -60,7 +60,7 @@ class Matchups extends PureComponent {
         const { currentYear } = seasonVariables[0];
         const { displayMatchups } = this.props;
 
-        if (isYear1BeforeYear2(year, currentYear)) {
+        if (isYear1BeforeYear2(year, currentYear) || year === "all") {
           displayMatchups(year, teamNumber);
         }
         // else {
@@ -427,13 +427,17 @@ class Matchups extends PureComponent {
 
     const ownerName = this.nameMatching(teamNumber);
     let title;
-    if (isYear1BeforeYear2(year, "2019")) {
-      const yearArray = this.convertSubtractRevert(year);
-      title = `${ownerName}'s ${yearArray.join(
-        " - "
-      )} Owner Head-to-Head Matchups`;
+    if (year === "all") {
+      title = `${ownerName}'s All-Time Owner Head-to-Head Matchups`;
     } else {
-      title = `${ownerName}'s ${year} Owner Head-to-Head Matchups`;
+      if (isYear1BeforeYear2(year, "2019")) {
+        const yearArray = this.convertSubtractRevert(year);
+        title = `${ownerName}'s ${yearArray.join(
+          " - "
+        )} Owner Head-to-Head Matchups`;
+      } else {
+        title = `${ownerName}'s ${year} Owner Head-to-Head Matchups`;
+      }
     }
 
     return (
