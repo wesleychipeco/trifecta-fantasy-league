@@ -76,18 +76,6 @@ export class Cell extends PureComponent {
       }
     }
 
-    // const textDom = React.isValidElement(data) ? (
-    //   data
-    // ) : (
-    //   <Text
-    //     style={[styles.text, textStyle]}
-    //     {...props}
-    //     numberOfLines={numberOfLines}
-    //   >
-    //     {data}
-    //   </Text>
-    // );
-
     return (
       <View
         style={[styles.cell, { width, height, flex }, cellStyle, borderStyle]}
