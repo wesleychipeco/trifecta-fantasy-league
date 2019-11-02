@@ -1,5 +1,4 @@
 import axios from "axios";
-import round from "lodash/round";
 
 const retrieveSportMatchups = (sport, year, teamNumber) => {
   let url;
@@ -28,10 +27,8 @@ const retrieveSportMatchups = (sport, year, teamNumber) => {
   }
 
   return axios.get(url).then(response => {
-    console.log("response", response);
     const teamNumberArrayIndex = Number(teamNumber) - 1;
-    console.log("team", response.data.teams[teamNumberArrayIndex]);
-    return response.data.teams[teamNumberArrayIndex];
+    return response.data.teams[teamNumberArrayIndex].record.headToHead;
   });
 };
 

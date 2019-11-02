@@ -91,14 +91,42 @@ class Matchups extends PureComponent {
           footballSeasonEnded,
         });
 
-        console.log("HEY!");
-        scrapeMatchups(
-          year,
-          teamNumber,
-          basketballSeasonEnded,
-          baseballSeasonEnded,
-          footballSeasonEnded
+        const teamNumbersPerSportCollection = returnMongoCollection(
+          "teamNumbersPerSport"
         );
+
+        teamNumbersPerSportCollection
+          .find({ year }, { projection: { id: 0, year: 0 } })
+          .asArray()
+          .then(teamNumbersArray => {
+            const {
+              teamNumbers,
+              basketball: basketballTeams,
+              baseball: baseballTeams,
+              football: footballTeams,
+            } = teamNumbersArray[0];
+
+            const {
+              basketball: basketballTeamNumber,
+              baseball: baseballTeamNumber,
+              football: footballTeamNumber,
+            } = teamNumbers[teamNumber];
+
+            scrapeMatchups(
+              year,
+              teamNumber,
+              basketballSeasonEnded,
+              basketballTeamNumber,
+              basketballTeams,
+              baseballSeasonEnded,
+              baseballTeamNumber,
+              baseballTeams,
+              footballSeasonEnded,
+              footballTeamNumber,
+              footballTeams
+            );
+          });
+
         // }
       });
   };
@@ -305,13 +333,13 @@ class Matchups extends PureComponent {
     const year = navigation.getParam("year", "No year was defined!");
     const teamNumber = navigation.getParam("teamNumber", "No owner number");
 
-    if (
-      !totalMatchups ||
-      !basketballMatchups ||
-      !baseballMatchups ||
-      !footballMatchups
-    )
-      return null;
+    // if (
+    //   !totalMatchups ||
+    //   !basketballMatchups ||
+    //   !baseballMatchups ||
+    //   !footballMatchups
+    // )
+    //   return null;
 
     ///// Total Matchups /////
     const totalMatchupsHeaderRowHeight = 75;
