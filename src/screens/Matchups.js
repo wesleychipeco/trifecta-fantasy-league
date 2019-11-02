@@ -5,7 +5,11 @@ import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
 import { Navbar } from "../components/Navbar";
 import { getMatchupsStateSelectors } from "../store/matchups/matchupsReducer";
-import { displayMatchups, sortTable } from "../store/matchups/matchupsActions";
+import {
+  scrapeMatchups,
+  displayMatchups,
+  sortTable,
+} from "../store/matchups/matchupsActions";
 import { returnMongoCollection } from "../databaseManagement";
 import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/matchups";
@@ -43,6 +47,11 @@ class Matchups extends PureComponent {
     this.retrieveData();
   }
 
+  isSeasonEnded = seasonVariables => {
+    const { seasonStarted, inSeason } = seasonVariables;
+    return seasonStarted === true && inSeason === false ? true : false;
+  };
+
   retrieveData = () => {
     // const { lastScraped, navigation } = this.props;
     const { navigation } = this.props;
@@ -58,32 +67,38 @@ class Matchups extends PureComponent {
       .asArray()
       .then(seasonVariables => {
         const { currentYear } = seasonVariables[0];
-        const { displayMatchups } = this.props;
+        const { displayMatchups, scrapeMatchups } = this.props;
 
-        if (isYear1BeforeYear2(year, currentYear) || year === "all") {
-          displayMatchups(year, teamNumber);
-        }
-        // else {
-        //   const defaultSortColumn = inSeason
-        //     ? "trifectaPoints"
-        //     : "totalTrifectaPoints";
+        this.setState({ year });
 
-        //   this.setState({
-        //     seasonStarted,
-        //     inSeason,
-        //     trifectaStandings: {
-        //       sortedColumn: defaultSortColumn,
-        //       highToLow: true,
-        //     },
-        //   });
+        // if (year === "all" || isYear1BeforeYear2(year, currentYear)) {
+        //   displayMatchups(year, teamNumber);
+        // } else {
+        const basketballSeasonVariables = seasonVariables[0].basketball;
+        const basketballSeasonEnded = this.isSeasonEnded(
+          basketballSeasonVariables
+        );
 
-        //   if (seasonStarted) {
-        //     if (inSeason && !lastScraped) {
-        //       scrapeBaseballStandings(year);
-        //     } else {
-        //       displayBaseballStandings(year, defaultSortColumn);
-        //     }
-        //   }
+        const baseballSeasonVariables = seasonVariables[0].baseball;
+        const baseballSeasonEnded = this.isSeasonEnded(baseballSeasonVariables);
+
+        const footballSeasonVariables = seasonVariables[0].football;
+        const footballSeasonEnded = this.isSeasonEnded(footballSeasonVariables);
+
+        this.setState({
+          basketballSeasonEnded,
+          baseballSeasonEnded,
+          footballSeasonEnded,
+        });
+
+        console.log("HEY!");
+        scrapeMatchups(
+          year,
+          teamNumber,
+          basketballSeasonEnded,
+          baseballSeasonEnded,
+          footballSeasonEnded
+        );
         // }
       });
   };
@@ -536,6 +551,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
+  scrapeMatchups,
   displayMatchups,
   sortTable,
 };

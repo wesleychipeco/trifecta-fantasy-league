@@ -10,6 +10,7 @@ import {
   returnMongoCollection,
   findFromMongoSaveToRedux,
 } from "../../databaseManagement";
+import { retrieveSportMatchups } from "../../scrapers/ownerMatchups";
 
 const actions = {
   saveExistingTotalMatchups: createAction(SAVE_EXISTING_TOTAL_MATCHUPS),
@@ -21,11 +22,56 @@ const actions = {
   sortMatchups: createAction(SORT_MATCHUPS),
 };
 
-const displayMatchups = (year, ownerNumber) => {
+const scrapeMatchups = (
+  year,
+  teamNumber,
+  basketballSeasonEnded,
+  baseballSeasonEnded,
+  footballSeasonEnded
+) => {
+  return async function(dispatch) {
+    const teamNumbersPerSportCollection = returnMongoCollection(
+      "teamNumbersPerSport"
+    );
+
+    console.log(
+      year,
+      teamNumber,
+      basketballSeasonEnded,
+      baseballSeasonEnded,
+      footballSeasonEnded
+    );
+    teamNumbersPerSportCollection
+      .find({ year }, { projection: { teamNumbers: 1 } })
+      .asArray()
+      .then(teamNumbersArray => {
+        console.log("temnum", teamNumbersArray);
+        console.log("teamnumber", teamNumber, typeof teamNumber);
+        console.log("ok", teamNumbersArray[0].teamNumbers);
+        const {
+          basketball: basketballTeamNumber,
+          baseball: baseballTeamNumber,
+          football: footballTeamNumber,
+        } = teamNumbersArray[0].teamNumbers[teamNumber];
+
+        console.log("basketballSeaonsendde", basketballSeasonEnded);
+
+        if (basketballSeasonEnded) {
+          const baseballMatchups = retrieveSportMatchups(
+            "baseball",
+            year,
+            baseballTeamNumber
+          );
+        }
+      });
+  };
+};
+
+const displayMatchups = (year, teamNumber) => {
   return async function(dispatch) {
     //connect to mongo
     const ownerCollection = returnMongoCollection(
-      "owner" + ownerNumber + "Matchups"
+      "owner" + teamNumber + "Matchups"
     );
 
     findFromMongoSaveToRedux(
@@ -69,4 +115,4 @@ const sortTable = matchups => {
   };
 };
 
-export { displayMatchups, sortTable };
+export { scrapeMatchups, displayMatchups, sortTable };
