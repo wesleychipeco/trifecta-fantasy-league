@@ -13,7 +13,7 @@ import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
 export class MatchupsDropdown extends PureComponent {
   static propTypes = {
     teamNumber: PropTypes.string.isRequired,
-    ownerNames: PropTypes.string.isRequired,
+    ownerNames: PropTypes.string,
     navigation: PropTypes.object.isRequired,
   };
 
@@ -33,9 +33,23 @@ export class MatchupsDropdown extends PureComponent {
       .find({}, { projection: { _id: 0, year: 1 } })
       .asArray()
       .then(ownerMatchupsYearsArray => {
-        this.setState({
-          yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true),
-        });
+        if (ownerMatchupsYearsArray.length > 0) {
+          this.setState({
+            yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true),
+          });
+        } else {
+          const seasonVariablesCollection = returnMongoCollection(
+            "seasonVariables"
+          );
+          seasonVariablesCollection
+            .find({}, { projection: { _id: 0 } })
+            .asArray()
+            .then(seasonVariables => {
+              this.setState({
+                yearsArray: [{ year: seasonVariables[0].currentYear }],
+              });
+            });
+        }
       });
   }
 
@@ -69,7 +83,9 @@ export class MatchupsDropdown extends PureComponent {
 
   render() {
     const { ownerNames } = this.props;
-    const dropdownText = `${ownerNames}'s Matchups`;
+    const dropdownText = ownerNames
+      ? `+ ${ownerNames}'s Matchups`
+      : "+ Switch Year";
 
     return (
       <Menu>

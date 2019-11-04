@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
 import { Navbar } from "../components/Navbar";
+import { MatchupsDropdown } from "../components/MatchupsDropdown";
 import { getMatchupsStateSelectors } from "../store/matchups/matchupsReducer";
 import {
   scrapeMatchups,
@@ -13,7 +14,7 @@ import {
 import { returnMongoCollection } from "../databaseManagement";
 import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/matchups";
-import { matchupsStyles as styles } from "../styles/globalStyles";
+import { standingsStyles as styles } from "../styles/globalStyles";
 
 class Matchups extends PureComponent {
   constructor(props) {
@@ -21,6 +22,7 @@ class Matchups extends PureComponent {
 
     this.state = {
       year: null,
+      ownerNames: null,
       basketballSeasonEnded: null,
       baseballSeasonEnded: null,
       footballSeasonEnded: null,
@@ -47,14 +49,24 @@ class Matchups extends PureComponent {
     this.retrieveData();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const year = this.props.navigation.getParam("year", "No year was defined!");
+    this.setState({
+      year,
+    });
+
+    if (prevState.year !== this.state.year) {
+      this.retrieveData();
+    }
+  }
+
   isSeasonEnded = seasonVariables => {
     const { seasonStarted, inSeason } = seasonVariables;
     return seasonStarted === true && inSeason === false ? true : false;
   };
 
   retrieveData = () => {
-    // const { lastScraped, navigation } = this.props;
-    const { navigation } = this.props;
+    const { lastScraped, navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
     const teamNumber = navigation.getParam(
       "teamNumber",
@@ -62,72 +74,87 @@ class Matchups extends PureComponent {
     );
 
     const seasonVariablesCollection = returnMongoCollection("seasonVariables");
-    seasonVariablesCollection
-      .find({}, { projection: { _id: 0 } })
+    const teamOwnerNamesCollection = returnMongoCollection("allTimeTeams");
+
+    teamOwnerNamesCollection
+      .find({ teamNumber }, { projection: { ownerNames: 1 } })
       .asArray()
-      .then(seasonVariables => {
-        const { currentYear } = seasonVariables[0];
-        const { displayMatchups, scrapeMatchups } = this.props;
-
-        this.setState({ year });
-
-        // if (year === "all" || isYear1BeforeYear2(year, currentYear)) {
-        //   displayMatchups(year, teamNumber);
-        // } else {
-        const basketballSeasonVariables = seasonVariables[0].basketball;
-        const basketballSeasonEnded = this.isSeasonEnded(
-          basketballSeasonVariables
-        );
-
-        const baseballSeasonVariables = seasonVariables[0].baseball;
-        const baseballSeasonEnded = this.isSeasonEnded(baseballSeasonVariables);
-
-        const footballSeasonVariables = seasonVariables[0].football;
-        const footballSeasonEnded = this.isSeasonEnded(footballSeasonVariables);
-
-        this.setState({
-          basketballSeasonEnded,
-          baseballSeasonEnded,
-          footballSeasonEnded,
-        });
-
-        const teamNumbersPerSportCollection = returnMongoCollection(
-          "teamNumbersPerSport"
-        );
-
-        teamNumbersPerSportCollection
-          .find({ year }, { projection: { id: 0, year: 0 } })
+      .then(docs => {
+        this.setState({ ownerNames: docs[0].ownerNames });
+        seasonVariablesCollection
+          .find({}, { projection: { _id: 0 } })
           .asArray()
-          .then(teamNumbersArray => {
-            const {
-              teamNumbers,
-              basketball: basketballTeams,
-              baseball: baseballTeams,
-              football: footballTeams,
-            } = teamNumbersArray[0];
+          .then(seasonVariables => {
+            const { currentYear } = seasonVariables[0];
+            const { displayMatchups, scrapeMatchups } = this.props;
 
-            const {
-              basketball: basketballTeamNumber,
-              baseball: baseballTeamNumber,
-              football: footballTeamNumber,
-            } = teamNumbers[teamNumber];
+            this.setState({ year });
 
-            scrapeMatchups(
-              year,
-              teamNumber,
-              basketballSeasonEnded,
-              basketballTeamNumber,
-              basketballTeams,
-              baseballSeasonEnded,
-              baseballTeamNumber,
-              baseballTeams,
-              footballSeasonEnded,
-              footballTeamNumber,
-              footballTeams
-            );
+            if (year === "all" || isYear1BeforeYear2(year, currentYear)) {
+              displayMatchups(year, teamNumber);
+            } else {
+              if (lastScraped) {
+                displayMatchups(year, teamNumber);
+              } else {
+                const basketballSeasonVariables = seasonVariables[0].basketball;
+                const basketballSeasonEnded = this.isSeasonEnded(
+                  basketballSeasonVariables
+                );
+
+                const baseballSeasonVariables = seasonVariables[0].baseball;
+                const baseballSeasonEnded = this.isSeasonEnded(
+                  baseballSeasonVariables
+                );
+
+                const footballSeasonVariables = seasonVariables[0].football;
+                const footballSeasonEnded = this.isSeasonEnded(
+                  footballSeasonVariables
+                );
+
+                this.setState({
+                  basketballSeasonEnded,
+                  baseballSeasonEnded,
+                  footballSeasonEnded,
+                });
+
+                const teamNumbersPerSportCollection = returnMongoCollection(
+                  "teamNumbersPerSport"
+                );
+
+                teamNumbersPerSportCollection
+                  .find({ year }, { projection: { id: 0, year: 0 } })
+                  .asArray()
+                  .then(teamNumbersArray => {
+                    const {
+                      teamNumbers,
+                      basketball: basketballTeams,
+                      baseball: baseballTeams,
+                      football: footballTeams,
+                    } = teamNumbersArray[0];
+
+                    const {
+                      basketball: basketballTeamNumber,
+                      baseball: baseballTeamNumber,
+                      football: footballTeamNumber,
+                    } = teamNumbers[teamNumber];
+
+                    scrapeMatchups(
+                      year,
+                      teamNumber,
+                      basketballSeasonEnded,
+                      basketballTeamNumber,
+                      basketballTeams,
+                      baseballSeasonEnded,
+                      baseballTeamNumber,
+                      baseballTeams,
+                      footballSeasonEnded,
+                      footballTeamNumber,
+                      footballTeams
+                    );
+                  });
+              }
+            }
           });
-
-        // }
       });
   };
 
@@ -281,45 +308,19 @@ class Matchups extends PureComponent {
     return [year1.toString(), year2.toString()];
   };
 
-  // TODO - use db to map names to teamNumber
-  nameMatching = teamNumber => {
-    let ownerName;
-    switch (teamNumber) {
-      case "1":
-        ownerName = "Marcus Lam";
-        break;
-      case "2":
-        ownerName = "Wesley Chipeco";
-        break;
-      case "3":
-        ownerName = "Kevin Okamoto & Joshua Liu";
-        break;
-      case "4":
-        ownerName = "Bryan Kuh";
-        break;
-      case "5":
-        ownerName = "Joshua Apostol";
-        break;
-      case "6":
-        ownerName = "Joshua Aguirre";
-        break;
-      case "7":
-        ownerName = "Tim Fong";
-        break;
-      case "8":
-        ownerName = "Ryan Tomimitsu";
-        break;
-      case "9":
-        ownerName = "Nick Wang";
-        break;
-      case "10":
-        ownerName = "Wayne Fong";
-        break;
-      default:
-        ownerName = "";
-        break;
+  shouldRenderCaption = () => {
+    const { navigation } = this.props;
+    const year = navigation.getParam("year", "No year was defined!");
+
+    if (year === "all") {
+      return (
+        <View>
+          <Text style={styles.subtext}>
+            NOTE: "All" matchups only consists of completed Trifecta seasons
+          </Text>
+        </View>
+      );
     }
-    return ownerName;
   };
 
   shouldRenderTotalMatchups = () => {
@@ -444,13 +445,12 @@ class Matchups extends PureComponent {
       baseballMatchups,
       footballMatchups,
     } = this.props;
+    const { ownerNames } = this.state;
     const year = navigation.getParam("year", "No year was defined!");
-    const teamNumber = navigation.getParam("teamNumber", "No owner number");
-
-    // console.log("total", totalMatchups);
-    // console.log("basketball", basketballMatchups);
-    // console.log("baseball", baseballMatchups);
-    // console.log("football", footballMatchups);
+    const teamNumber = navigation.getParam(
+      "teamNumber",
+      "No teamNumber was defined!"
+    );
 
     const basketballMatchupsHeaderRowMap = [
       { title: "Owner Name(s)", onPress: this.noop },
@@ -521,25 +521,32 @@ class Matchups extends PureComponent {
       this.renderHeaderRowColumn
     );
 
-    const ownerName = this.nameMatching(teamNumber);
     let title;
     if (year === "all") {
-      title = `${ownerName}'s All-Time Owner Head-to-Head Matchups`;
+      title = `${ownerNames}'s All-Time Owner Head-to-Head Matchups`;
     } else {
       if (isYear1BeforeYear2(year, "2019")) {
         const yearArray = this.convertSubtractRevert(year);
-        title = `${ownerName}'s ${yearArray.join(
+        title = `${ownerNames}'s ${yearArray.join(
           " - "
         )} Owner Head-to-Head Matchups`;
       } else {
-        title = `${ownerName}'s ${year} Owner Head-to-Head Matchups`;
+        title = `${ownerNames}'s ${year} Owner Head-to-Head Matchups`;
       }
     }
 
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
-        <Text style={styles.title}>{title}</Text>
+        <View style={styles.headerSection}>
+          <View>
+            <Text style={styles.title}>{title}</Text>
+            {this.shouldRenderCaption()}
+          </View>
+          <View style={styles.dropdown}>
+            <MatchupsDropdown navigation={navigation} teamNumber={teamNumber} />
+          </View>
+        </View>
         <View style={styles.tables}>
           {this.shouldRenderTotalMatchups()}
           {this.shouldRenderSportsMatchups(
@@ -569,6 +576,7 @@ const mapStateToProps = state => {
     getBasketballMatchups,
     getBaseballMatchups,
     getFootballMatchups,
+    getLastScraped,
   } = getMatchupsStateSelectors(state);
 
   return {
@@ -576,6 +584,7 @@ const mapStateToProps = state => {
     basketballMatchups: getBasketballMatchups(),
     baseballMatchups: getBaseballMatchups(),
     footballMatchups: getFootballMatchups(),
+    lastScraped: getLastScraped(),
   };
 };
 

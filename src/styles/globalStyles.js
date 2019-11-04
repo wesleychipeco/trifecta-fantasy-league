@@ -87,10 +87,21 @@ const standingsStyles = {
     alignItems: "center",
     backgroundColor: "#F5FCFF",
   },
+  headerSection: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  dropdown: {
+    position: "absolute",
+    right: 250,
+    marginTop: 10,
+  },
   title: {
     fontSize: 20,
     textAlign: "center",
-    marginTop: 10,
+    marginTop: 5,
   },
   subtext: {
     alignSelf: "flex-start",
@@ -174,39 +185,6 @@ const optionsStyles = {
   },
 };
 
-const matchupsStyles = {
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-  },
-  title: {
-    fontSize: 20,
-    textAlign: "center",
-    marginTop: 10,
-  },
-  subtext: {
-    alignSelf: "flex-start",
-    marginBottom: 5,
-    fontSize: 14,
-  },
-  tables: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  table: {
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  header: {
-    backgroundColor: "#BEBEBE",
-  },
-  headerText: {
-    color: "#0041C2",
-  },
-};
-
 export {
   cellStyles,
   rowStyles,
@@ -217,5 +195,4 @@ export {
   navbarStyles,
   triggerStyles,
   optionsStyles,
-  matchupsStyles,
 };

@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
 import { Navbar } from "../components/Navbar";
-
+import { StandingsDropdownPre2019 } from "../components/StandingsDropdownPre2019";
+import { StandingsDropdownPost2019 } from "../components/StandingsDropdownPost2019";
 import { getBaseballStandingsStateSelectors } from "../store/baseballStandings/baseballStandingsReducer";
 import {
   scrapeBaseballStandings,
@@ -355,6 +356,24 @@ class BaseballStandings extends PureComponent {
     );
   };
 
+  renderStandingsDropdown = () => {
+    const { navigation } = this.props;
+    const year = navigation.getParam("year", "No year was defined!");
+
+    if (isYear1BeforeYear2(year, "2019")) {
+      const year1 = (Number(year) - 1).toString();
+      return (
+        <StandingsDropdownPre2019
+          navigation={navigation}
+          year1={year1}
+          year2={year}
+        />
+      );
+    }
+
+    return <StandingsDropdownPost2019 navigation={navigation} year={year} />;
+  };
+
   render() {
     const {
       navigation,
@@ -576,81 +595,86 @@ class BaseballStandings extends PureComponent {
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
+        <View style={styles.headerSection}>
+          <View>
+            <Text style={styles.title}>{title}</Text>
+            {/* <Text>{lastScraped}</Text> */}
+          </View>
+          <View style={styles.dropdown}>{this.renderStandingsDropdown()}</View>
+        </View>
         <View style={styles.tables}>
-          <Text style={styles.title}>{title}</Text>
-          {/* <Text>{lastScraped}</Text> */}
-        </View>
-        <View style={styles.table}>
-          <Text style={styles.subtext}>Trifecta Standings</Text>
-          <Row
-            data={trifectaStandingsHeaderRow}
-            height={trifectaStandingsHeaderRowHeight}
-            totalWidth={trifectaStandingsTotalWidth}
-            widthArray={trifectaStandingsWidthArray}
-            rowStyle={styles.header}
-          />
-          <Rows
-            data={trifectaStandings}
-            totalheight={trifectaStandingsTotalHeight}
-            totalwidth={trifectaStandingsTotalWidth}
-            widthArray={trifectaStandingsWidthArray}
-            objectKeys={trifectaStandingsObjectKeys}
-          />
-        </View>
-        <View style={styles.table}>
-          <Text style={styles.subtext}>H2H Standings</Text>
-          <Row
-            data={h2hStandingsHeaderRow}
-            height={h2hStandingsHeaderRowHeight}
-            totalwidth={h2hStandingsTotalWidth}
-            widthArray={h2hStandingsWidthArray}
-            rowStyle={styles.header}
-            numberOfLines={2}
-          />
-          <Rows
-            data={h2hStandings}
-            totalheight={h2hStandingsTotalHeight}
-            totalwidth={h2hStandingsTotalWidth}
-            widthArray={h2hStandingsWidthArray}
-            objectKeys={h2hStandingsObjectKeys}
-          />
-        </View>
-        <View style={styles.table}>
-          <Text style={styles.subtext}>Roto Standings</Text>
-          <Row
-            data={rotoStandingsHeaderRow}
-            height={rotoStandingsHeaderRowHeight}
-            totalwidth={rotoStandingsTotalWidth}
-            widthArray={rotoStandingsWidthArray}
-            rowStyle={styles.header}
-            numberOfLines={2}
-          />
-          <Rows
-            data={rotoStandings}
-            totalheight={rotoStandingsTotalHeight}
-            totalwidth={rotoStandingsTotalWidth}
-            widthArray={rotoStandingsWidthArray}
-            objectKeys={rotoStandingsObjectKeys}
-            numberOfLines={2}
-          />
           <View style={styles.table}>
-            <Text style={styles.subtext}>Roto Stats</Text>
+            <Text style={styles.subtext}>Trifecta Standings</Text>
             <Row
-              data={rotoStatsHeaderRow}
-              height={rotoStatsHeaderRowHeight}
-              totalwidth={rotoStatsTotalWidth}
-              widthArray={rotoStatsWidthArray}
+              data={trifectaStandingsHeaderRow}
+              height={trifectaStandingsHeaderRowHeight}
+              totalWidth={trifectaStandingsTotalWidth}
+              widthArray={trifectaStandingsWidthArray}
+              rowStyle={styles.header}
+            />
+            <Rows
+              data={trifectaStandings}
+              totalheight={trifectaStandingsTotalHeight}
+              totalwidth={trifectaStandingsTotalWidth}
+              widthArray={trifectaStandingsWidthArray}
+              objectKeys={trifectaStandingsObjectKeys}
+            />
+          </View>
+          <View style={styles.table}>
+            <Text style={styles.subtext}>H2H Standings</Text>
+            <Row
+              data={h2hStandingsHeaderRow}
+              height={h2hStandingsHeaderRowHeight}
+              totalwidth={h2hStandingsTotalWidth}
+              widthArray={h2hStandingsWidthArray}
               rowStyle={styles.header}
               numberOfLines={2}
             />
             <Rows
-              data={rotoStats}
-              totalheight={rotoStatsTotalHeight}
-              totalwidth={rotoStatsTotalWidth}
-              widthArray={rotoStatsWidthArray}
-              objectKeys={rotoStatsObjectKeys}
+              data={h2hStandings}
+              totalheight={h2hStandingsTotalHeight}
+              totalwidth={h2hStandingsTotalWidth}
+              widthArray={h2hStandingsWidthArray}
+              objectKeys={h2hStandingsObjectKeys}
+            />
+          </View>
+          <View style={styles.table}>
+            <Text style={styles.subtext}>Roto Standings</Text>
+            <Row
+              data={rotoStandingsHeaderRow}
+              height={rotoStandingsHeaderRowHeight}
+              totalwidth={rotoStandingsTotalWidth}
+              widthArray={rotoStandingsWidthArray}
+              rowStyle={styles.header}
               numberOfLines={2}
             />
+            <Rows
+              data={rotoStandings}
+              totalheight={rotoStandingsTotalHeight}
+              totalwidth={rotoStandingsTotalWidth}
+              widthArray={rotoStandingsWidthArray}
+              objectKeys={rotoStandingsObjectKeys}
+              numberOfLines={2}
+            />
+            <View style={styles.table}>
+              <Text style={styles.subtext}>Roto Stats</Text>
+              <Row
+                data={rotoStatsHeaderRow}
+                height={rotoStatsHeaderRowHeight}
+                totalwidth={rotoStatsTotalWidth}
+                widthArray={rotoStatsWidthArray}
+                rowStyle={styles.header}
+                numberOfLines={2}
+              />
+              <Rows
+                data={rotoStats}
+                totalheight={rotoStatsTotalHeight}
+                totalwidth={rotoStatsTotalWidth}
+                widthArray={rotoStatsWidthArray}
+                objectKeys={rotoStatsObjectKeys}
+                numberOfLines={2}
+              />
+            </View>
           </View>
         </View>
       </View>

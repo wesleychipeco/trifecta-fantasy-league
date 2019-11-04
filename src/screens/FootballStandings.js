@@ -2,7 +2,10 @@ import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
-
+import { LinkText } from "../components/LinkText";
+import { Navbar } from "../components/Navbar";
+import { StandingsDropdownPre2019 } from "../components/StandingsDropdownPre2019";
+import { StandingsDropdownPost2019 } from "../components/StandingsDropdownPost2019";
 import { getFootballStandingsStateSelectors } from "../store/footballStandings/footballStandingsReducer";
 import {
   scrapeFootballStandings,
@@ -13,8 +16,6 @@ import {
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/footballStandings";
 import { returnMongoCollection } from "../databaseManagement";
 import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
-import { LinkText } from "../components/LinkText";
-import { Navbar } from "../components/Navbar";
 import { standingsStyles as styles } from "../styles/globalStyles";
 
 class FootballStandings extends PureComponent {
@@ -190,6 +191,24 @@ class FootballStandings extends PureComponent {
     return null;
   };
 
+  renderStandingsDropdown = () => {
+    const { navigation } = this.props;
+    const year = navigation.getParam("year", "No year was defined!");
+
+    if (isYear1BeforeYear2(year, "2019")) {
+      const year2 = (Number(year) + 1).toString();
+      return (
+        <StandingsDropdownPre2019
+          navigation={navigation}
+          year1={year}
+          year2={year2}
+        />
+      );
+    }
+
+    return <StandingsDropdownPost2019 navigation={navigation} year={year} />;
+  };
+
   render() {
     const { navigation, footballStandings } = this.props;
     const { seasonStarted, inSeason } = this.state;
@@ -261,8 +280,10 @@ class FootballStandings extends PureComponent {
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
-        <Text style={styles.title}>{title}</Text>
-        {/* <Text>{lastScraped}</Text> */}
+        <View style={styles.headerSection}>
+          <Text style={styles.title}>{title}</Text>
+          <View style={styles.dropdown}>{this.renderStandingsDropdown()}</View>
+        </View>
         <View style={styles.table}>
           {this.shouldRenderSubtext()}
           <Row
