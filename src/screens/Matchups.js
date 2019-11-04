@@ -5,7 +5,11 @@ import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
 import { Navbar } from "../components/Navbar";
 import { getMatchupsStateSelectors } from "../store/matchups/matchupsReducer";
-import { displayMatchups, sortTable } from "../store/matchups/matchupsActions";
+import {
+  scrapeMatchups,
+  displayMatchups,
+  sortTable,
+} from "../store/matchups/matchupsActions";
 import { returnMongoCollection } from "../databaseManagement";
 import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/matchups";
@@ -43,6 +47,11 @@ class Matchups extends PureComponent {
     this.retrieveData();
   }
 
+  isSeasonEnded = seasonVariables => {
+    const { seasonStarted, inSeason } = seasonVariables;
+    return seasonStarted === true && inSeason === false ? true : false;
+  };
+
   retrieveData = () => {
     // const { lastScraped, navigation } = this.props;
     const { navigation } = this.props;
@@ -58,32 +67,66 @@ class Matchups extends PureComponent {
       .asArray()
       .then(seasonVariables => {
         const { currentYear } = seasonVariables[0];
-        const { displayMatchups } = this.props;
+        const { displayMatchups, scrapeMatchups } = this.props;
 
-        if (isYear1BeforeYear2(year, currentYear) || year === "all") {
-          displayMatchups(year, teamNumber);
-        }
-        // else {
-        //   const defaultSortColumn = inSeason
-        //     ? "trifectaPoints"
-        //     : "totalTrifectaPoints";
+        this.setState({ year });
 
-        //   this.setState({
-        //     seasonStarted,
-        //     inSeason,
-        //     trifectaStandings: {
-        //       sortedColumn: defaultSortColumn,
-        //       highToLow: true,
-        //     },
-        //   });
+        // if (year === "all" || isYear1BeforeYear2(year, currentYear)) {
+        //   displayMatchups(year, teamNumber);
+        // } else {
+        const basketballSeasonVariables = seasonVariables[0].basketball;
+        const basketballSeasonEnded = this.isSeasonEnded(
+          basketballSeasonVariables
+        );
 
-        //   if (seasonStarted) {
-        //     if (inSeason && !lastScraped) {
-        //       scrapeBaseballStandings(year);
-        //     } else {
-        //       displayBaseballStandings(year, defaultSortColumn);
-        //     }
-        //   }
+        const baseballSeasonVariables = seasonVariables[0].baseball;
+        const baseballSeasonEnded = this.isSeasonEnded(baseballSeasonVariables);
+
+        const footballSeasonVariables = seasonVariables[0].football;
+        const footballSeasonEnded = this.isSeasonEnded(footballSeasonVariables);
+
+        this.setState({
+          basketballSeasonEnded,
+          baseballSeasonEnded,
+          footballSeasonEnded,
+        });
+
+        const teamNumbersPerSportCollection = returnMongoCollection(
+          "teamNumbersPerSport"
+        );
+
+        teamNumbersPerSportCollection
+          .find({ year }, { projection: { id: 0, year: 0 } })
+          .asArray()
+          .then(teamNumbersArray => {
+            const {
+              teamNumbers,
+              basketball: basketballTeams,
+              baseball: baseballTeams,
+              football: footballTeams,
+            } = teamNumbersArray[0];
+
+            const {
+              basketball: basketballTeamNumber,
+              baseball: baseballTeamNumber,
+              football: footballTeamNumber,
+            } = teamNumbers[teamNumber];
+
+            scrapeMatchups(
+              year,
+              teamNumber,
+              basketballSeasonEnded,
+              basketballTeamNumber,
+              basketballTeams,
+              baseballSeasonEnded,
+              baseballTeamNumber,
+              baseballTeams,
+              footballSeasonEnded,
+              footballTeamNumber,
+              footballTeams
+            );
+          });
+
         // }
       });
   };
@@ -279,24 +322,8 @@ class Matchups extends PureComponent {
     return ownerName;
   };
 
-  render() {
-    const {
-      navigation,
-      totalMatchups,
-      basketballMatchups,
-      baseballMatchups,
-      footballMatchups,
-    } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
-    const teamNumber = navigation.getParam("teamNumber", "No owner number");
-
-    if (
-      !totalMatchups ||
-      !basketballMatchups ||
-      !baseballMatchups ||
-      !footballMatchups
-    )
-      return null;
+  shouldRenderTotalMatchups = () => {
+    const { totalMatchups } = this.props;
 
     ///// Total Matchups /////
     const totalMatchupsHeaderRowHeight = 75;
@@ -331,12 +358,36 @@ class Matchups extends PureComponent {
       this.renderHeaderRowColumn
     );
 
+    if (totalMatchups.length > 0) {
+      return (
+        <View style={styles.table}>
+          <Text style={styles.subtext}>Total Matchups</Text>
+          <Row
+            data={totalMatchupsHeaderRow}
+            height={totalMatchupsHeaderRowHeight}
+            totalWidth={totalMatchupsTotalWidth}
+            widthArray={totalMatchupsWidthArray}
+            rowStyle={styles.header}
+          />
+          <Rows
+            data={totalMatchups}
+            totalheight={totalMatchupsTotalHeight}
+            totalwidth={totalMatchupsTotalWidth}
+            widthArray={totalMatchupsWidthArray}
+            objectKeys={totalMatchupsObjectKeys}
+          />
+        </View>
+      );
+    }
+    return null;
+  };
+
+  isFootball = sport => sport === "Football";
+
+  shouldRenderSportsMatchups = (sport, headerRow, sportsMatchups) => {
     ///// Sports Matchups /////
-    const sportsMatchupsHeaderRowHeight = 75;
-    const sportsMatchupsTotalHeight = 450;
-    const sportsMatchupsTotalWidth = 600;
-    const sportsMatchupsWidthArray = [200, 100, 100, 100, 100];
-    const sportsMatchupsObjectKeys = [
+    const defaultSportsMatchupsWidthArray = [200, 100, 100, 100, 100];
+    const defaultSportsObjectKeys = [
       "ownerNames",
       "wins",
       "losses",
@@ -344,17 +395,62 @@ class Matchups extends PureComponent {
       "winPer",
     ];
 
-    const footballMatchupsTotalWidth = 900;
-    const footballMatchupsWidthArray = sportsMatchupsWidthArray.concat([
-      100,
-      100,
-      100,
-    ]);
-    const footballMatchupsObjectKeys = sportsMatchupsObjectKeys.concat([
-      "pointsFor",
-      "pointsAgainst",
-      "pointsDiff",
-    ]);
+    const sportsMatchupsHeaderRowHeight = 75;
+    const sportsMatchupsTotalHeight = 450;
+    const sportsMatchupsTotalWidth = !this.isFootball(sport) ? 600 : 900;
+    const sportsMatchupsWidthArray = !this.isFootball(sport)
+      ? defaultSportsMatchupsWidthArray
+      : defaultSportsMatchupsWidthArray.concat([100, 100, 100]);
+    const sportsMatchupsObjectKeys = !this.isFootball(sport)
+      ? defaultSportsObjectKeys
+      : defaultSportsObjectKeys.concat([
+          "pointsFor",
+          "pointsAgainst",
+          "pointsDiff",
+        ]);
+
+    if (sportsMatchups.length > 0) {
+      return (
+        <View style={styles.table}>
+          <Text style={styles.subtext}>{`${sport} Matchups`}</Text>
+          <Row
+            data={headerRow}
+            height={sportsMatchupsHeaderRowHeight}
+            totalWidth={sportsMatchupsTotalWidth}
+            widthArray={sportsMatchupsWidthArray}
+            rowStyle={styles.header}
+          />
+          <Rows
+            data={sportsMatchups}
+            totalheight={sportsMatchupsTotalHeight}
+            totalwidth={sportsMatchupsTotalWidth}
+            widthArray={sportsMatchupsWidthArray}
+            objectKeys={sportsMatchupsObjectKeys}
+          />
+        </View>
+      );
+    }
+    return (
+      <View style={styles.table}>
+        <Text style={styles.title}>{`${sport} season not completed`}</Text>
+      </View>
+    );
+  };
+
+  render() {
+    const {
+      navigation,
+      basketballMatchups,
+      baseballMatchups,
+      footballMatchups,
+    } = this.props;
+    const year = navigation.getParam("year", "No year was defined!");
+    const teamNumber = navigation.getParam("teamNumber", "No owner number");
+
+    // console.log("total", totalMatchups);
+    // console.log("basketball", basketballMatchups);
+    // console.log("baseball", baseballMatchups);
+    // console.log("football", footballMatchups);
 
     const basketballMatchupsHeaderRowMap = [
       { title: "Owner Name(s)", onPress: this.noop },
@@ -445,74 +541,22 @@ class Matchups extends PureComponent {
         <Navbar navigation={navigation} />
         <Text style={styles.title}>{title}</Text>
         <View style={styles.tables}>
-          <View style={styles.table}>
-            <Text style={styles.subtext}>Total Matchups</Text>
-            <Row
-              data={totalMatchupsHeaderRow}
-              height={totalMatchupsHeaderRowHeight}
-              totalWidth={totalMatchupsTotalWidth}
-              widthArray={totalMatchupsWidthArray}
-              rowStyle={styles.header}
-            />
-            <Rows
-              data={totalMatchups}
-              totalheight={totalMatchupsTotalHeight}
-              totalwidth={totalMatchupsTotalWidth}
-              widthArray={totalMatchupsWidthArray}
-              objectKeys={totalMatchupsObjectKeys}
-            />
-          </View>
-          <View style={styles.table}>
-            <Text style={styles.subtext}>Basketball Matchups</Text>
-            <Row
-              data={basketballMatchupsHeaderRow}
-              height={sportsMatchupsHeaderRowHeight}
-              totalWidth={sportsMatchupsTotalWidth}
-              widthArray={sportsMatchupsWidthArray}
-              rowStyle={styles.header}
-            />
-            <Rows
-              data={basketballMatchups}
-              totalheight={sportsMatchupsTotalHeight}
-              totalwidth={sportsMatchupsTotalWidth}
-              widthArray={sportsMatchupsWidthArray}
-              objectKeys={sportsMatchupsObjectKeys}
-            />
-          </View>
-          <View style={styles.table}>
-            <Text style={styles.subtext}>Baseball Matchups</Text>
-            <Row
-              data={baseballMatchupsHeaderRow}
-              height={sportsMatchupsHeaderRowHeight}
-              totalWidth={sportsMatchupsTotalWidth}
-              widthArray={sportsMatchupsWidthArray}
-              rowStyle={styles.header}
-            />
-            <Rows
-              data={baseballMatchups}
-              totalheight={sportsMatchupsTotalHeight}
-              totalwidth={sportsMatchupsTotalWidth}
-              widthArray={sportsMatchupsWidthArray}
-              objectKeys={sportsMatchupsObjectKeys}
-            />
-          </View>
-          <View style={styles.table}>
-            <Text style={styles.subtext}>Football Matchups</Text>
-            <Row
-              data={footballMatchupsHeaderRow}
-              height={sportsMatchupsHeaderRowHeight}
-              totalWidth={footballMatchupsTotalWidth}
-              widthArray={footballMatchupsWidthArray}
-              rowStyle={styles.header}
-            />
-            <Rows
-              data={footballMatchups}
-              totalheight={sportsMatchupsTotalHeight}
-              totalwidth={footballMatchupsTotalWidth}
-              widthArray={footballMatchupsWidthArray}
-              objectKeys={footballMatchupsObjectKeys}
-            />
-          </View>
+          {this.shouldRenderTotalMatchups()}
+          {this.shouldRenderSportsMatchups(
+            "Basketball",
+            basketballMatchupsHeaderRow,
+            basketballMatchups
+          )}
+          {this.shouldRenderSportsMatchups(
+            "Baseball",
+            baseballMatchupsHeaderRow,
+            baseballMatchups
+          )}
+          {this.shouldRenderSportsMatchups(
+            "Football",
+            footballMatchupsHeaderRow,
+            footballMatchups
+          )}
         </View>
       </View>
     );
@@ -536,6 +580,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
+  scrapeMatchups,
   displayMatchups,
   sortTable,
 };
