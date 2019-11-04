@@ -87,6 +87,16 @@ const standingsStyles = {
     alignItems: "center",
     backgroundColor: "#F5FCFF",
   },
+  headerSection: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
+  dropdown: {
+    position: "absolute",
+    right: 250,
+  },
   title: {
     fontSize: 20,
     textAlign: "center",

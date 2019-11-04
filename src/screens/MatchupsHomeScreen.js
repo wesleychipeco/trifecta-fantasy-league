@@ -32,12 +32,13 @@ export class MatchupsHomeScreen extends PureComponent {
     const { teamNumber, ownerNames } = teamObject;
 
     return (
-      <MatchupsDropdown
-        key={index}
-        navigation={navigation}
-        teamNumber={teamNumber}
-        ownerNames={ownerNames}
-      />
+      <View style={{ marginVertical: 5 }} key={index}>
+        <MatchupsDropdown
+          navigation={navigation}
+          teamNumber={teamNumber}
+          ownerNames={ownerNames}
+        />
+      </View>
     );
   };
 

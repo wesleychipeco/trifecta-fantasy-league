@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, FlatList, Button } from "react-native";
+import { View, Text, Image, FlatList } from "react-native";
 import { Navbar } from "../components/Navbar";
 import Iframe from "react-iframe";
 import { homeScreenStyles as styles } from "../styles/globalStyles";
@@ -39,12 +39,6 @@ const HomeScreen = ({ navigation }) => {
         </Text>
         <Text style={styles.caption}>{homeText}</Text>
       </View>
-      <Button
-        title="Test - Wes 2019 Basketball Matchups"
-        onPress={() =>
-          navigation.navigate("Matchups", { year: "2019", teamNumber: "11" })
-        }
-      />
       {/*<<Button
         title="Das Modal"
         onPress={() => navigation.navigate("DasModal")}

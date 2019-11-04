@@ -9,6 +9,7 @@ import {
   SAVE_EXISTING_BASEBALL_MATCHUPS,
   SAVE_EXISTING_FOOTBALL_MATCHUPS,
   SORT_MATCHUPS,
+  SET_MATCHUPS_LAST_SCRAPED,
 } from "./matchupsActionTypes";
 import {
   returnMongoCollection,
@@ -17,6 +18,7 @@ import {
 } from "../../databaseManagement";
 import { retrieveSportMatchups } from "../../scrapers/ownerMatchups";
 import { basketballMatchups2019 } from "../../dataJSONS/basketballMatchups2019";
+import { format } from "date-fns";
 import { sortArrayBy } from "../../utils";
 import round from "lodash/round";
 
@@ -32,6 +34,7 @@ const actions = {
   saveExistingBaseballMatchups: createAction(SAVE_EXISTING_BASEBALL_MATCHUPS),
   saveExistingFootballMatchups: createAction(SAVE_EXISTING_FOOTBALL_MATCHUPS),
   sortMatchups: createAction(SORT_MATCHUPS),
+  setLastScraped: createAction(SET_MATCHUPS_LAST_SCRAPED),
 };
 
 const scrapeMatchups = (
@@ -48,6 +51,8 @@ const scrapeMatchups = (
   footballTeams
 ) => {
   return async function(dispatch) {
+    dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:")));
+
     let rawBasketballMatchups;
     if (year === "2019") {
       rawBasketballMatchups = basketballTeamNumber;

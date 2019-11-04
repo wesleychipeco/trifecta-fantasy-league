@@ -13,7 +13,7 @@ import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
 export class MatchupsDropdown extends PureComponent {
   static propTypes = {
     teamNumber: PropTypes.string.isRequired,
-    ownerNames: PropTypes.string.isRequired,
+    ownerNames: PropTypes.string,
     navigation: PropTypes.object.isRequired,
   };
 
@@ -83,7 +83,9 @@ export class MatchupsDropdown extends PureComponent {
 
   render() {
     const { ownerNames } = this.props;
-    const dropdownText = `${ownerNames}'s Matchups`;
+    const dropdownText = ownerNames
+      ? `+ ${ownerNames}'s Matchups`
+      : "+ Switch Year";
 
     return (
       <Menu>

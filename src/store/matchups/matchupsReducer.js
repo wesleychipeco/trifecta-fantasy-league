@@ -9,6 +9,7 @@ import {
   SAVE_EXISTING_BASEBALL_MATCHUPS,
   SAVE_EXISTING_FOOTBALL_MATCHUPS,
   SORT_MATCHUPS,
+  SET_MATCHUPS_LAST_SCRAPED,
 } from "./matchupsActionTypes";
 import { filterIdField } from "../../databaseManagement";
 
@@ -19,6 +20,7 @@ const initialState = {
   basketballMatchups: [],
   baseballMatchups: [],
   footballMatchups: [],
+  lastScraped: null,
 };
 
 const matchupsReducer = (state = initialState, action) => {
@@ -76,6 +78,11 @@ const matchupsReducer = (state = initialState, action) => {
         ...state,
         [tableType]: matchups,
       };
+    case SET_MATCHUPS_LAST_SCRAPED:
+      return {
+        ...state,
+        lastScraped: payload,
+      };
     default:
       return state;
   }
@@ -89,6 +96,7 @@ const getMatchupsStateSelectors = function(rootState) {
     getBasketballMatchups: () => state.basketballMatchups,
     getBaseballMatchups: () => state.baseballMatchups,
     getFootballMatchups: () => state.footballMatchups,
+    getLastScraped: () => state.lastScraped,
   };
 };
 
