@@ -96,11 +96,12 @@ const standingsStyles = {
   dropdown: {
     position: "absolute",
     right: 250,
+    marginTop: 10,
   },
   title: {
     fontSize: 20,
     textAlign: "center",
-    marginTop: 10,
+    marginTop: 5,
   },
   subtext: {
     alignSelf: "flex-start",

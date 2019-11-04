@@ -3,7 +3,8 @@ import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { Navbar } from "../components/Navbar";
-
+import { StandingsDropdownPre2019 } from "../components/StandingsDropdownPre2019";
+import { StandingsDropdownPost2019 } from "../components/StandingsDropdownPost2019";
 import { getBasketballStandingsStateSelectors } from "../store/basketballStandings/basketballStandingsReducer";
 import {
   scrapeBasketballStandings,
@@ -380,6 +381,24 @@ class BasketballStandings extends PureComponent {
     );
   };
 
+  renderStandingsDropdown = () => {
+    const { navigation } = this.props;
+    const year = navigation.getParam("year", "No year was defined!");
+
+    if (isYear1BeforeYear2(year, "2019")) {
+      const year1 = (Number(year) - 1).toString();
+      return (
+        <StandingsDropdownPre2019
+          navigation={navigation}
+          year1={year1}
+          year2={year}
+        />
+      );
+    }
+
+    return <StandingsDropdownPost2019 navigation={navigation} year={year} />;
+  };
+
   render() {
     const {
       navigation,
@@ -585,9 +604,13 @@ class BasketballStandings extends PureComponent {
       return (
         <View style={styles.container}>
           <Navbar navigation={navigation} />
-          <View style={styles.tables}>
+          <View style={styles.headerSection}>
             <Text style={styles.title}>{title}</Text>
-            {/* <Text>{lastScraped}</Text> */}
+            <View style={styles.dropdown}>
+              {this.renderStandingsDropdown()}
+            </View>
+          </View>
+          <View style={styles.tables}>
             <View style={styles.table}>
               <Text style={styles.subtext}>Trifecta Standings</Text>
               <Row
@@ -707,8 +730,12 @@ class BasketballStandings extends PureComponent {
       return (
         <View style={styles.container}>
           <Navbar navigation={navigation} />
-          <Text style={styles.title}>{title}</Text>
-          {/* <Text>{lastScraped}</Text> */}
+          <View style={styles.headerSection}>
+            <Text style={styles.title}>{title}</Text>
+            <View style={styles.dropdown}>
+              {this.renderStandingsDropdown()}
+            </View>
+          </View>
           <View style={styles.table}>
             <Row
               data={headerRow}
