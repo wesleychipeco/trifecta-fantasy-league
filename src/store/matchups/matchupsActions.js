@@ -124,7 +124,7 @@ const scrapeMatchups = (
       null,
       null,
       ownerMatchupsCollection,
-      null,
+      year,
       compiledMatchups,
       null,
       false

@@ -33,9 +33,23 @@ export class MatchupsDropdown extends PureComponent {
       .find({}, { projection: { _id: 0, year: 1 } })
       .asArray()
       .then(ownerMatchupsYearsArray => {
-        this.setState({
-          yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true),
-        });
+        if (ownerMatchupsYearsArray.length > 0) {
+          this.setState({
+            yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true),
+          });
+        } else {
+          const seasonVariablesCollection = returnMongoCollection(
+            "seasonVariables"
+          );
+          seasonVariablesCollection
+            .find({}, { projection: { _id: 0 } })
+            .asArray()
+            .then(seasonVariables => {
+              this.setState({
+                yearsArray: [{ year: seasonVariables[0].currentYear }],
+              });
+            });
+        }
       });
   }
 

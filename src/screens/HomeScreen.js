@@ -42,7 +42,7 @@ const HomeScreen = ({ navigation }) => {
       <Button
         title="Test - Wes 2019 Basketball Matchups"
         onPress={() =>
-          navigation.navigate("Matchups", { year: "2019", teamNumber: "2" })
+          navigation.navigate("Matchups", { year: "2019", teamNumber: "11" })
         }
       />
       {/*<<Button
