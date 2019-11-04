@@ -16,7 +16,7 @@ const MATCHUPS_STATE_PATCH = "matchups";
 
 const initialState = {
   totalMatchups: [],
-  basketallMatchups: [],
+  basketballMatchups: [],
   baseballMatchups: [],
   footballMatchups: [],
 };

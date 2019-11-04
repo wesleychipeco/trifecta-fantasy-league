@@ -13,6 +13,7 @@ import {
 import {
   returnMongoCollection,
   findFromMongoSaveToRedux,
+  deleteInsertDispatch,
 } from "../../databaseManagement";
 import { retrieveSportMatchups } from "../../scrapers/ownerMatchups";
 import { basketballMatchups2019 } from "../../dataJSONS/basketballMatchups2019";
@@ -47,20 +48,6 @@ const scrapeMatchups = (
   footballTeams
 ) => {
   return async function(dispatch) {
-    console.log(
-      year,
-      teamNumber,
-      basketballSeasonEnded,
-      basketballTeamNumber,
-      basketballTeams,
-      baseballSeasonEnded,
-      baseballTeamNumber,
-      baseballTeams,
-      footballSeasonEnded,
-      footballTeamNumber,
-      footballTeams
-    );
-
     let rawBasketballMatchups;
     if (year === "2019") {
       rawBasketballMatchups = basketballTeamNumber;
@@ -99,6 +86,11 @@ const scrapeMatchups = (
       footballMatchups.length > 0;
     const totalMatchups = compileTotalMatchups ? ["placeholder!"] : [];
 
+    // connect to mongo
+    const ownerMatchupsCollection = returnMongoCollection(
+      `owner${teamNumber}Matchups`
+    );
+
     const compiledMatchups = {
       year,
       totalMatchups,
@@ -127,6 +119,16 @@ const scrapeMatchups = (
         sortArrayBy(totalMatchups, "totalWinPer", true)
       )
     );
+
+    deleteInsertDispatch(
+      null,
+      null,
+      ownerMatchupsCollection,
+      null,
+      compiledMatchups,
+      null,
+      false
+    );
   };
 };
 
@@ -134,6 +136,7 @@ const compileMatchups = (matchups, teamsList, sport) => {
   let matchupsArray = [];
   if (matchups) {
     if (sport === "football") {
+      // TODO compile points for and against points per opponent
     } else {
       // if "2019" basketball, pull matchups from object
       if (typeof matchups === "string") {
@@ -158,75 +161,8 @@ const compileMatchups = (matchups, teamsList, sport) => {
       }
     }
   }
-  // if no matchups, sport is not finished yet
-  console.log("sport", sport, matchupsArray);
+  // if no matchups, sport is not finished yet, just return empty array
   return matchupsArray;
-};
-
-const orgainzeAndUpload = (
-  dispatch,
-  year,
-  basketballMatchups,
-  basketballTeams,
-  baseballMatchups,
-  baseballTeams,
-  footballMatchups,
-  footballTeams
-) => {
-  if (basketballMatchups) {
-    let basketballMatchupsArray;
-    if (typeof basketballMatchups === "string") {
-      const basketballTeamNumber = basketballMatchups;
-      basketballMatchupsArray = basketballMatchups2019[basketballTeamNumber];
-    } else {
-      basketballMatchupsArray = [];
-      for (let opposingTeams in basketballMatchups) {
-        const { ownerNames } = basketballTeams[opposingTeams];
-        const { wins, losses, ties } = basketballMatchups[opposingTeams];
-        const winPer = round(basketballMatchups[opposingTeams].percentage, 3);
-        const ownerMatchups = {
-          ownerNames,
-          wins,
-          losses,
-          ties,
-          winPer,
-        };
-        basketballMatchupsArray.push(ownerMatchups);
-      }
-    }
-    dispatch(
-      actions.saveScrapedBasketballMatchups(
-        sortArrayBy(basketballMatchupsArray, "winPer", true)
-      )
-    );
-  }
-
-  if (baseballMatchups) {
-    const baseballMatchupsArray = [];
-    for (let opposingTeams in baseballMatchups) {
-      const { ownerNames } = baseballTeams[opposingTeams];
-      const { wins, losses, ties } = baseballMatchups[opposingTeams];
-      const winPer = round(baseballMatchups[opposingTeams].percentage, 3);
-      const ownerMatchups = {
-        ownerNames,
-        wins,
-        losses,
-        ties,
-        winPer,
-      };
-      baseballMatchupsArray.push(ownerMatchups);
-    }
-    dispatch(
-      actions.saveScrapedBaseballMatchups(
-        sortArrayBy(baseballMatchupsArray, "winPer", true)
-      )
-    );
-  }
-
-  if (footballMatchups) {
-    // need to figure out points for and against for matchups
-  } else {
-  }
 };
 
 const displayMatchups = (year, teamNumber) => {
