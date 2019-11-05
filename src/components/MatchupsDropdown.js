@@ -27,7 +27,7 @@ export class MatchupsDropdown extends PureComponent {
 
   componentDidMount() {
     const ownerMatchupsCollection = returnMongoCollection(
-      "owner" + this.props.teamNumber + "Matchups"
+      `owner${this.props.teamNumber}Matchups`
     );
     ownerMatchupsCollection
       .find({}, { projection: { _id: 0, year: 1 } })

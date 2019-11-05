@@ -4,16 +4,14 @@ import round from "lodash/round";
 const footballStandingsScraper = year => {
   return axios
     .get(
-      "http://fantasy.espn.com/apis/v3/games/ffl/seasons/" +
-        year +
-        "/segments/0/leagues/154802?view=standings"
+      `http://fantasy.espn.com/apis/v3/games/ffl/seasons/${year}/segments/0/leagues/154802?view=standings`
     )
     .then(response => {
       const standingsArray = [];
 
       response.data.teams.forEach(team => {
         standingsArray.push({
-          teamName: team.location + " " + team.nickname,
+          teamName: `${team.location} ${team.nickname}`,
           ownerIds: team.owners,
           wins: team.record.overall.wins,
           losses: team.record.overall.losses,

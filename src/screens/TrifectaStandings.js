@@ -194,12 +194,18 @@ class TrifectaStandings extends PureComponent {
         <StandingsDropdownPre2019
           navigation={navigation}
           year1={year1}
-          year2={year}
+          year2={year.toString()}
         />
       );
     }
 
-    return <StandingsDropdownPost2019 navigation={navigation} year={year} />;
+    return (
+      <StandingsDropdownPost2019
+        navigation={navigation}
+        year={year}
+        currentYear={this.state.currentYear}
+      />
+    );
   };
 
   render() {
