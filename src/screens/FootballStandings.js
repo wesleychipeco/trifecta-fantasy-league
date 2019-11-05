@@ -24,6 +24,7 @@ class FootballStandings extends PureComponent {
 
     this.state = {
       year: null,
+      currentYear: null,
       seasonStarted: null,
       inSeason: null,
       footballStandings: {
@@ -72,6 +73,7 @@ class FootballStandings extends PureComponent {
             : "totalTrifectaPoints";
 
           this.setState({
+            currentYear,
             seasonStarted,
             inSeason,
             footballStandings: {
@@ -200,13 +202,19 @@ class FootballStandings extends PureComponent {
       return (
         <StandingsDropdownPre2019
           navigation={navigation}
-          year1={year}
+          year1={year.toString()}
           year2={year2}
         />
       );
     }
 
-    return <StandingsDropdownPost2019 navigation={navigation} year={year} />;
+    return (
+      <StandingsDropdownPost2019
+        navigation={navigation}
+        year={year}
+        currentYear={this.state.currentYear}
+      />
+    );
   };
 
   render() {

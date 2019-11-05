@@ -173,9 +173,7 @@ const compileMatchups = (matchups, teamsList, sport) => {
 const displayMatchups = (year, teamNumber) => {
   return async function(dispatch) {
     //connect to mongo
-    const ownerCollection = returnMongoCollection(
-      "owner" + teamNumber + "Matchups"
-    );
+    const ownerCollection = returnMongoCollection(`owner${teamNumber}Matchups`);
 
     findFromMongoSaveToRedux(
       dispatch,

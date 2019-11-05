@@ -29,7 +29,7 @@ const actions = {
 };
 
 const retrieveSportStandings = (year, sport) => {
-  const standingsName = sport + "Standings";
+  const standingsName = `${sport}Standings`;
   const collection = returnMongoCollection(standingsName);
   // TODO - need to change after 2019 Trifecta season ends
   const trifectaPointsKey =
