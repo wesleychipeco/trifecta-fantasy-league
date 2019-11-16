@@ -4,17 +4,18 @@ import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { Navbar } from "../components/Navbar";
 import { LinkText } from "../components/LinkText";
+import { LoadingIndicator } from "../components/LoadingIndicator";
 import { StandingsDropdownPre2019 } from "../components/StandingsDropdownPre2019";
 import { StandingsDropdownPost2019 } from "../components/StandingsDropdownPost2019";
 import { getTrifectaStandingsStateSelectors } from "../store/trifectaStandings/trifectaStandingsReducer";
 import {
   calculateTrifectaStandings,
   displayTrifectaStandings,
-  sortTable,
+  sortTable
 } from "../store/trifectaStandings/trifectaStandingsActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/trifectaStandings";
-import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
+import { sortArrayBy, isYear1BeforeYear2, isEmptyArray } from "../utils";
 import { returnMongoCollection } from "../databaseManagement";
 import { standingsStyles as styles } from "../styles/globalStyles";
 
@@ -30,8 +31,8 @@ class TrifectaStandings extends PureComponent {
       footballSeasonEnded: null,
       trifectaStandings: {
         sortedColumn: null,
-        highToLow: null,
-      },
+        highToLow: null
+      }
     };
   }
 
@@ -42,7 +43,7 @@ class TrifectaStandings extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     const year = this.props.navigation.getParam("year", "No year was defined!");
     this.setState({
-      year,
+      year
     });
 
     if (prevState.year !== this.state.year) {
@@ -55,7 +56,7 @@ class TrifectaStandings extends PureComponent {
       lastScraped,
       navigation,
       calculateTrifectaStandings,
-      displayTrifectaStandings,
+      displayTrifectaStandings
     } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
@@ -70,8 +71,8 @@ class TrifectaStandings extends PureComponent {
           currentYear,
           trifectaStandings: {
             sortedColumn: "totalTrifectaPoints",
-            highToLow: true,
-          },
+            highToLow: true
+          }
         });
 
         if (isYear1BeforeYear2(year, currentYear) || lastScraped) {
@@ -95,7 +96,7 @@ class TrifectaStandings extends PureComponent {
           this.setState({
             basketballSeasonEnded,
             baseballSeasonEnded,
-            footballSeasonEnded,
+            footballSeasonEnded
           });
 
           calculateTrifectaStandings(
@@ -123,8 +124,8 @@ class TrifectaStandings extends PureComponent {
       this.setState({
         trifectaStandings: {
           sortedColumn: columnKey,
-          highToLow: !highToLow,
-        },
+          highToLow: !highToLow
+        }
       });
       sortTable(sortArrayBy(tableArraySorted, columnKey, !highToLow));
     } else {
@@ -133,8 +134,8 @@ class TrifectaStandings extends PureComponent {
       this.setState({
         trifectaStandings: {
           sortedColumn: columnKey,
-          highToLow: columnDefaultSortDirection,
-        },
+          highToLow: columnDefaultSortDirection
+        }
       });
       sortTable(
         sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection)
@@ -212,6 +213,10 @@ class TrifectaStandings extends PureComponent {
     const { navigation, trifectaStandings } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
+    if (isEmptyArray(trifectaStandings)) {
+      return <LoadingIndicator />;
+    }
+
     const headerRowHeight = 75;
     const totalHeight = 500;
     const totalWidth = 600;
@@ -221,7 +226,7 @@ class TrifectaStandings extends PureComponent {
       "ownerNames",
       "basketballTrifectaPoints",
       "baseballTrifectaPoints",
-      "totalTrifectaPoints",
+      "totalTrifectaPoints"
     ];
 
     const indexToAdd = isYear1BeforeYear2(year, "2019") ? 1 : 3;
@@ -232,21 +237,21 @@ class TrifectaStandings extends PureComponent {
       { title: "Owner(s)", onPress: this.noop },
       {
         title: "Basketball Trifecta Points",
-        onPress: this.sortTrifectaStandingsByBasketball,
+        onPress: this.sortTrifectaStandingsByBasketball
       },
       {
         title: "Baseball Trifecta Points",
-        onPress: this.sortTrifectaStandingsByBaseball,
+        onPress: this.sortTrifectaStandingsByBaseball
       },
       {
         title: "Total Trifecta Points",
-        onPress: this.sortTrifectaStandingsByTotal,
-      },
+        onPress: this.sortTrifectaStandingsByTotal
+      }
     ];
 
     headerRowMap.splice(indexToAdd, 0, {
       title: "Football Trifecta Points",
-      onPress: this.sortTrifectaStandingsByFootball,
+      onPress: this.sortTrifectaStandingsByFootball
     });
 
     const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
@@ -287,22 +292,19 @@ class TrifectaStandings extends PureComponent {
 const mapStateToProps = state => {
   const {
     getTrifectaStandings,
-    getLastScraped,
+    getLastScraped
   } = getTrifectaStandingsStateSelectors(state);
 
   return {
     trifectaStandings: getTrifectaStandings(),
-    lastScraped: getLastScraped(),
+    lastScraped: getLastScraped()
   };
 };
 
 const mapDispatchToProps = {
   calculateTrifectaStandings,
   displayTrifectaStandings,
-  sortTable,
+  sortTable
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TrifectaStandings);
+export default connect(mapStateToProps, mapDispatchToProps)(TrifectaStandings);

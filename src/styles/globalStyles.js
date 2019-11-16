@@ -1,128 +1,144 @@
 const cellStyles = {
   cell: {
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   text: {
     backgroundColor: "transparent",
-    textAlign: "center",
-  },
+    textAlign: "center"
+  }
 };
 
 const rowStyles = {
   rows: {
-    justifyContent: "center",
+    justifyContent: "center"
   },
   row: {
-    flexDirection: "row",
-  },
+    flexDirection: "row"
+  }
 };
 
 const linkTextStyles = {
   container: {
     backgroundColor: "transparent",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   text: {
     textAlign: "center",
-    textDecorationLine: "underline",
-  },
+    textDecorationLine: "underline"
+  }
 };
 
 const myButtonStyles = {
   container: {
     backgroundColor: "transparent",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   text: {
     textAlign: "center",
-    fontFamily: "Arial",
+    fontFamily: "Arial"
+  }
+};
+
+const loadingIndicatorStyles = {
+  container: {
+    top: 150,
+    justifyContent: "center",
+    alignItems: "center"
   },
+  loadingImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 25
+  },
+  loadingText: {
+    fontSize: 24
+  }
 };
 
 const homeScreenStyles = {
   container: {
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#F5FCFF",
+    backgroundColor: "#F5FCFF"
   },
   header: {
     width: "80%",
-    marginTop: 20,
+    marginTop: 20
   },
   welcome: {
     fontSize: 30,
-    textAlign: "center",
+    textAlign: "center"
   },
   caption: {
     textAlign: "center",
-    fontSize: 16,
+    fontSize: 16
   },
   timeline: {
-    alignSelf: "center",
+    alignSelf: "center"
   },
   future: {
     marginVertical: 20,
-    width: "80%",
+    width: "80%"
   },
   item: {
     fontSize: 16,
     alignSelf: "flex-start",
-    textAlign: "center",
+    textAlign: "center"
   },
   googleDoc: {
     width: "80%",
     height: 750,
     style: {
-      alignSelf: "center",
-    },
-  },
+      alignSelf: "center"
+    }
+  }
 };
 
 const standingsStyles = {
   container: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5FCFF",
+    backgroundColor: "#F5FCFF"
   },
   headerSection: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
+    width: "100%"
   },
   dropdown: {
     position: "absolute",
     right: 250,
-    marginTop: 10,
+    marginTop: 10
   },
   title: {
     fontSize: 20,
     textAlign: "center",
-    marginTop: 5,
+    marginTop: 5
   },
   subtext: {
     alignSelf: "flex-start",
     marginBottom: 5,
-    fontSize: 14,
+    fontSize: 14
   },
   tables: {
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 10
   },
   table: {
     alignItems: "center",
-    marginVertical: 10,
+    marginVertical: 10
   },
   header: {
-    backgroundColor: "#BEBEBE",
+    backgroundColor: "#BEBEBE"
   },
   headerText: {
-    color: "#0041C2",
-  },
+    color: "#0041C2"
+  }
 };
 
 const navbarStyles = {
@@ -130,17 +146,17 @@ const navbarStyles = {
     flexDirection: "row",
     justifyContent: "space-evenly",
     backgroundColor: "#cccccc",
-    width: "100%",
+    width: "100%"
   },
   button: {
     borderWidth: 2,
     borderColor: "#000000",
     backgroundColor: "#007FFF",
-    padding: 5,
+    padding: 5
   },
   text: {
-    color: "#FFFFFF",
-  },
+    color: "#FFFFFF"
+  }
 };
 
 /*
@@ -157,12 +173,12 @@ const triggerStyles = {
     backgroundColor: "#007FFF",
     // borderWidth: 3,
     // borderColor: "#000000",
-    padding: 5,
+    padding: 5
   },
   triggerText: {
     fontFamily: "Arial",
-    color: "white",
-  },
+    color: "white"
+  }
 };
 
 /*
@@ -175,14 +191,14 @@ const triggerStyles = {
 const optionsStyles = {
   optionsWrapper: {
     borderWidth: 3,
-    borderColor: "#000000",
+    borderColor: "#000000"
   },
   optionWrapper: {
-    backgroundColor: "#DCDCDC",
+    backgroundColor: "#DCDCDC"
   },
   optionText: {
-    fontFamily: "Arial",
-  },
+    fontFamily: "Arial"
+  }
 };
 
 export {
@@ -190,9 +206,10 @@ export {
   rowStyles,
   linkTextStyles,
   myButtonStyles,
+  loadingIndicatorStyles,
   homeScreenStyles,
   standingsStyles,
   navbarStyles,
   triggerStyles,
-  optionsStyles,
+  optionsStyles
 };

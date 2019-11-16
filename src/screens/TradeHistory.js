@@ -2,16 +2,17 @@ import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
+import { LoadingIndicator } from "../components/LoadingIndicator";
 
 import { getTradeHistoryStateSelectors } from "../store/tradeHistory/tradeHistoryReducer";
 import {
   displayTradeHistory,
-  sortTable,
+  sortTable
 } from "../store/tradeHistory/tradeHistoryActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/tradeHistory";
 import { Navbar } from "../components/Navbar";
-import { sortArrayBy } from "../utils";
+import { sortArrayBy, isEmptyArray } from "../utils";
 import { LinkText } from "../components/LinkText";
 import { standingsStyles as styles } from "../styles/globalStyles";
 
@@ -21,7 +22,7 @@ class TradeHistory extends PureComponent {
 
     this.state = {
       sortedColumn: "date",
-      highToLow: true,
+      highToLow: true
     };
   }
 
@@ -38,14 +39,14 @@ class TradeHistory extends PureComponent {
     if (sortedColumn === columnKey) {
       this.setState({
         sortedColumn: columnKey,
-        highToLow: !highToLow,
+        highToLow: !highToLow
       });
       sortTable(sortArrayBy(tableArraySorted, columnKey, !highToLow));
     } else {
       const columnDefaultSortDirection = tableDefaultSortDirections[columnKey];
       this.setState({
         sortedColumn: columnKey,
-        highToLow: columnDefaultSortDirection,
+        highToLow: columnDefaultSortDirection
       });
       sortTable(
         sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection)
@@ -81,8 +82,8 @@ class TradeHistory extends PureComponent {
   render() {
     const { navigation, tradeHistory } = this.props;
 
-    if (!tradeHistory) {
-      return null;
+    if (isEmptyArray(tradeHistory)) {
+      return <LoadingIndicator />;
     }
 
     const headerRowHeight = 75;
@@ -95,7 +96,7 @@ class TradeHistory extends PureComponent {
       "owner1",
       "owner1PlayersReceived",
       "owner2",
-      "owner2PlayersReceived",
+      "owner2PlayersReceived"
     ];
 
     const headerRowMap = [
@@ -103,7 +104,7 @@ class TradeHistory extends PureComponent {
       { title: "Owner 1", onPress: this.sortByOwner1 },
       { title: "Players Received", onPress: this.noop },
       { title: "Owner 2", onPress: this.sortByOwner2 },
-      { title: "Players Received", onPress: this.noop },
+      { title: "Players Received", onPress: this.noop }
     ];
 
     const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
@@ -138,16 +139,13 @@ const mapStateToProps = state => {
   const { getTradeHistory } = getTradeHistoryStateSelectors(state);
 
   return {
-    tradeHistory: getTradeHistory(),
+    tradeHistory: getTradeHistory()
   };
 };
 
 const mapDispatchToProps = {
   displayTradeHistory,
-  sortTable,
+  sortTable
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TradeHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(TradeHistory);

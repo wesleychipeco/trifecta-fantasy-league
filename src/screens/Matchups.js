@@ -4,15 +4,16 @@ import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
 import { Navbar } from "../components/Navbar";
+import { LoadingIndicator } from "../components/LoadingIndicator";
 import { MatchupsDropdown } from "../components/MatchupsDropdown";
 import { getMatchupsStateSelectors } from "../store/matchups/matchupsReducer";
 import {
   scrapeMatchups,
   displayMatchups,
-  sortTable,
+  sortTable
 } from "../store/matchups/matchupsActions";
 import { returnMongoCollection } from "../databaseManagement";
-import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
+import { sortArrayBy, isYear1BeforeYear2, isEmptyArray } from "../utils";
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/matchups";
 import { standingsStyles as styles } from "../styles/globalStyles";
 
@@ -28,20 +29,20 @@ class Matchups extends PureComponent {
       footballSeasonEnded: null,
       totalMatchups: {
         sortedColumn: "totalWinPer",
-        highToLow: true,
+        highToLow: true
       },
       basketballMatchups: {
         sortedColumn: "winPer",
-        highToLow: true,
+        highToLow: true
       },
       baseballMatchups: {
         sortedColumn: "winPer",
-        highToLow: true,
+        highToLow: true
       },
       footballMatchups: {
         sortedColumn: "winPer",
-        highToLow: true,
-      },
+        highToLow: true
+      }
     };
   }
 
@@ -52,7 +53,7 @@ class Matchups extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     const year = this.props.navigation.getParam("year", "No year was defined!");
     this.setState({
-      year,
+      year
     });
 
     if (prevState.year !== this.state.year) {
@@ -114,7 +115,7 @@ class Matchups extends PureComponent {
                 this.setState({
                   basketballSeasonEnded,
                   baseballSeasonEnded,
-                  footballSeasonEnded,
+                  footballSeasonEnded
                 });
 
                 const teamNumbersPerSportCollection = returnMongoCollection(
@@ -129,13 +130,13 @@ class Matchups extends PureComponent {
                       teamNumbers,
                       basketball: basketballTeams,
                       baseball: baseballTeams,
-                      football: footballTeams,
+                      football: footballTeams
                     } = teamNumbersArray[0];
 
                     const {
                       basketball: basketballTeamNumber,
                       baseball: baseballTeamNumber,
-                      football: footballTeamNumber,
+                      football: footballTeamNumber
                     } = teamNumbers[teamNumber];
 
                     scrapeMatchups(
@@ -168,12 +169,12 @@ class Matchups extends PureComponent {
       this.setState({
         [tableType]: {
           sortedColumn: columnKey,
-          highToLow: !highToLow,
-        },
+          highToLow: !highToLow
+        }
       });
       sortTable([
         sortArrayBy(tableArraySorted, columnKey, !highToLow),
-        tableType,
+        tableType
       ]);
     } else {
       const columnDefaultSortDirection =
@@ -181,12 +182,12 @@ class Matchups extends PureComponent {
       this.setState({
         [tableType]: {
           sortedColumn: columnKey,
-          highToLow: columnDefaultSortDirection,
-        },
+          highToLow: columnDefaultSortDirection
+        }
       });
       sortTable([
         sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection),
-        tableType,
+        tableType
       ]);
     }
   };
@@ -336,24 +337,24 @@ class Matchups extends PureComponent {
       "basketballWinPer",
       "baseballWinPer",
       "footballWinPer",
-      "totalWinPer",
+      "totalWinPer"
     ];
 
     const totalMatchupsHeaderRowMap = [
       { title: "Owner Name(s)", onPress: this.noop },
       {
         title: "Basketball Win %",
-        onPress: this.sortTotalMatchupsByBasketballWinPer,
+        onPress: this.sortTotalMatchupsByBasketballWinPer
       },
       {
         title: "Baseball Win %",
-        onPress: this.sortTotalMatchupsByBaseballWinPer,
+        onPress: this.sortTotalMatchupsByBaseballWinPer
       },
       {
         title: "Football Win %",
-        onPress: this.sortTotalMatchupsByFootballWinPer,
+        onPress: this.sortTotalMatchupsByFootballWinPer
       },
-      { title: "Total Win %", onPress: this.sortTotalMatchupsByTotalWinPer },
+      { title: "Total Win %", onPress: this.sortTotalMatchupsByTotalWinPer }
     ];
     const totalMatchupsHeaderRow = totalMatchupsHeaderRowMap.map(
       this.renderHeaderRowColumn
@@ -393,7 +394,7 @@ class Matchups extends PureComponent {
       "wins",
       "losses",
       "ties",
-      "winPer",
+      "winPer"
     ];
 
     const sportsMatchupsHeaderRowHeight = 75;
@@ -407,33 +408,34 @@ class Matchups extends PureComponent {
       : defaultSportsObjectKeys.concat([
           "pointsFor",
           "pointsAgainst",
-          "pointsDiff",
+          "pointsDiff"
         ]);
 
-    if (sportsMatchups.length > 0) {
+    if (isEmptyArray(sportsMatchups)) {
       return (
         <View style={styles.table}>
-          <Text style={styles.subtext}>{`${sport} Matchups`}</Text>
-          <Row
-            data={headerRow}
-            height={sportsMatchupsHeaderRowHeight}
-            totalWidth={sportsMatchupsTotalWidth}
-            widthArray={sportsMatchupsWidthArray}
-            rowStyle={styles.header}
-          />
-          <Rows
-            data={sportsMatchups}
-            totalheight={sportsMatchupsTotalHeight}
-            totalwidth={sportsMatchupsTotalWidth}
-            widthArray={sportsMatchupsWidthArray}
-            objectKeys={sportsMatchupsObjectKeys}
-          />
+          <Text style={styles.title}>{`${sport} season not completed`}</Text>
         </View>
       );
     }
+
     return (
       <View style={styles.table}>
-        <Text style={styles.title}>{`${sport} season not completed`}</Text>
+        <Text style={styles.subtext}>{`${sport} Matchups`}</Text>
+        <Row
+          data={headerRow}
+          height={sportsMatchupsHeaderRowHeight}
+          totalWidth={sportsMatchupsTotalWidth}
+          widthArray={sportsMatchupsWidthArray}
+          rowStyle={styles.header}
+        />
+        <Rows
+          data={sportsMatchups}
+          totalheight={sportsMatchupsTotalHeight}
+          totalwidth={sportsMatchupsTotalWidth}
+          widthArray={sportsMatchupsWidthArray}
+          objectKeys={sportsMatchupsObjectKeys}
+        />
       </View>
     );
   };
@@ -443,7 +445,7 @@ class Matchups extends PureComponent {
       navigation,
       basketballMatchups,
       baseballMatchups,
-      footballMatchups,
+      footballMatchups
     } = this.props;
     const { ownerNames } = this.state;
     const year = navigation.getParam("year", "No year was defined!");
@@ -452,21 +454,29 @@ class Matchups extends PureComponent {
       "No teamNumber was defined!"
     );
 
+    if (
+      isEmptyArray(basketballMatchups) &&
+      isEmptyArray(baseballMatchups) &&
+      isEmptyArray(footballMatchups)
+    ) {
+      return <LoadingIndicator />;
+    }
+
     const basketballMatchupsHeaderRowMap = [
       { title: "Owner Name(s)", onPress: this.noop },
       {
         title: "Wins",
-        onPress: this.sortBasketballMatchupsByWins,
+        onPress: this.sortBasketballMatchupsByWins
       },
       {
         title: "Losses",
-        onPress: this.sortBasketballMatchupsByLosses,
+        onPress: this.sortBasketballMatchupsByLosses
       },
       {
         title: "Ties",
-        onPress: this.sortBasketballMatchupsByTies,
+        onPress: this.sortBasketballMatchupsByTies
       },
-      { title: "Win %", onPress: this.sortBasketballMatchupsByWinPer },
+      { title: "Win %", onPress: this.sortBasketballMatchupsByWinPer }
     ];
     const basketballMatchupsHeaderRow = basketballMatchupsHeaderRowMap.map(
       this.renderHeaderRowColumn
@@ -476,17 +486,17 @@ class Matchups extends PureComponent {
       { title: "Owner Name(s)", onPress: this.noop },
       {
         title: "Wins",
-        onPress: this.sortBaseballMatchupsByWins,
+        onPress: this.sortBaseballMatchupsByWins
       },
       {
         title: "Losses",
-        onPress: this.sortBaseballMatchupsByLosses,
+        onPress: this.sortBaseballMatchupsByLosses
       },
       {
         title: "Ties",
-        onPress: this.sortBaseballMatchupsByTies,
+        onPress: this.sortBaseballMatchupsByTies
       },
-      { title: "Win %", onPress: this.sortBaseballMatchupsByWinPer },
+      { title: "Win %", onPress: this.sortBaseballMatchupsByWinPer }
     ];
     const baseballMatchupsHeaderRow = baseballMatchupsHeaderRowMap.map(
       this.renderHeaderRowColumn
@@ -496,26 +506,26 @@ class Matchups extends PureComponent {
       { title: "Owner Name(s)", onPress: this.noop },
       {
         title: "Wins",
-        onPress: this.sortFootballMatchupsByWins,
+        onPress: this.sortFootballMatchupsByWins
       },
       {
         title: "Losses",
-        onPress: this.sortFootballMatchupsByLosses,
+        onPress: this.sortFootballMatchupsByLosses
       },
       {
         title: "Ties",
-        onPress: this.sortFootballMatchupsByTies,
+        onPress: this.sortFootballMatchupsByTies
       },
       { title: "Win %", onPress: this.sortFootballMatchupsByWinPer },
       { title: "Points For", onPress: this.sortFootballMatchupsByPointsFor },
       {
         title: "Points Against",
-        onPress: this.sortFootballMatchupsByPointsAgainst,
+        onPress: this.sortFootballMatchupsByPointsAgainst
       },
       {
         title: "Point Differential",
-        onPress: this.sortFootballMatchupsByPointsDiff,
-      },
+        onPress: this.sortFootballMatchupsByPointsDiff
+      }
     ];
     const footballMatchupsHeaderRow = footballMatchupsHeaderRowMap.map(
       this.renderHeaderRowColumn
@@ -576,7 +586,7 @@ const mapStateToProps = state => {
     getBasketballMatchups,
     getBaseballMatchups,
     getFootballMatchups,
-    getLastScraped,
+    getLastScraped
   } = getMatchupsStateSelectors(state);
 
   return {
@@ -584,17 +594,14 @@ const mapStateToProps = state => {
     basketballMatchups: getBasketballMatchups(),
     baseballMatchups: getBaseballMatchups(),
     footballMatchups: getFootballMatchups(),
-    lastScraped: getLastScraped(),
+    lastScraped: getLastScraped()
   };
 };
 
 const mapDispatchToProps = {
   scrapeMatchups,
   displayMatchups,
-  sortTable,
+  sortTable
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Matchups);
+export default connect(mapStateToProps, mapDispatchToProps)(Matchups);
