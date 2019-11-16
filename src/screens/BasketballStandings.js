@@ -3,17 +3,18 @@ import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { Navbar } from "../components/Navbar";
+import { LoadingIndicator } from "../components/LoadingIndicator";
 import { StandingsDropdownPre2019 } from "../components/StandingsDropdownPre2019";
 import { StandingsDropdownPost2019 } from "../components/StandingsDropdownPost2019";
 import { getBasketballStandingsStateSelectors } from "../store/basketballStandings/basketballStandingsReducer";
 import {
   scrapeBasketballStandings,
   displayBasketballStandings,
-  sortTable,
+  sortTable
 } from "../store/basketballStandings/basketballStandingsActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/basketballStandings";
-import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
+import { sortArrayBy, isYear1BeforeYear2, isEmptyArray } from "../utils";
 import { LinkText } from "../components/LinkText";
 import { returnMongoCollection } from "../databaseManagement";
 import { standingsStyles as styles } from "../styles/globalStyles";
@@ -30,24 +31,24 @@ class BasketballStandings extends PureComponent {
       basketballAhead: null,
       trifectaStandings: {
         sortedColumn: null,
-        highToLow: null,
+        highToLow: null
       },
       h2hStandings: {
         sortedColumn: "h2hTrifectaPoints",
-        highToLow: true,
+        highToLow: true
       },
       rotoStandings: {
         sortedColumn: "rotoTrifectaPoints",
-        highToLow: true,
+        highToLow: true
       },
       rotoStats: {
         sortedColumn: "teamName",
-        highToLow: true,
+        highToLow: true
       },
       basketballStandings: {
         sortedColumn: null,
-        highToLow: null,
-      },
+        highToLow: null
+      }
     };
   }
 
@@ -58,7 +59,7 @@ class BasketballStandings extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     const year = this.props.navigation.getParam("year", "No year was defined!");
     this.setState({
-      year,
+      year
     });
 
     if (prevState.year !== this.state.year) {
@@ -79,7 +80,7 @@ class BasketballStandings extends PureComponent {
         const { seasonStarted, inSeason } = seasonVariables[0].basketball;
         const {
           scrapeBasketballStandings,
-          displayBasketballStandings,
+          displayBasketballStandings
         } = this.props;
 
         if (isYear1BeforeYear2(year, currentYear)) {
@@ -97,8 +98,8 @@ class BasketballStandings extends PureComponent {
             basketballAhead,
             trifectaStandings: {
               sortedColumn: defaultSortColumn,
-              highToLow: true,
-            },
+              highToLow: true
+            }
           });
 
           // if IN basketball ahead season
@@ -133,12 +134,12 @@ class BasketballStandings extends PureComponent {
       this.setState({
         [tableType]: {
           sortedColumn: columnKey,
-          highToLow: !highToLow,
-        },
+          highToLow: !highToLow
+        }
       });
       sortTable([
         sortArrayBy(tableArraySorted, columnKey, !highToLow),
-        tableType,
+        tableType
       ]);
     } else {
       const columnDefaultSortDirection =
@@ -146,12 +147,12 @@ class BasketballStandings extends PureComponent {
       this.setState({
         [tableType]: {
           sortedColumn: columnKey,
-          highToLow: columnDefaultSortDirection,
-        },
+          highToLow: columnDefaultSortDirection
+        }
       });
       sortTable([
         sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection),
-        tableType,
+        tableType
       ]);
     }
   };
@@ -414,7 +415,7 @@ class BasketballStandings extends PureComponent {
       h2hStandings,
       rotoStandings,
       rotoStats,
-      basketballStandings,
+      basketballStandings
     } = this.props;
     const { seasonStarted, inSeason, basketballAhead } = this.state;
     const year = navigation.getParam("year", "No year was defined!");
@@ -430,11 +431,14 @@ class BasketballStandings extends PureComponent {
     const isAfter2020 = !isYear1BeforeYear2(year, "2020");
 
     const standingsConditional = isAfter2020
-      ? !h2hStandings || !rotoStandings || !rotoStats || !trifectaStandings
-      : !basketballStandings;
+      ? isEmptyArray(h2hStandings) ||
+        isEmptyArray(rotoStandings) ||
+        isEmptyArray(rotoStats) ||
+        isEmptyArray(trifectaStandings)
+      : isEmptyArray(basketballStandings);
 
     if (standingsConditional) {
-      return null;
+      return <LoadingIndicator />;
     }
 
     if (isAfter2020) {
@@ -449,7 +453,7 @@ class BasketballStandings extends PureComponent {
         "ownerNames",
         "h2hTrifectaPoints",
         "rotoTrifectaPoints",
-        "trifectaPoints",
+        "trifectaPoints"
       ];
 
       // Create header row for Trifecta Standings Table
@@ -458,16 +462,16 @@ class BasketballStandings extends PureComponent {
         { title: "Owner(s)", onPress: this.noop },
         {
           title: "H2H Trifecta Points",
-          onPress: this.sortTrifectaStandingsByH2HPoints,
+          onPress: this.sortTrifectaStandingsByH2HPoints
         },
         {
           title: "Roto Trifecta Points",
-          onPress: this.sortTrifectaStandingsByRotoPoints,
+          onPress: this.sortTrifectaStandingsByRotoPoints
         },
         {
           title: "Regular Season Trifecta Points",
-          onPress: this.sortTrifectaStandingsByTrifectaPoints,
-        },
+          onPress: this.sortTrifectaStandingsByTrifectaPoints
+        }
       ];
 
       if (!inSeason && !basketballAhead) {
@@ -479,11 +483,11 @@ class BasketballStandings extends PureComponent {
         trifectaStandingsHeaderRowMap.push(
           {
             title: "Playoff Points",
-            onPress: this.sortTrifectaStandingsByPlayoffPoints,
+            onPress: this.sortTrifectaStandingsByPlayoffPoints
           },
           {
             title: "Total Trifecta Points",
-            onPress: this.sortTrifectaStandingsByTotalTrifectaPoints,
+            onPress: this.sortTrifectaStandingsByTotalTrifectaPoints
           }
         );
       }
@@ -503,7 +507,7 @@ class BasketballStandings extends PureComponent {
         "losses",
         "ties",
         "winPer",
-        "h2hTrifectaPoints",
+        "h2hTrifectaPoints"
       ];
       // Create header row for H2H Standings Table
       const h2hStandingsHeaderRowMap = [
@@ -514,8 +518,8 @@ class BasketballStandings extends PureComponent {
         { title: "Win %", onPress: this.sortH2HStandingsByWinPer },
         {
           title: "H2H Trifecta Points",
-          onPress: this.sortH2HStandingsByTrifectaPoints,
-        },
+          onPress: this.sortH2HStandingsByTrifectaPoints
+        }
       ];
       const h2hStandingsHeaderRow = h2hStandingsHeaderRowMap.map(
         this.renderHeaderRowColumn
@@ -537,7 +541,7 @@ class BasketballStandings extends PureComponent {
         75,
         75,
         75,
-        75,
+        75
       ];
       const rotoStandingsObjectKeys = [
         "teamName",
@@ -551,7 +555,7 @@ class BasketballStandings extends PureComponent {
         "TOPoints",
         "PTSPoints",
         "totalPoints",
-        "rotoTrifectaPoints",
+        "rotoTrifectaPoints"
       ];
       // Create header row for Roto Standings Table
       const rotoStandingsHeaderRowMap = [
@@ -568,8 +572,8 @@ class BasketballStandings extends PureComponent {
         { title: "Roto Points", onPress: this.sortRotoStandingsByRotoPoints },
         {
           title: "Roto Trifecta Points",
-          onPress: this.sortRotoStandingsByTrifectaPoints,
-        },
+          onPress: this.sortRotoStandingsByTrifectaPoints
+        }
       ];
       const rotoStandingsHeaderRow = rotoStandingsHeaderRowMap.map(
         this.renderHeaderRowColumn
@@ -590,7 +594,7 @@ class BasketballStandings extends PureComponent {
         "STL",
         "BLK",
         "TO",
-        "PTS",
+        "PTS"
       ];
       const rotoStatsHeaderRowMap = [
         { title: "Team Name", onPress: this.noop },
@@ -602,7 +606,7 @@ class BasketballStandings extends PureComponent {
         { title: "STL", onPress: this.sortRotoStatsBySTL },
         { title: "BLK", onPress: this.sortRotoStatsByBLK },
         { title: "TO", onPress: this.sortRotoStatsByTO },
-        { title: "PTS", onPress: this.sortRotoStatsByPTS },
+        { title: "PTS", onPress: this.sortRotoStatsByPTS }
       ];
       const rotoStatsHeaderRow = rotoStatsHeaderRowMap.map(
         this.renderHeaderRowColumn
@@ -709,7 +713,7 @@ class BasketballStandings extends PureComponent {
         "winPer",
         "trifectaPoints",
         "playoffPoints",
-        "totalTrifectaPoints",
+        "totalTrifectaPoints"
       ];
 
       const headerRowMap = [
@@ -721,16 +725,16 @@ class BasketballStandings extends PureComponent {
         { title: "Win %", onPress: this.sortBasketballStandingsByWinPer },
         {
           title: "Trifecta Points",
-          onPress: this.sortBasketballStandingsByTrifectaPoints,
+          onPress: this.sortBasketballStandingsByTrifectaPoints
         },
         {
           title: "Playoff Points",
-          onPress: this.sortBasketballStandingsByPlayoffPoints,
+          onPress: this.sortBasketballStandingsByPlayoffPoints
         },
         {
           title: "Total Trifecta Points",
-          onPress: this.sortBasketballStandingsByTotalTrifectaPoints,
-        },
+          onPress: this.sortBasketballStandingsByTotalTrifectaPoints
+        }
       ];
       const headerRow = headerRowMap.map(this.renderHeaderRowColumn);
       const title = `${year} Basketball Standings!`;
@@ -773,7 +777,7 @@ const mapStateToProps = state => {
     getRotoStandings,
     getRotoStats,
     getBasketballStandings,
-    getLastScraped,
+    getLastScraped
   } = getBasketballStandingsStateSelectors(state);
 
   return {
@@ -782,14 +786,14 @@ const mapStateToProps = state => {
     rotoStandings: getRotoStandings(),
     rotoStats: getRotoStats(),
     basketballStandings: getBasketballStandings(),
-    lastScraped: getLastScraped(),
+    lastScraped: getLastScraped()
   };
 };
 
 const mapDispatchToProps = {
   scrapeBasketballStandings,
   displayBasketballStandings,
-  sortTable,
+  sortTable
 };
 
 export default connect(

@@ -1,16 +1,18 @@
 import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
 import { Navbar } from "../components/Navbar";
-import { homeScreenStyles as styles } from "../styles/globalStyles";
-import { returnMongoCollection } from "../databaseManagement";
+import { LoadingIndicator } from "../components/LoadingIndicator";
 import { MatchupsDropdown } from "../components/MatchupsDropdown";
+import { returnMongoCollection } from "../databaseManagement";
+import { homeScreenStyles as styles } from "../styles/globalStyles";
+import { isEmptyArray } from "../utils";
 
 export class MatchupsHomeScreen extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      teamObjectsArray: null,
+      teamObjectsArray: []
     };
   }
 
@@ -22,7 +24,7 @@ export class MatchupsHomeScreen extends PureComponent {
       .asArray()
       .then(teamObjectsArray => {
         this.setState({
-          teamObjectsArray,
+          teamObjectsArray
         });
       });
   }
@@ -45,8 +47,8 @@ export class MatchupsHomeScreen extends PureComponent {
   render() {
     const { navigation } = this.props;
 
-    if (!this.state.teamObjectsArray) {
-      return null;
+    if (isEmptyArray(this.state.teamObjectsArray)) {
+      return <LoadingIndicator />;
     }
 
     return (
@@ -61,7 +63,7 @@ export class MatchupsHomeScreen extends PureComponent {
           style={{
             flex: 1,
             justifyContent: "space-evenly",
-            marginTop: 20,
+            marginTop: 20
           }}
         >
           {this.state.teamObjectsArray.map(this.renderTeamMatchupsDropdown)}

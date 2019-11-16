@@ -4,18 +4,19 @@ import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
 import { Navbar } from "../components/Navbar";
+import { LoadingIndicator } from "../components/LoadingIndicator";
 import { StandingsDropdownPre2019 } from "../components/StandingsDropdownPre2019";
 import { StandingsDropdownPost2019 } from "../components/StandingsDropdownPost2019";
 import { getFootballStandingsStateSelectors } from "../store/footballStandings/footballStandingsReducer";
 import {
   scrapeFootballStandings,
   displayFootballStandings,
-  sortTable,
+  sortTable
 } from "../store/footballStandings/footballStandingsActions";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/footballStandings";
 import { returnMongoCollection } from "../databaseManagement";
-import { sortArrayBy, isYear1BeforeYear2 } from "../utils";
+import { sortArrayBy, isYear1BeforeYear2, isEmptyArray } from "../utils";
 import { standingsStyles as styles } from "../styles/globalStyles";
 
 class FootballStandings extends PureComponent {
@@ -29,8 +30,8 @@ class FootballStandings extends PureComponent {
       inSeason: null,
       footballStandings: {
         sortedColumn: null,
-        highToLow: null,
-      },
+        highToLow: null
+      }
     };
   }
 
@@ -41,7 +42,7 @@ class FootballStandings extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     const year = this.props.navigation.getParam("year", "No year was defined!");
     this.setState({
-      year,
+      year
     });
 
     if (prevState.year !== this.state.year) {
@@ -62,7 +63,7 @@ class FootballStandings extends PureComponent {
         const { seasonStarted, inSeason } = seasonVariables[0].football;
         const {
           scrapeFootballStandings,
-          displayFootballStandings,
+          displayFootballStandings
         } = this.props;
 
         if (isYear1BeforeYear2(year, currentYear)) {
@@ -78,8 +79,8 @@ class FootballStandings extends PureComponent {
             inSeason,
             footballStandings: {
               sortedColumn: defaultSortColumn,
-              highToLow: true,
-            },
+              highToLow: true
+            }
           });
 
           if (seasonStarted) {
@@ -103,8 +104,8 @@ class FootballStandings extends PureComponent {
       this.setState({
         footballStandings: {
           sortedColumn: columnKey,
-          highToLow: !highToLow,
-        },
+          highToLow: !highToLow
+        }
       });
       sortTable(sortArrayBy(tableArraySorted, columnKey, !highToLow));
     } else {
@@ -113,8 +114,8 @@ class FootballStandings extends PureComponent {
       this.setState({
         footballStandings: {
           sortedColumn: columnKey,
-          highToLow: columnDefaultSortDirection,
-        },
+          highToLow: columnDefaultSortDirection
+        }
       });
       sortTable(
         sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection)
@@ -229,8 +230,8 @@ class FootballStandings extends PureComponent {
       );
     }
 
-    if (!footballStandings) {
-      return null;
+    if (isEmptyArray(footballStandings)) {
+      return <LoadingIndicator />;
     }
 
     const headerRowHeight = 75;
@@ -246,7 +247,7 @@ class FootballStandings extends PureComponent {
       "winPer",
       "pointsFor",
       "pointsAgainst",
-      "trifectaPoints",
+      "trifectaPoints"
     ];
 
     const headerRowMap = [
@@ -259,12 +260,12 @@ class FootballStandings extends PureComponent {
       { title: "Points For", onPress: this.sortFootballStandingsByPointsFor },
       {
         title: "Points Against",
-        onPress: this.sortFootballStandingsByPointsAgainst,
+        onPress: this.sortFootballStandingsByPointsAgainst
       },
       {
         title: "Trifecta Points",
-        onPress: this.sortFootballStandingsByTrifectaPoints,
-      },
+        onPress: this.sortFootballStandingsByTrifectaPoints
+      }
     ];
 
     if (!inSeason) {
@@ -273,11 +274,11 @@ class FootballStandings extends PureComponent {
       headerRowMap.push(
         {
           title: "Playoff Points",
-          onPress: this.sortFootballStandingsByPlayoffPoints,
+          onPress: this.sortFootballStandingsByPlayoffPoints
         },
         {
           title: "Total Trifecta Points",
-          onPress: this.sortFootballStandingsByTotalTrifectaPoints,
+          onPress: this.sortFootballStandingsByTotalTrifectaPoints
         }
       );
     }
@@ -317,22 +318,19 @@ class FootballStandings extends PureComponent {
 const mapStateToProps = state => {
   const {
     getFootballStandings,
-    getLastScraped,
+    getLastScraped
   } = getFootballStandingsStateSelectors(state);
 
   return {
     footballStandings: getFootballStandings(),
-    lastScraped: getLastScraped(),
+    lastScraped: getLastScraped()
   };
 };
 
 const mapDispatchToProps = {
   scrapeFootballStandings,
   displayFootballStandings,
-  sortTable,
+  sortTable
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FootballStandings);
+export default connect(mapStateToProps, mapDispatchToProps)(FootballStandings);

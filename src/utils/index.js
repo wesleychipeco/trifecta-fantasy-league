@@ -26,4 +26,12 @@ const sortArrayBySecondaryParameter = (
 const isYear1BeforeYear2 = (year, currentYear) =>
   Number(year) < Number(currentYear);
 
-export { sum, sortArrayBy, sortArrayBySecondaryParameter, isYear1BeforeYear2 };
+const isEmptyArray = array => array.length === 0;
+
+export {
+  sum,
+  sortArrayBy,
+  sortArrayBySecondaryParameter,
+  isYear1BeforeYear2,
+  isEmptyArray
+};
