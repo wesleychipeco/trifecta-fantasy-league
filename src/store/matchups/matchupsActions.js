@@ -168,19 +168,19 @@ const addFootballPoints = (footballMatchups, fullScheduleArray, teamNumber) => {
       return teamNumber === home || teamNumber === away;
     });
 
-    const matchup = matchedMatchup[0];
-    const homeTeam = matchup.home.teamId.toString();
-    const awayTeam = matchup.away.teamId.toString();
+    const { home, away } = matchedMatchup[0];
+    const homeTeam = home.teamId.toString();
+    const awayTeam = away.teamId.toString();
 
     // If desired team is found, assign appropriate pointsFor and pointsAgainst and teamId
     if (teamNumber === homeTeam) {
-      myTeamPointsFor = round(matchup.home.totalPoints, 1);
-      opposingTeamId = matchup.away.teamId.toString();
-      opposingTeamPointsAgainst = round(matchup.away.totalPoints, 1);
+      myTeamPointsFor = round(home.totalPoints, 1);
+      opposingTeamId = away.teamId.toString();
+      opposingTeamPointsAgainst = round(away.totalPoints, 1);
     } else if (teamNumber === awayTeam) {
-      myTeamPointsFor = round(matchup.away.totalPoints, 1);
-      opposingTeamId = matchup.home.teamId.toString();
-      opposingTeamPointsAgainst = round(matchup.home.totalPoints, 1);
+      myTeamPointsFor = round(away.totalPoints, 1);
+      opposingTeamId = home.teamId.toString();
+      opposingTeamPointsAgainst = round(home.totalPoints, 1);
     }
 
     // add to h2h json only if there was a match, otherwise keep moving on
