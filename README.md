@@ -14,7 +14,7 @@ Update `teamLists` collection for new Trifecta Season (per Trifecta Season, arra
 
 ### ADD NEW TRIFECTA OWNER
 
-Add new owner to `allTimeTeams` collection in Mongo (matchups dropdown will auto populate with current season) - used in Matchups
+Add new owner to `allTimeTeams` collection in Mongo (matchups dropdown will auto populate with current season) - used in Matchups  
 If not already updated, update `teamNumbersPerSport` collection (per Trifecta season, maps "teamNumber" to "ownerNames") - used in Matchups  
 If not already updated, update `teamLists` collection (per Trifecta Season, array of participating "ownerIds") - used in Trifecta Standings  
 `ownerIds` and `ownerTeamNumbersList` are not used, but rather both just refernce collections for visual UI check
