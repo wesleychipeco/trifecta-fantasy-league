@@ -1,37 +1,61 @@
+### START/END NEW SPORT
+
+To start a sport, set its "seasonStarted" and "inSeason" to `true`  
+If "seasonStarted" is `false`, standings will not be displayed at all  
+To end a sport, set its "seasonStarted" to `true` and "inSeason" to `false` --- equivalent to "seasonEnded" = `true`  
+Then immediately manually add `playoffPoints` and `totalTrifectaPoints` to sports's `trifectaStandings` for each owner  
+Code looks for "seasonStarted" = `true` and "inSeason" = `false` to decide to look for `playoffPoints` and `totalTrifectaPoints`
+
+### START NEW TRIFECTA SEASON
+
+Update `seasonVariables` collection with new "currentYear", each sport's variables (set "basketball": "seasonStarted" and "inSeason" to true, set everything else to false)  
+Update `teamNumbersPerSport` collection for new Trifecta Season (per Trifecta season, maps "teamNumber" to "ownerNames") - used in Matchups  
+Update `teamLists` collection for new Trifecta Season (per Trifecta Season, array of participating "ownerIds") - used in Trifecta Standings
+
+### ADD NEW TRIFECTA OWNER
+
+Add new owner to `allTimeTeams` collection in Mongo (matchups dropdown will auto populate with current season) - used in Matchups  
+If not already updated, update `teamNumbersPerSport` collection (per Trifecta season, maps "teamNumber" to "ownerNames") - used in Matchups  
+If not already updated, update `teamLists` collection (per Trifecta Season, array of participating "ownerIds") - used in Trifecta Standings  
+`ownerIds` and `ownerTeamNumbersList` are not used, but rather both just refernce collections for visual UI check
+
 ### CREATE AWS INSTANCE
-Ubuntu
-Create security groups to expose ports 3000, 8091 to all IPs
+
+Ubuntu  
+Create security groups to expose ports 3000, 8091 to all IPs  
 ssh -v -i .\Downloads\trifectav2.pem ubuntu@ec2-54-183-130-154.us-west-1.compute.amazonaws.com
 
 ### INSTALL
-`sudo apt install git`
-`git clone https://github.com/wesleychipeco/trifecta-fantasy-league.git`
-Install node https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/
-`sudo apt-get install curl`
-`curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -`
-`sudo apt-get update`
-`sudo apt-get install -y nodejs`
-`curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
-`echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list`
-`sudo apt update`
+
+`sudo apt install git`  
+`git clone https://github.com/wesleychipeco/trifecta-fantasy-league.git`  
+Install node https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/  
+`sudo apt-get install curl`  
+`curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -`  
+`sudo apt-get update`  
+`sudo apt-get install -y nodejs`  
+`curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`  
+`echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list`  
+`sudo apt update`  
 `sudo apt install yarn`
 
-To open tunnel:
-`yarn add ngrok`
-manually add authtoken to created file: `/home/ubuntu/ngrok.yml`
+To open tunnel:  
+`yarn add ngrok`  
+manually add authtoken to created file: `/home/ubuntu/ngrok.yml`  
 run `ngrok http 3000 -bind-tls=true -config=ngrok.yml` from `/home/ubuntu`
 
 ### Use screen to start processes
-screen -S <screen_name> --- create screen
-screen -ls --- see all screens
-screen -x <screen_name> --- attach to screen
+
+screen -S <screen_name> --- create screen  
+screen -ls --- see all screens  
+screen -x <screen_name> --- attach to screen  
 CTRL + a + d --- detach from screen
 
-## Create each collection in MongoDB first, and add rules in Stitch ##
-+ If in season -> pull data via API -> save to mongo & save to redux
-+ If not in season or in season and already scraped today -> pull data via mongo -> save to redux
-+ Sorting -> sort data and save to redux to re-render
+## Create each collection in MongoDB first, and add rules in Stitch
 
+- If in season -> pull data via API -> save to mongo & save to redux
+- If not in season or in season and already scraped today -> pull data via mongo -> save to redux
+- Sorting -> sort data and save to redux to re-render
 
 # React Native Web Boilerplate 🥘 with navigation 🗺
 
