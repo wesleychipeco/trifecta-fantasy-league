@@ -9,17 +9,20 @@ import {
   SAVE_EXISTING_BASEBALL_MATCHUPS,
   SAVE_EXISTING_FOOTBALL_MATCHUPS,
   SORT_MATCHUPS,
-  SET_MATCHUPS_LAST_SCRAPED,
+  SET_MATCHUPS_LAST_SCRAPED
 } from "./matchupsActionTypes";
 import {
   returnMongoCollection,
   findFromMongoSaveToRedux,
-  deleteInsertDispatch,
+  deleteInsertDispatch
 } from "../../databaseManagement";
-import { retrieveSportMatchups } from "../../scrapers/ownerMatchups";
+import {
+  retrieveSportMatchups,
+  retrieveFootballPoints
+} from "../../scrapers/ownerMatchups";
 import { basketballMatchups2019 } from "../../dataJSONS/basketballMatchups2019";
 import { format } from "date-fns";
-import { sortArrayBy } from "../../utils";
+import { sortArrayBy, sortArrayBySecondaryParameter } from "../../utils";
 import round from "lodash/round";
 
 const actions = {
@@ -34,7 +37,7 @@ const actions = {
   saveExistingBaseballMatchups: createAction(SAVE_EXISTING_BASEBALL_MATCHUPS),
   saveExistingFootballMatchups: createAction(SAVE_EXISTING_FOOTBALL_MATCHUPS),
   sortMatchups: createAction(SORT_MATCHUPS),
-  setLastScraped: createAction(SET_MATCHUPS_LAST_SCRAPED),
+  setLastScraped: createAction(SET_MATCHUPS_LAST_SCRAPED)
 };
 
 const scrapeMatchups = (
@@ -76,11 +79,25 @@ const scrapeMatchups = (
       "baseball"
     );
 
-    const rawFootballMatchups = footballSeasonEnded
+    // const rawFootballMatchups = footballSeasonEnded
+    const rawFootballMatchups = true
       ? await retrieveSportMatchups("football", year, footballTeamNumber)
       : undefined;
+
+    let footballSchedule;
+    // If rawFootballMatchups exist then need extra step of pulling schedule and adding points
+    if (rawFootballMatchups) {
+      footballSchedule = await retrieveFootballPoints(year);
+    }
+    const refinedFootballMatchups = rawFootballMatchups
+      ? await addFootballPoints(
+          rawFootballMatchups,
+          footballSchedule,
+          footballTeamNumber
+        )
+      : rawFootballMatchups;
     const footballMatchups = await compileMatchups(
-      rawFootballMatchups,
+      refinedFootballMatchups,
       footballTeams,
       "football"
     );
@@ -101,7 +118,7 @@ const scrapeMatchups = (
       totalMatchups,
       basketballMatchups,
       baseballMatchups,
-      footballMatchups,
+      footballMatchups
     };
 
     dispatch(
@@ -116,7 +133,7 @@ const scrapeMatchups = (
     );
     dispatch(
       actions.saveScrapedFootballMatchups(
-        sortArrayBy(footballMatchups, "winPer", true)
+        sortArrayBySecondaryParameter(footballMatchups, "winPer", "pointsDiff")
       )
     );
     dispatch(
@@ -137,11 +154,72 @@ const scrapeMatchups = (
   };
 };
 
+const addFootballPoints = (footballMatchups, fullScheduleArray, teamNumber) => {
+  // loop through each "week" (ie group of 5 matchups)
+  fullScheduleArray.forEach(week => {
+    let myTeamPointsFor = 0;
+    let opposingTeamId = "";
+    let opposingTeamPointsAgainst = 0;
+
+    // Loop through each matchup (5 in total), only return one that has desired team in it
+    const matchedMatchup = week.filter(matchup => {
+      const home = matchup.home.teamId.toString();
+      const away = matchup.away.teamId.toString();
+      return teamNumber === home || teamNumber === away;
+    });
+
+    const matchup = matchedMatchup[0];
+    const homeTeam = matchup.home.teamId.toString();
+    const awayTeam = matchup.away.teamId.toString();
+
+    // If desired team is found, assign appropriate pointsFor and pointsAgainst and teamId
+    if (teamNumber === homeTeam) {
+      myTeamPointsFor = round(matchup.home.totalPoints, 1);
+      opposingTeamId = matchup.away.teamId.toString();
+      opposingTeamPointsAgainst = round(matchup.away.totalPoints, 1);
+    } else if (teamNumber === awayTeam) {
+      myTeamPointsFor = round(matchup.away.totalPoints, 1);
+      opposingTeamId = matchup.home.teamId.toString();
+      opposingTeamPointsAgainst = round(matchup.home.totalPoints, 1);
+    }
+
+    // add to h2h json only if there was a match, otherwise keep moving on
+    if (opposingTeamPointsAgainst !== 0) {
+      footballMatchups[opposingTeamId].pointsFor += myTeamPointsFor;
+      footballMatchups[
+        opposingTeamId
+      ].pointsAgainst += opposingTeamPointsAgainst;
+    }
+  });
+  return footballMatchups;
+};
+
 const compileMatchups = (matchups, teamsList, sport) => {
   let matchupsArray = [];
   if (matchups) {
     if (sport === "football") {
-      // TODO compile points for and against points per opponent
+      for (let opposingTeams in matchups) {
+        const { ownerNames } = teamsList[opposingTeams];
+        const {
+          wins,
+          losses,
+          ties,
+          pointsFor,
+          pointsAgainst,
+          percentage
+        } = matchups[opposingTeams];
+        const ownerMatchups = {
+          ownerNames,
+          wins,
+          losses,
+          ties,
+          pointsFor: round(pointsFor, 1),
+          pointsAgainst: round(pointsAgainst, 1),
+          pointsDiff: round(pointsFor - pointsAgainst, 1),
+          winPer: round(percentage, 3)
+        };
+        matchupsArray.push(ownerMatchups);
+      }
     } else {
       // if "2019" basketball, pull matchups from object
       if (typeof matchups === "string") {
@@ -159,7 +237,7 @@ const compileMatchups = (matchups, teamsList, sport) => {
             wins,
             losses,
             ties,
-            winPer,
+            winPer
           };
           matchupsArray.push(ownerMatchups);
         }
