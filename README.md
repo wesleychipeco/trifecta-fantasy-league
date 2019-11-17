@@ -1,3 +1,11 @@
+### START/END NEW SPORT
+
+To start a sport, set its "seasonStarted" and "inSeason" to `true`  
+If "seasonStarted" is `false`, standings will not be displayed at all  
+To end a sport, set its "seasonStarted" to `true` and "inSeason" to `false` --- equivalent to "seasonEnded" = `true`  
+Then immediately manually add `playoffPoints` and `totalTrifectaPoints` to sports's `trifectaStandings` for each owner  
+Code looks for "seasonStarted" = `true` and "inSeason" = `false` to decide to look for `playoffPoints` and `totalTrifectaPoints`
+
 ### START NEW TRIFECTA SEASON
 
 Update `seasonVariables` collection with new "currentYear", each sport's variables (set "basketball": "seasonStarted" and "inSeason" to true, set everything else to false)  

@@ -4,7 +4,7 @@ import {
   Menu,
   MenuOptions,
   MenuOption,
-  MenuTrigger,
+  MenuTrigger
 } from "react-native-popup-menu";
 import { triggerStyles, optionsStyles } from "../styles/globalStyles";
 import { returnMongoCollection } from "../databaseManagement";
@@ -14,14 +14,14 @@ export class MatchupsDropdown extends PureComponent {
   static propTypes = {
     teamNumber: PropTypes.string.isRequired,
     ownerNames: PropTypes.string,
-    navigation: PropTypes.object.isRequired,
+    navigation: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      yearsArray: [],
+      yearsArray: []
     };
   }
 
@@ -33,9 +33,10 @@ export class MatchupsDropdown extends PureComponent {
       .find({}, { projection: { _id: 0, year: 1 } })
       .asArray()
       .then(ownerMatchupsYearsArray => {
+        // If this owner does not have any matchups yet, then first season. Add to years array the current year
         if (ownerMatchupsYearsArray.length > 0) {
           this.setState({
-            yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true),
+            yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true)
           });
         } else {
           const seasonVariablesCollection = returnMongoCollection(
@@ -46,7 +47,7 @@ export class MatchupsDropdown extends PureComponent {
             .asArray()
             .then(seasonVariables => {
               this.setState({
-                yearsArray: [{ year: seasonVariables[0].currentYear }],
+                yearsArray: [{ year: seasonVariables[0].currentYear }]
               });
             });
         }
