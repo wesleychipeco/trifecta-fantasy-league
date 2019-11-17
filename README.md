@@ -1,9 +1,17 @@
+### ADD NEW TRIFECTA OWNER
+
+Add new owner to `allTimeTeams` db in Mongo
+
+### START NEW TRIFECTA SEASON
+
 ### CREATE AWS INSTANCE
+
 Ubuntu
 Create security groups to expose ports 3000, 8091 to all IPs
 ssh -v -i .\Downloads\trifectav2.pem ubuntu@ec2-54-183-130-154.us-west-1.compute.amazonaws.com
 
 ### INSTALL
+
 `sudo apt install git`
 `git clone https://github.com/wesleychipeco/trifecta-fantasy-league.git`
 Install node https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/
@@ -22,16 +30,17 @@ manually add authtoken to created file: `/home/ubuntu/ngrok.yml`
 run `ngrok http 3000 -bind-tls=true -config=ngrok.yml` from `/home/ubuntu`
 
 ### Use screen to start processes
+
 screen -S <screen_name> --- create screen
 screen -ls --- see all screens
 screen -x <screen_name> --- attach to screen
 CTRL + a + d --- detach from screen
 
-## Create each collection in MongoDB first, and add rules in Stitch ##
-+ If in season -> pull data via API -> save to mongo & save to redux
-+ If not in season or in season and already scraped today -> pull data via mongo -> save to redux
-+ Sorting -> sort data and save to redux to re-render
+## Create each collection in MongoDB first, and add rules in Stitch
 
+- If in season -> pull data via API -> save to mongo & save to redux
+- If not in season or in season and already scraped today -> pull data via mongo -> save to redux
+- Sorting -> sort data and save to redux to re-render
 
 # React Native Web Boilerplate 🥘 with navigation 🗺
 
