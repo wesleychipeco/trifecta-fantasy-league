@@ -79,8 +79,8 @@ const scrapeMatchups = (
       "baseball"
     );
 
-    // const rawFootballMatchups = footballSeasonEnded
-    const rawFootballMatchups = true
+    // const rawFootballMatchups = true
+    const rawFootballMatchups = footballSeasonEnded
       ? await retrieveSportMatchups("football", year, footballTeamNumber)
       : undefined;
 
