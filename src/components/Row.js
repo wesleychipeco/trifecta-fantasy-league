@@ -31,6 +31,7 @@ export class Row extends PureComponent {
     widthArray: PropTypes.array,
     flexArray: PropTypes.array,
     rowStyle: PropTypes.object,
+    top3StylingIndex: PropTypes.number
   };
 
   render() {
@@ -42,15 +43,34 @@ export class Row extends PureComponent {
       widthArray,
       flexArray,
       rowStyle,
+      top3StylingIndex,
       ...props
     } = this.props;
 
     const width = widthArray ? sum(widthArray) : widthArray;
+
+    let top3Style = {};
+    if (top3StylingIndex || top3StylingIndex === 0) {
+      switch (top3StylingIndex) {
+        case 0:
+          top3Style = { backgroundColor: "#FFD700" };
+          break;
+        case 1:
+          top3Style = { backgroundColor: "#C0C0C0" };
+          break;
+        case 2:
+          top3Style = { backgroundColor: "#CD7F32" };
+          break;
+        default:
+          break;
+      }
+    }
+
     if (data) {
       // If there are objectKeys, use them to pull data from object
       if (objectKeys) {
         return (
-          <View style={[{ height, width }, styles.row, rowStyle]}>
+          <View style={[{ height, width }, styles.row, rowStyle, top3Style]}>
             {objectKeys.map((objectKey, i) => {
               const cellFlex = flexArray ? flexArray[i] : widthArray ? null : 1;
               const cellWidth = widthArray
@@ -72,7 +92,7 @@ export class Row extends PureComponent {
       }
       // if there are no objectKeys, just display the elements in data
       return (
-        <View style={[{ height, width }, styles.row, rowStyle]}>
+        <View style={[{ height, width }, styles.row, rowStyle, top3Style]}>
           {data.map((data, i) => {
             const cellFlex = flexArray ? flexArray[i] : widthArray ? null : 1;
             const cellWidth = widthArray
@@ -105,6 +125,7 @@ export class Rows extends PureComponent {
     widthArray: PropTypes.array,
     flexArray: PropTypes.array,
     rowStyle: PropTypes.object,
+    top3Styling: PropTypes.bool
   };
   render() {
     const {
@@ -116,6 +137,7 @@ export class Rows extends PureComponent {
       widthArray,
       flexArray,
       rowsStyle,
+      top3Styling,
       ...props
     } = this.props;
 
@@ -129,22 +151,26 @@ export class Rows extends PureComponent {
             width,
             height,
             ...rowsStyle,
-            ...styles.rows,
+            ...styles.rows
           }}
         >
-          {data.map((row, i) => {
+          {data.map((row, index) => {
             const rowHeight = heightArray
-              ? heightArray[i]
+              ? heightArray[index]
               : totalheight / data.length;
+
+            const top3StylingIndex = top3Styling ? index : 999;
+
             return (
               <Row
-                key={i}
+                key={index}
                 data={row}
                 objectKeys={objectKeys}
                 height={rowHeight}
                 totalwidth={totalwidth}
                 widthArray={widthArray}
                 flexArray={flexArray}
+                top3StylingIndex={top3StylingIndex}
                 {...props}
               ></Row>
             );

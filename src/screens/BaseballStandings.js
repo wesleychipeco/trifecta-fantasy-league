@@ -633,6 +633,7 @@ class BaseballStandings extends PureComponent {
               totalwidth={trifectaStandingsTotalWidth}
               widthArray={trifectaStandingsWidthArray}
               objectKeys={trifectaStandingsObjectKeys}
+              top3Styling
             />
           </View>
           <View style={styles.table}>

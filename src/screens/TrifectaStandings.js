@@ -282,6 +282,7 @@ class TrifectaStandings extends PureComponent {
             widthArray={widthArray}
             objectKeys={objectKeys}
             numberOfLines={2}
+            top3Styling
           />
         </View>
       </View>
