@@ -308,6 +308,7 @@ class FootballStandings extends PureComponent {
             totalwidth={totalWidth}
             widthArray={widthArray}
             objectKeys={objectKeys}
+            top3Styling
           />
         </View>
       </View>
