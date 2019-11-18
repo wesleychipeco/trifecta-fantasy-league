@@ -24,6 +24,7 @@ import { basketballMatchups2019 } from "../../dataJSONS/basketballMatchups2019";
 import { format } from "date-fns";
 import { sortArrayBy, sortArrayBySecondaryParameter } from "../../utils";
 import round from "lodash/round";
+import mean from "lodash/mean";
 
 const actions = {
   saveScrapedTotalMatchups: createAction(SAVE_SCRAPED_TOTAL_MATCHUPS),
@@ -102,11 +103,17 @@ const scrapeMatchups = (
       "football"
     );
 
-    const compileTotalMatchups =
+    const shouldCompileTotalMatchups =
       basketballMatchups.length > 0 &&
       baseballMatchups.length > 0 &&
       footballMatchups.length > 0;
-    const totalMatchups = compileTotalMatchups ? ["placeholder!"] : [];
+    const totalMatchups = shouldCompileTotalMatchups
+      ? await compileTotalMatchups(
+          basketballMatchups,
+          baseballMatchups,
+          footballMatchups
+        )
+      : [];
 
     // connect to mongo
     const ownerMatchupsCollection = returnMongoCollection(
@@ -246,6 +253,44 @@ const compileMatchups = (matchups, teamsList, sport) => {
   }
   // if no matchups, sport is not finished yet, just return empty array
   return matchupsArray;
+};
+
+const compileTotalMatchups = (
+  basketballMatchups,
+  baseballMatchups,
+  footballMatchups
+) => {
+  const totalMatchups = [];
+  // loop through each opposing owner
+  basketballMatchups.forEach(basketballOpposingOwner => {
+    const opposingOwnerNames = basketballOpposingOwner.ownerNames;
+    const basketballWinPer = basketballOpposingOwner.winPer;
+
+    const baseballOpposingOwner = baseballMatchups.filter(
+      opposingOwner => opposingOwnerNames === opposingOwner.ownerNames
+    );
+    const baseballWinPer = baseballOpposingOwner[0].winPer;
+
+    const footballOpposingOwner = footballMatchups.filter(
+      opposingOwner => opposingOwnerNames === opposingOwner.ownerNames
+    );
+    const footballWinPer = footballOpposingOwner[0].winPer;
+
+    const totalWinPer = round(
+      mean([basketballWinPer, baseballWinPer, footballWinPer]),
+      3
+    );
+
+    const matchupJson = {
+      ownerNames: opposingOwnerNames,
+      basketballWinPer,
+      baseballWinPer,
+      footballWinPer,
+      totalWinPer
+    };
+    totalMatchups.push(matchupJson);
+  });
+  return totalMatchups;
 };
 
 const displayMatchups = (year, teamNumber) => {
