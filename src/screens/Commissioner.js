@@ -40,6 +40,7 @@ class Commissioner extends PureComponent {
     this.props.retrieveYearMatchups(this.state.completedYear);
   };
 
+  // TODO - use commissioner redux values for start and finish to show a modal that its been done
   render() {
     const { navigation } = this.props;
 
