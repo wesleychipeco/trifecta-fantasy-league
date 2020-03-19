@@ -97,6 +97,23 @@ const homeScreenStyles = {
   }
 };
 
+const commissionerStyles = {
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
+  },
+  title: {
+    fontSize: 20,
+    textAlign: "center",
+    marginTop: 5
+  },
+  subtext: {
+    marginBottom: 5,
+    fontSize: 14
+  }
+};
+
 const standingsStyles = {
   container: {
     justifyContent: "center",
@@ -209,6 +226,7 @@ export {
   loadingIndicatorStyles,
   homeScreenStyles,
   standingsStyles,
+  commissionerStyles,
   navbarStyles,
   triggerStyles,
   optionsStyles

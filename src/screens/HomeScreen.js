@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, FlatList } from "react-native";
 import { Navbar } from "../components/Navbar";
+import { MyButton } from "../components/MyButton";
 import Iframe from "react-iframe";
 import { homeScreenStyles as styles } from "../styles/globalStyles";
 
@@ -16,7 +17,7 @@ const featureList = [
   "+ Add onto/continue some features from v1.0",
   "    - Football coach rankings",
   "    - Recaps of each season per owner",
-  "+ Constant visual improvements",
+  "+ Constant visual improvements"
 ];
 
 const caveatText =
@@ -32,6 +33,18 @@ const HomeScreen = ({ navigation }) => {
         style={{ height: 250, width: "100%" }}
         source={require("../resources/images/trifecta_banner.jpg")}
         resizeMode="contain"
+      />
+      <MyButton
+        touchableStyles={{
+          position: "absolute",
+          width: 100,
+          height: 50,
+          backgroundColor: "transparent",
+          top: 65,
+          left: 450
+        }}
+        title=""
+        onPress={() => navigation.navigate("Commissioner")}
       />
       <View style={styles.header}>
         <Text style={styles.welcome}>

@@ -18,67 +18,73 @@ import TrifectaStandings from "./screens/TrifectaStandings";
 import MatchupsHomeScreen from "./screens/MatchupsHomeScreen";
 import Matchups from "./screens/Matchups";
 import TradeHistory from "./screens/TradeHistory";
+import Commissioner from "./screens/Commissioner";
 
 const routeMap = {
   Home: {
     component: HomeScreen,
     path: "/",
-    exact: true,
+    exact: true
   },
   StandingsHomeScreen: {
     component: StandingsHomeScreen,
     path: "/standingshome",
-    exact: true,
+    exact: true
   },
   BaseballStandings: {
     component: BaseballStandings,
     path: "/standings/baseball/:year?",
-    exact: true,
+    exact: true
   },
   BasketballStandings: {
     component: BasketballStandings,
     path: "/standings/basketball/:year?",
-    exact: true,
+    exact: true
   },
   FootballStandings: {
     component: FootballStandings,
     path: "/standings/football/:year?",
-    exact: true,
+    exact: true
   },
   TrifectaStandings: {
     component: TrifectaStandings,
     path: "/standings/trifecta/:year?",
-    exact: true,
+    exact: true
   },
   MatchupsHomeScreen: {
     component: MatchupsHomeScreen,
     path: "/matchupshome",
-    exact: true,
+    exact: true
   },
   Matchups: {
     component: Matchups,
     path: "/matchups/:teamNumber?/:year?",
-    exact: true,
+    exact: true
   },
   TradeHistory: {
     component: TradeHistory,
     path: "/tradehistory",
-    exact: true,
+    exact: true
+  },
+  Commissioner: {
+    component: Commissioner,
+    path: "/commissioner/wesley",
+    exact: true
   },
   Second: {
     component: SecondScreen,
-    path: "/second",
+    path: "/second"
   },
   User: {
     component: UserScreen,
     path: "/user/:name?",
-    exact: true,
+    exact: true
   },
   DasModal: {
     component: DasModalScreen,
     path: "*/dasmodal",
-    modal: true,
-  },
+    modal: true
+  }
 };
 
 class App extends Component {
@@ -88,7 +94,7 @@ class App extends Component {
     this.state = {
       currentUser: undefined,
       client: undefined,
-      isLoadingComplete: false,
+      isLoadingComplete: false
     };
 
     this._loadClient = this._loadClient.bind(this);
