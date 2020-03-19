@@ -1,4 +1,5 @@
 import { createAction } from "redux-starter-kit";
+import round from "lodash/round";
 import { SCRAPE_YEAR_MATCHUPS } from "./commissionerActionTypes";
 import {
   deleteInsertDispatch,
@@ -73,15 +74,19 @@ const calculateTotalMatchups = (
   allMappedMatchupValues,
   sport
 ) => {
+  const allUpdatedMatchups = [];
   console.log("try all", allMappedMatchupValues);
   for (const opposingOwner of sportYearMatchups) {
+    let uploadObject;
     const {
       ownerNames,
       wins,
       losses,
       ties,
+      winPer,
       pointsFor,
-      pointsAgainst
+      pointsAgainst,
+      pointsDiff
     } = opposingOwner;
     console.log("try owner", ownerNames);
     console.log("try map", allMappedMatchupValues[ownerNames]);
@@ -92,12 +97,31 @@ const calculateTotalMatchups = (
       const newWins = wins + matchedExistingOwnerMatchupValues.wins;
       const newLosses = losses + matchedExistingOwnerMatchupValues.losses;
       const newTies = ties + matchedExistingOwnerMatchupValues.ties;
+      const newWinPer =
+        (newWins + newTies / 2) / (newWins + newLosses + newTies);
+
+      uploadObject = {
+        ownerNames,
+        wins: newWins,
+        losses: newLosses,
+        ties: newTies,
+        winPer: round(newWinPer, 1)
+      };
+
       if (sport === "footballMatchups") {
         const newPointsFor =
           pointsFor + matchedExistingOwnerMatchupValues.pointsFor;
         const newPointsAgainst =
           pointsAgainst + matchedExistingOwnerMatchupValues.pointsAgainst;
+        const newPointsDiff = newPointsFor - newPointsAgainst;
+
+        uploadObject.pointsFor = newPointsFor;
+        uploadObject.pointsAgainst = newPointsAgainst;
+        uploadObject.pointsDiff = round(newPointsDiff, 1);
       }
+
+      console.log("upload object", uploadObject);
+
       // console.log(
       //   "owner against",
       //   ownerNames,
@@ -131,9 +155,27 @@ const calculateTotalMatchups = (
       // TODO - calculate winning % and point diff
     } else {
       // TODO - create new object with only entry being one season
+      uploadObject = {
+        ownerNames,
+        wins,
+        losses,
+        ties,
+        winPer
+      };
+
+      if (sport === "footballMatchups") {
+        uploadObject.pointsFor = pointsFor;
+        uploadObject.pointsAgainst = pointsAgainst;
+        uploadObject.pointsDiff = pointsDiff;
+      }
+
+      console.log("upload object", uploadObject);
     }
+
+    allUpdatedMatchups.push(uploadObject);
   }
 
+  return allUpdatedMatchups;
   // TODO - after updating old values and adding new entries for new owners comepletely,
   // return array of objects to be uploaded to mongodb
 };
@@ -144,6 +186,8 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
     "baseballMatchups",
     "footballMatchups"
   ];
+  const uploadObject = { year: "all" };
+
   for (const sport of sportsMatchupsList) {
     console.log("owner totaling sport...", sport);
     // Keep sport-year matchups an array to loop through
@@ -157,13 +201,15 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
     );
     console.log(sport, "ALL mapped matchups ", allMappedMatchupValues);
 
-    await calculateTotalMatchups(
+    const sportAllUpdatedMatchups = await calculateTotalMatchups(
       sportYearMatchups,
       allMappedMatchupValues,
       sport
     );
+
+    uploadObject[sport] = sportAllUpdatedMatchups;
   }
-  return;
+  return uploadObject;
 };
 
 const retrieveYearMatchups = year => {
@@ -200,13 +246,23 @@ const retrieveYearMatchups = year => {
           baseballMatchups,
           footballMatchups
         };
-        console.log("upload ALL for team#: ", teamNumber, uploadAllMatchups);
+        console.log(
+          "FINAL - upload ALL for team#: ",
+          teamNumber,
+          uploadAllMatchups
+        );
       } else {
         console.log("owner need to compile for team#: ", teamNumber);
         const compiledAllMatchups = await totalAllMatchups(
           yearMatchups,
           allMatchups
         );
+        console.log(
+          "FINAL - upload ALL for team#: ",
+          teamNumber,
+          compiledAllMatchups
+        );
+
         // TODO - take array and upload to mongodb
 
         // TODO - create START, add to during, and FINISH dispatch events for redux
