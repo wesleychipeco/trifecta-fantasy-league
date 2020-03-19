@@ -4,13 +4,15 @@ To start a sport, set its "seasonStarted" and "inSeason" to `true`
 If "seasonStarted" is `false`, standings will not be displayed at all  
 To end a sport, set its "seasonStarted" to `true` and "inSeason" to `false` --- equivalent to "seasonEnded" = `true`  
 Then immediately manually add `playoffPoints` and `totalTrifectaPoints` to sports's `trifectaStandings` for each owner  
+Also for each owner, go to the that owner's current year's matchups and scrape the just completed season
 Code looks for "seasonStarted" = `true` and "inSeason" = `false` to decide to look for `playoffPoints` and `totalTrifectaPoints`
 
 ### START NEW TRIFECTA SEASON
 
-Update `seasonVariables` collection with new "currentYear", each sport's variables (set "basketball": "seasonStarted" and "inSeason" to true, set everything else to false)  
+Update `seasonVariables` collection with new "currentYear", each sport's variables (set "basketball": "seasonStarted" and "inSeason" to true, set everything else to false)
 Update `teamNumbersPerSport` collection for new Trifecta Season (per Trifecta season, maps "teamNumber" to "ownerNames") - used in Matchups  
 Update `teamLists` collection for new Trifecta Season (per Trifecta Season, array of participating "ownerIds") - used in Trifecta Standings
+Then to update "ALL" matchups to include the just completed Trifecta season, go to the commissioner page and scrape
 
 ### ADD NEW TRIFECTA OWNER
 
