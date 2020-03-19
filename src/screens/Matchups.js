@@ -57,7 +57,7 @@ class Matchups extends PureComponent {
     });
 
     if (prevState.year !== this.state.year) {
-      this.retrieveData();
+      this.retrieveData(prevState.ownerNames);
     }
   }
 
@@ -66,7 +66,7 @@ class Matchups extends PureComponent {
     return seasonStarted === true && inSeason === false ? true : false;
   };
 
-  retrieveData = () => {
+  retrieveData = prevOwnerNames => {
     const { lastScraped, navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
     const teamNumber = navigation.getParam(
@@ -94,7 +94,7 @@ class Matchups extends PureComponent {
             if (year === "all" || isYear1BeforeYear2(year, currentYear)) {
               displayMatchups(year, teamNumber);
             } else {
-              if (lastScraped) {
+              if (lastScraped && prevOwnerNames === docs[0].ownerNames) {
                 displayMatchups(year, teamNumber);
               } else {
                 const basketballSeasonVariables = seasonVariables[0].basketball;
