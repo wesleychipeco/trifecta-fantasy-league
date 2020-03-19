@@ -1,5 +1,6 @@
 import { createAction } from "redux-starter-kit";
 import round from "lodash/round";
+import mean from "lodash/mean";
 import { SCRAPE_YEAR_MATCHUPS } from "./commissionerActionTypes";
 import {
   deleteInsertDispatch,
@@ -72,6 +73,7 @@ const getAllMappedMatchupValues = async (allMatchups, sport) => {
 const calculateTotalMatchups = (
   sportYearMatchups,
   allMappedMatchupValues,
+  allSportMatchups,
   sport
 ) => {
   const allUpdatedMatchups = [];
@@ -105,7 +107,7 @@ const calculateTotalMatchups = (
         wins: newWins,
         losses: newLosses,
         ties: newTies,
-        winPer: round(newWinPer, 1)
+        winPer: round(newWinPer, 3)
       };
 
       if (sport === "footballMatchups") {
@@ -121,40 +123,7 @@ const calculateTotalMatchups = (
       }
 
       console.log("upload object", uploadObject);
-
-      // console.log(
-      //   "owner against",
-      //   ownerNames,
-      //   "season wins",
-      //   wins,
-      //   "all wins",
-      //   matchedExistingOwnerMatchupValues.wins,
-      //   "new wins",
-      //   newWins
-      // );
-      // console.log(
-      //   "owner against",
-      //   ownerNames,
-      //   "season losses",
-      //   losses,
-      //   "all losses",
-      //   matchedExistingOwnerMatchupValues.losses,
-      //   "new losses",
-      //   newLosses
-      // );
-      // console.log(
-      //   "owner against",
-      //   ownerNames,
-      //   "season ties",
-      //   ties,
-      //   "all ties",
-      //   matchedExistingOwnerMatchupValues.ties,
-      //   "new ties",
-      //   newTies
-      // );
-      // TODO - calculate winning % and point diff
     } else {
-      // TODO - create new object with only entry being one season
       uploadObject = {
         ownerNames,
         wins,
@@ -175,8 +144,20 @@ const calculateTotalMatchups = (
     allUpdatedMatchups.push(uploadObject);
   }
 
-  return allUpdatedMatchups;
-  // TODO - after updating old values and adding new entries for new owners comepletely,
+  // once done doing all owners from that year and sport, need to do old owners who have data
+  // ex: 2019 does not include "Nick Wang", thus need to add in previous data for "Nick Wang"
+  const allNewMappedOwnerNames = allUpdatedMatchups.map(
+    allOwner => allOwner.ownerNames
+  );
+  console.log("aaaaaaaaaaaaaaaa", allSportMatchups);
+  const missingOldOwners = allSportMatchups.filter(
+    oldOwner => !allNewMappedOwnerNames.includes(oldOwner.ownerNames)
+  );
+  console.log("missing old owners", missingOldOwners);
+  console.log("wesley james", [...allUpdatedMatchups, ...missingOldOwners]);
+  return [...allUpdatedMatchups, ...missingOldOwners];
+
+  // TODO - after updating old values and adding new entries for new owners completely,
   // return array of objects to be uploaded to mongodb
 };
 
@@ -204,11 +185,53 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
     const sportAllUpdatedMatchups = await calculateTotalMatchups(
       sportYearMatchups,
       allMappedMatchupValues,
+      allMatchups[sport],
       sport
     );
 
     uploadObject[sport] = sportAllUpdatedMatchups;
   }
+
+  const totalMatchups = [];
+  const {
+    basketballMatchups,
+    baseballMatchups,
+    footballMatchups
+  } = uploadObject;
+
+  console.log("eeeeeeeeeeeeeeeee", basketballMatchups);
+  for (const basketballMatchup of basketballMatchups) {
+    console.log("ooooooo", basketballMatchup);
+    const opposingOwnerNames = basketballMatchup.ownerNames;
+    console.log("hello hockey", opposingOwnerNames);
+    const basketballWinPer = basketballMatchup.winPer;
+
+    const baseballOpposingOwner = baseballMatchups.filter(opposingOwner => {
+      console.log("bbaseball", opposingOwner);
+      return opposingOwner.ownerNames === opposingOwnerNames;
+    });
+
+    const baseballWinPer = baseballOpposingOwner[0].winPer;
+
+    const footballOpposingOwner = footballMatchups.filter(
+      opposingOwner => opposingOwner.ownerNames === opposingOwnerNames
+    );
+    const footballWinPer = footballOpposingOwner[0].winPer;
+
+    const totalWinPer = round(
+      mean([basketballWinPer, baseballWinPer, footballWinPer]),
+      3
+    );
+    const totalMatchupsObject = {
+      ownerNames: opposingOwnerNames,
+      basketballWinPer,
+      baseballWinPer,
+      footballWinPer,
+      totalWinPer
+    };
+    totalMatchups.push(totalMatchupsObject);
+  }
+  uploadObject.totalAllMatchups = totalMatchups;
   return uploadObject;
 };
 
