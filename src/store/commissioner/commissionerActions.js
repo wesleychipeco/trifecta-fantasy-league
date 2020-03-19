@@ -156,9 +156,6 @@ const calculateTotalMatchups = (
   console.log("missing old owners", missingOldOwners);
   console.log("wesley james", [...allUpdatedMatchups, ...missingOldOwners]);
   return [...allUpdatedMatchups, ...missingOldOwners];
-
-  // TODO - after updating old values and adding new entries for new owners completely,
-  // return array of objects to be uploaded to mongodb
 };
 
 const totalAllMatchups = async (yearMatchups, allMatchups) => {
