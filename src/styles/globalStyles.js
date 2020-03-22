@@ -68,6 +68,10 @@ const homeScreenStyles = {
     width: "80%",
     marginTop: 20
   },
+  trifectaBanner: {
+    height: 250,
+    width: "100%"
+  },
   welcome: {
     fontSize: 30,
     textAlign: "center"
@@ -94,12 +98,20 @@ const homeScreenStyles = {
     style: {
       alignSelf: "center"
     }
+  },
+  commissionerButton: {
+    position: "absolute",
+    width: 60,
+    height: 30,
+    backgroundColor: "transparent",
+    top: 60,
+    left: 440
   }
 };
 
 const commissionerStyles = {
   container: {
-    justifyContent: "center",
+    flex: 1,
     alignItems: "center",
     backgroundColor: "#F5FCFF"
   },
@@ -111,6 +123,45 @@ const commissionerStyles = {
   subtext: {
     marginBottom: 5,
     fontSize: 14
+  },
+  commissionerButton: {
+    borderWidth: 2,
+    borderColor: "#000000",
+    backgroundColor: "#007FFF",
+    padding: 5
+  },
+  commissionerButtonText: {
+    color: "#FFFFFF"
+  },
+  overlayBackground: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.35)"
+  },
+  overlayContainer: {
+    width: 400,
+    height: 150,
+    backgroundColor: "#FFFFFF",
+    padding: 10
+  },
+  matchupsScrapeOverlayTitle: {
+    fontSize: 24,
+    marginBottom: 12
+  },
+  matchupsScrapeOverlayText: {
+    fontSize: 16,
+    marginBottom: 6
+  },
+  matchupsScrapeOverlayButton: {
+    width: "50%",
+    borderWidth: 2,
+    borderColor: "#000000",
+    backgroundColor: "#007FFF",
+    padding: 5,
+    alignSelf: "center"
   }
 };
 

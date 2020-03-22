@@ -1,7 +1,12 @@
 import { createAction } from "redux-starter-kit";
 import round from "lodash/round";
 import mean from "lodash/mean";
-import { SCRAPE_YEAR_MATCHUPS } from "./commissionerActionTypes";
+import {
+  SCRAPE_YEAR_MATCHUPS_START,
+  SCRAPE_YEAR_INDIVIDUAL_MATCHUPS_SUCCESS,
+  SCRAPE_YEAR_INDIVIDUAL_MATCHUPS_FAILURE,
+  SCRAPE_YEAR_MATCHUPS_FINISH
+} from "./commissionerActionTypes";
 import {
   deleteInsertDispatch,
   returnMongoCollection,
@@ -9,10 +14,17 @@ import {
 } from "../../databaseManagement";
 
 const actions = {
-  scrapeYearMatchups: createAction(SCRAPE_YEAR_MATCHUPS)
+  scrapeYearMatchupsStart: createAction(SCRAPE_YEAR_MATCHUPS_START),
+  scrapeYearIndividualMatchupsSuccess: createAction(
+    SCRAPE_YEAR_INDIVIDUAL_MATCHUPS_SUCCESS
+  ),
+  scrapeYearIndividualMatchupsFailure: createAction(
+    SCRAPE_YEAR_INDIVIDUAL_MATCHUPS_FAILURE
+  ),
+  scrapeYearMatchupsFinish: createAction(SCRAPE_YEAR_MATCHUPS_FINISH)
 };
 
-const retrieveTeamsInYear = year => {
+const retrieveTeamsForYear = year => {
   const teamNumbersPerSportCollection = returnMongoCollection(
     "teamNumbersPerSport"
   );
@@ -47,9 +59,12 @@ const getEachTeamAllMatchups = async teamMatchupsCollectionName => {
     });
 };
 
+// create an object instead of array for each opposing owner's matchups
 const getAllMappedMatchupValues = async (allMatchups, sport) => {
   const matchups = allMatchups[sport];
   const matchupsMapped = {};
+
+  // Loop through array of each opposing owner
   for (const opposingOwner of matchups) {
     const {
       ownerNames,
@@ -70,14 +85,15 @@ const getAllMappedMatchupValues = async (allMatchups, sport) => {
   return matchupsMapped;
 };
 
-const calculateTotalMatchups = (
+const calculateUpdatedAllMatchups = (
   sportYearMatchups,
   allMappedMatchupValues,
   allSportMatchups,
   sport
 ) => {
   const allUpdatedMatchups = [];
-  console.log("try all", allMappedMatchupValues);
+
+  // Loop through each opposing owner of that sport's matchup results
   for (const opposingOwner of sportYearMatchups) {
     let uploadObject;
     const {
@@ -90,12 +106,13 @@ const calculateTotalMatchups = (
       pointsAgainst,
       pointsDiff
     } = opposingOwner;
-    console.log("try owner", ownerNames);
-    console.log("try map", allMappedMatchupValues[ownerNames]);
+
     const matchedExistingOwnerMatchupValues =
       allMappedMatchupValues[ownerNames];
-    // success if all matchups has a match of this owner from current season in it
+
+    // success if ALL matchups has a match of this owner from current season in it
     if (matchedExistingOwnerMatchupValues) {
+      // Add this season's wins/losses... to matchued existing ALL matchup wins/losses...
       const newWins = wins + matchedExistingOwnerMatchupValues.wins;
       const newLosses = losses + matchedExistingOwnerMatchupValues.losses;
       const newTies = ties + matchedExistingOwnerMatchupValues.ties;
@@ -117,13 +134,13 @@ const calculateTotalMatchups = (
           pointsAgainst + matchedExistingOwnerMatchupValues.pointsAgainst;
         const newPointsDiff = newPointsFor - newPointsAgainst;
 
-        uploadObject.pointsFor = newPointsFor;
-        uploadObject.pointsAgainst = newPointsAgainst;
+        uploadObject.pointsFor = round(newPointsFor, 1);
+        uploadObject.pointsAgainst = round(newPointsAgainst, 1);
         uploadObject.pointsDiff = round(newPointsDiff, 1);
       }
-
-      console.log("upload object", uploadObject);
-    } else {
+    }
+    // If no match, no existing ALL matchups for this opposing owner, just this season's values
+    else {
       uploadObject = {
         ownerNames,
         wins,
@@ -133,14 +150,13 @@ const calculateTotalMatchups = (
       };
 
       if (sport === "footballMatchups") {
-        uploadObject.pointsFor = pointsFor;
-        uploadObject.pointsAgainst = pointsAgainst;
-        uploadObject.pointsDiff = pointsDiff;
+        uploadObject.pointsFor = round(pointsFor, 1);
+        uploadObject.pointsAgainst = round(pointsAgainst, 1);
+        uploadObject.pointsDiff = round(pointsDiff, 1);
       }
-
-      console.log("upload object", uploadObject);
     }
 
+    // add each opposing owner's matchups object to array
     allUpdatedMatchups.push(uploadObject);
   }
 
@@ -149,12 +165,10 @@ const calculateTotalMatchups = (
   const allNewMappedOwnerNames = allUpdatedMatchups.map(
     allOwner => allOwner.ownerNames
   );
-  console.log("aaaaaaaaaaaaaaaa", allSportMatchups);
   const missingOldOwners = allSportMatchups.filter(
     oldOwner => !allNewMappedOwnerNames.includes(oldOwner.ownerNames)
   );
-  console.log("missing old owners", missingOldOwners);
-  console.log("wesley james", [...allUpdatedMatchups, ...missingOldOwners]);
+
   return [...allUpdatedMatchups, ...missingOldOwners];
 };
 
@@ -166,20 +180,19 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
   ];
   const uploadObject = { year: "all" };
 
+  // Loop through all sports
   for (const sport of sportsMatchupsList) {
-    console.log("owner totaling sport...", sport);
     // Keep sport-year matchups an array to loop through
     const sportYearMatchups = yearMatchups[sport];
-    console.log(sport, "YEAR matchups", sportYearMatchups);
 
-    // Put ALL matchups in an object to map to
+    // Return an object for owner-to-owner mapping
     const allMappedMatchupValues = await getAllMappedMatchupValues(
       allMatchups,
       sport
     );
-    console.log(sport, "ALL mapped matchups ", allMappedMatchupValues);
 
-    const sportAllUpdatedMatchups = await calculateTotalMatchups(
+    // Return an array of each sport's Total compiled matchups
+    const sportAllUpdatedMatchups = await calculateUpdatedAllMatchups(
       sportYearMatchups,
       allMappedMatchupValues,
       allMatchups[sport],
@@ -189,25 +202,30 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
     uploadObject[sport] = sportAllUpdatedMatchups;
   }
 
+  // Calculate ALL totalMatchups array
+  const totalMatchups = await calculateTotalMatchups(uploadObject);
+
+  uploadObject.totalMatchups = totalMatchups;
+  return uploadObject;
+};
+
+const calculateTotalMatchups = async matchupsObject => {
   const totalMatchups = [];
   const {
     basketballMatchups,
     baseballMatchups,
     footballMatchups
-  } = uploadObject;
+  } = matchupsObject;
 
-  console.log("eeeeeeeeeeeeeeeee", basketballMatchups);
+  // Loop through each owner in basketballMatchups (should be same owners for each sport/total now)
   for (const basketballMatchup of basketballMatchups) {
-    console.log("ooooooo", basketballMatchup);
     const opposingOwnerNames = basketballMatchup.ownerNames;
-    console.log("hello hockey", opposingOwnerNames);
+
     const basketballWinPer = basketballMatchup.winPer;
 
     const baseballOpposingOwner = baseballMatchups.filter(opposingOwner => {
-      console.log("bbaseball", opposingOwner);
       return opposingOwner.ownerNames === opposingOwnerNames;
     });
-
     const baseballWinPer = baseballOpposingOwner[0].winPer;
 
     const footballOpposingOwner = footballMatchups.filter(
@@ -219,6 +237,7 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
       mean([basketballWinPer, baseballWinPer, footballWinPer]),
       3
     );
+
     const totalMatchupsObject = {
       ownerNames: opposingOwnerNames,
       basketballWinPer,
@@ -228,30 +247,65 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
     };
     totalMatchups.push(totalMatchupsObject);
   }
-  uploadObject.totalAllMatchups = totalMatchups;
-  return uploadObject;
+  return totalMatchups;
 };
 
-const retrieveYearMatchups = year => {
-  return async function(dispatch) {
-    const teamsList = await retrieveTeamsInYear(year);
+const uploadDocuments = async (teamNumber, matchupsObject, dispatch) => {
+  const objectKeys = Object.keys(matchupsObject);
+  const includeKeysBoolean =
+    objectKeys.includes("year") &&
+    objectKeys.includes("basketballMatchups") &&
+    objectKeys.includes("baseballMatchups") &&
+    objectKeys.includes("footballMatchups");
 
+  if (includeKeysBoolean) {
+    const includesArrayLengthBoolean =
+      matchupsObject.basketballMatchups.length >= 9 &&
+      matchupsObject.baseballMatchups.length >= 9 &&
+      matchupsObject.footballMatchups.length >= 9;
+
+    if (includesArrayLengthBoolean) {
+      const ownerMatchupsCollection = returnMongoCollection(
+        `owner${teamNumber}Matchups`
+      );
+      dispatch(actions.scrapeYearIndividualMatchupsSuccess(teamNumber));
+      deleteInsertDispatch(
+        null,
+        null,
+        ownerMatchupsCollection,
+        "all",
+        matchupsObject,
+        null,
+        false
+      );
+      return matchupsObject;
+    }
+  }
+  dispatch(actions.scrapeYearIndividualMatchupsFailure(teamNumber));
+  return matchupsObject;
+};
+
+const scrapeYearAllMatchups = year => {
+  return async function(dispatch) {
+    dispatch(actions.scrapeYearMatchupsStart);
+    const teamsList = await retrieveTeamsForYear(year);
+
+    // Loop through all teams for requested year
     for (const teamNumber of teamsList) {
+      let uploadAllMatchups;
       const teamMatchupsCollectionName = `owner${teamNumber}Matchups`;
-      // Get that year's matchups
+
+      // Get that year's matchups per team
       const yearMatchups = await getEachTeamYearMatchups(
         teamMatchupsCollectionName,
         year
       );
-      // Get all-time matchups
+      // Get all-time matchups per team
       const allMatchups = await getEachTeamAllMatchups(
         teamMatchupsCollectionName
       );
-      // console.log("teamnumber", teamNumber);
-      // console.log("year", yearMatchups);
-      // console.log("all", allMatchups);
 
-      // If no "all" matchups exists, firsts season and one season becomes all
+      // If no "all" matchups exists, first season in existence and one season becomes "all"
       if (!allMatchups) {
         const {
           totalMatchups,
@@ -259,37 +313,28 @@ const retrieveYearMatchups = year => {
           baseballMatchups,
           footballMatchups
         } = yearMatchups;
-        const uploadAllMatchups = {
+        uploadAllMatchups = {
           year: "all",
           totalMatchups,
           basketballMatchups,
           baseballMatchups,
           footballMatchups
         };
-        console.log(
-          "FINAL - upload ALL for team#: ",
-          teamNumber,
-          uploadAllMatchups
-        );
       } else {
-        console.log("owner need to compile for team#: ", teamNumber);
-        const compiledAllMatchups = await totalAllMatchups(
-          yearMatchups,
-          allMatchups
-        );
-        console.log(
-          "FINAL - upload ALL for team#: ",
-          teamNumber,
-          compiledAllMatchups
-        );
-
-        // TODO - take array and upload to mongodb
-
-        // TODO - create START, add to during, and FINISH dispatch events for redux
-        // one start, after each owner finishes, add ownerNumber to array and save in redux
+        uploadAllMatchups = await totalAllMatchups(yearMatchups, allMatchups);
       }
+
+      const finalUpload = await uploadDocuments(
+        teamNumber,
+        uploadAllMatchups,
+        dispatch
+      );
+      console.log("FINAL - Team Number", teamNumber, finalUpload);
+      // TODO - take array and upload to mongodb
     }
+
+    dispatch(actions.scrapeYearMatchupsFinish);
   };
 };
 
-export { retrieveYearMatchups };
+export { scrapeYearAllMatchups };
