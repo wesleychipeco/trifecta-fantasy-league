@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, Fragment } from "react";
 import { View, Text } from "react-native";
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/tradeHistory";
@@ -19,7 +19,8 @@ class Commissioner extends PureComponent {
     this.state = {
       completedYear: null,
       showYearMatchupsScrapeOverlay: false,
-      alreadyScraped: false
+      alreadyScraped: false,
+      showCommissionerPage: false
     };
   }
 
@@ -31,9 +32,10 @@ class Commissioner extends PureComponent {
       .find({}, { projection: { _id: 0 } })
       .asArray()
       .then(seasonVariables => {
-        const { currentYear } = seasonVariables[0];
+        const { currentYear, showCommissionerPage } = seasonVariables[0];
         const lastYearNumber = Number(currentYear) - 1;
         this.setState({
+          showCommissionerPage,
           completedYear: lastYearNumber.toString()
         });
       });
@@ -113,6 +115,30 @@ class Commissioner extends PureComponent {
     }
   };
 
+  shouldRenderCommissionerOptions = () => {
+    const { showCommissionerPage, completedYear } = this.state;
+    if (showCommissionerPage) {
+      const buttonText = `Scrape ${completedYear} Matchups into All-Time Matchups`;
+
+      return (
+        <Fragment>
+          <MyButton
+            touchableStyles={{
+              borderWidth: 2,
+              borderColor: "#000000",
+              backgroundColor: "#007FFF",
+              padding: 5
+            }}
+            textStyles={{ color: "#FFFFFF" }}
+            title={buttonText}
+            onPress={this.makeCall}
+          />
+          {this.renderYearMatchupsScrapeOverlay()}
+        </Fragment>
+      );
+    }
+  };
+
   makeCall = () => {
     const { completedYear, alreadyScraped } = this.state;
     if (completedYear && !alreadyScraped) {
@@ -125,27 +151,14 @@ class Commissioner extends PureComponent {
 
     const title = "Commissioner Website Tools Page";
     const captionText =
-      "Please don't do anything on this page, if you are not the commissioner";
-
-    const buttonText = `Scrape ${this.state.completedYear} Matchups into All-Time Matchups`;
+      "You found the secret commissioner page. If the page is blank, you are not the commissioner";
 
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtext}>{captionText}</Text>
-        <MyButton
-          touchableStyles={{
-            borderWidth: 2,
-            borderColor: "#000000",
-            backgroundColor: "#007FFF",
-            padding: 5
-          }}
-          textStyles={{ color: "#FFFFFF" }}
-          title={buttonText}
-          onPress={this.makeCall}
-        />
-        {this.renderYearMatchupsScrapeOverlay()}
+        {this.shouldRenderCommissionerOptions()}
       </View>
     );
   }
