@@ -71,41 +71,18 @@ class Commissioner extends PureComponent {
     if (showYearMatchupsScrapeOverlay && !alreadyScraped) {
       const title = `${completedYear} Matchups Scrape Complete`;
       return (
-        <View
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.35)"
-          }}
-        >
-          <View
-            style={{
-              width: 400,
-              height: 150,
-              backgroundColor: "#FFFFFF",
-              padding: 10
-            }}
-          >
-            <Text style={{ fontSize: 24, marginBottom: 12 }}>{title}</Text>
+        <View style={styles.overlayBackground}>
+          <View style={styles.overlayContainer}>
+            <Text style={styles.matchupsScrapeOverlayTitle}>{title}</Text>
             <Text
-              style={{ fontSize: 16, marginBottom: 6 }}
+              style={styles.matchupsScrapeOverlayText}
             >{`${matchupsSuccesses.length} successful scrapes: ${matchupsSuccesses}`}</Text>
             <Text
-              style={{ fontSize: 16, marginBottom: 6 }}
+              style={styles.matchupsScrapeOverlayText}
             >{`${matchupsFailures.length} unsuccessful scrapes: ${matchupsFailures}`}</Text>
             <MyButton
-              touchableStyles={{
-                width: "50%",
-                borderWidth: 2,
-                borderColor: "#000000",
-                backgroundColor: "#007FFF",
-                padding: 5,
-                alignSelf: "center"
-              }}
-              textStyles={{ color: "#FFFFFF" }}
+              touchableStyles={styles.matchupsScrapeOverlayButton}
+              textStyles={styles.commissionerButtonText}
               title="Close"
               onPress={this.closeOverlay}
             />
@@ -123,13 +100,8 @@ class Commissioner extends PureComponent {
       return (
         <Fragment>
           <MyButton
-            touchableStyles={{
-              borderWidth: 2,
-              borderColor: "#000000",
-              backgroundColor: "#007FFF",
-              padding: 5
-            }}
-            textStyles={{ color: "#FFFFFF" }}
+            touchableStyles={styles.commissionerButton}
+            textStyles={styles.commissionerButtonText}
             title={buttonText}
             onPress={this.makeCall}
           />

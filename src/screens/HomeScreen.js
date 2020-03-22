@@ -30,19 +30,12 @@ const HomeScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Navbar navigation={navigation} />
       <Image
-        style={{ height: 250, width: "100%" }}
+        style={styles.trifectaBanner}
         source={require("../resources/images/trifecta_banner.jpg")}
         resizeMode="contain"
       />
       <MyButton
-        touchableStyles={{
-          position: "absolute",
-          width: 100,
-          height: 50,
-          backgroundColor: "transparent",
-          top: 65,
-          left: 450
-        }}
+        touchableStyles={styles.commissionerButton}
         title=""
         onPress={() => navigation.navigate("Commissioner")}
       />
