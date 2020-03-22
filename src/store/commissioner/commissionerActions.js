@@ -134,8 +134,8 @@ const calculateUpdatedAllMatchups = (
           pointsAgainst + matchedExistingOwnerMatchupValues.pointsAgainst;
         const newPointsDiff = newPointsFor - newPointsAgainst;
 
-        uploadObject.pointsFor = newPointsFor;
-        uploadObject.pointsAgainst = newPointsAgainst;
+        uploadObject.pointsFor = round(newPointsFor, 1);
+        uploadObject.pointsAgainst = round(newPointsAgainst, 1);
         uploadObject.pointsDiff = round(newPointsDiff, 1);
       }
     }
@@ -150,9 +150,9 @@ const calculateUpdatedAllMatchups = (
       };
 
       if (sport === "footballMatchups") {
-        uploadObject.pointsFor = pointsFor;
-        uploadObject.pointsAgainst = pointsAgainst;
-        uploadObject.pointsDiff = pointsDiff;
+        uploadObject.pointsFor = round(pointsFor, 1);
+        uploadObject.pointsAgainst = round(pointsAgainst, 1);
+        uploadObject.pointsDiff = round(pointsDiff, 1);
       }
     }
 
@@ -205,7 +205,7 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
   // Calculate ALL totalMatchups array
   const totalMatchups = await calculateTotalMatchups(uploadObject);
 
-  uploadObject.totalAllMatchups = totalMatchups;
+  uploadObject.totalMatchups = totalMatchups;
   return uploadObject;
 };
 
@@ -265,7 +265,19 @@ const uploadDocuments = async (teamNumber, matchupsObject, dispatch) => {
       matchupsObject.footballMatchups.length >= 9;
 
     if (includesArrayLengthBoolean) {
+      const ownerMatchupsCollection = returnMongoCollection(
+        `owner${teamNumber}Matchups`
+      );
       dispatch(actions.scrapeYearIndividualMatchupsSuccess(teamNumber));
+      deleteInsertDispatch(
+        null,
+        null,
+        ownerMatchupsCollection,
+        "all",
+        matchupsObject,
+        null,
+        false
+      );
       return matchupsObject;
     }
   }
