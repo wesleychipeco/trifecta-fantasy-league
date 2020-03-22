@@ -1,21 +1,24 @@
 import baseballStandingsReducer, {
-  BASEBALL_STANDINGS_STATE_PATH,
+  BASEBALL_STANDINGS_STATE_PATH
 } from "./baseballStandings/baseballStandingsReducer";
 import basketballStandingsReducer, {
-  BASKETBALL_STANDINGS_STATE_PATH,
+  BASKETBALL_STANDINGS_STATE_PATH
 } from "./basketballStandings/basketballStandingsReducer";
 import footballStandingsReducer, {
-  FOOTBALL_STANDINGS_STATE_PATH,
+  FOOTBALL_STANDINGS_STATE_PATH
 } from "./footballStandings/footballStandingsReducer";
 import trifectaStandingsReducer, {
-  TRIFECTA_STANDINGS_STATE_PATH,
+  TRIFECTA_STANDINGS_STATE_PATH
 } from "./trifectaStandings/trifectaStandingsReducer";
 import matchupsReducer, {
-  MATCHUPS_STATE_PATCH,
+  MATCHUPS_STATE_PATCH
 } from "./matchups/matchupsReducer";
 import tradeHistoryReducer, {
-  TRADE_HISTORY_STATE_PATH,
+  TRADE_HISTORY_STATE_PATH
 } from "./tradeHistory/tradeHistoryReducer";
+import commissionerReducer, {
+  COMMISSIONER_STATE_PATH
+} from "./commissioner/commissionerReducer";
 
 export default {
   [BASEBALL_STANDINGS_STATE_PATH]: baseballStandingsReducer,
@@ -24,4 +27,5 @@ export default {
   [TRIFECTA_STANDINGS_STATE_PATH]: trifectaStandingsReducer,
   [MATCHUPS_STATE_PATCH]: matchupsReducer,
   [TRADE_HISTORY_STATE_PATH]: tradeHistoryReducer,
+  [COMMISSIONER_STATE_PATH]: commissionerReducer
 };

@@ -8,7 +8,8 @@ import { LinkText } from "../components/LinkText";
 import { commissionerStyles as styles } from "../styles/globalStyles";
 import { returnMongoCollection } from "../databaseManagement";
 import { MyButton } from "../components/MyButton";
-import { retrieveYearMatchups } from "../store/commissioner/commissionerActions";
+import { scrapeYearAllMatchups } from "../store/commissioner/commissionerActions";
+import { getCommissionerStateSelectors } from "../store/commissioner/commissionerReducer";
 import { connect } from "react-redux";
 
 class Commissioner extends PureComponent {
@@ -16,7 +17,9 @@ class Commissioner extends PureComponent {
     super(props);
 
     this.state = {
-      completedYear: null
+      completedYear: null,
+      showYearMatchupsScrapeOverlay: false,
+      alreadyScraped: false
     };
   }
 
@@ -36,19 +39,93 @@ class Commissioner extends PureComponent {
       });
   }
 
-  makeCall = () => {
-    this.props.retrieveYearMatchups(this.state.completedYear);
+  componentDidUpdate() {
+    const { matchupsLoading, matchupsSuccesses, matchupsFailures } = this.props;
+    const matchupsScrapeNumber =
+      matchupsSuccesses.length + matchupsFailures.length;
+
+    if (!matchupsLoading && matchupsScrapeNumber === 10) {
+      this.setState({
+        showYearMatchupsScrapeOverlay: true
+      });
+    }
+  }
+
+  closeOverlay = () => {
+    this.setState({
+      alreadyScraped: true,
+      showYearMatchupsScrapeOverlay: false
+    });
   };
 
-  // TODO - use commissioner redux values for start and finish to show a modal that its been done
+  renderYearMatchupsScrapeOverlay = () => {
+    const { matchupsSuccesses, matchupsFailures } = this.props;
+    const {
+      completedYear,
+      showYearMatchupsScrapeOverlay,
+      alreadyScraped
+    } = this.state;
+
+    if (showYearMatchupsScrapeOverlay && !alreadyScraped) {
+      const title = `${completedYear} Matchups Scrape Complete`;
+      return (
+        <View
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.35)"
+          }}
+        >
+          <View
+            style={{
+              width: 400,
+              height: 150,
+              backgroundColor: "#FFFFFF",
+              padding: 10
+            }}
+          >
+            <Text style={{ fontSize: 24, marginBottom: 12 }}>{title}</Text>
+            <Text
+              style={{ fontSize: 16, marginBottom: 6 }}
+            >{`${matchupsSuccesses.length} successful scrapes: ${matchupsSuccesses}`}</Text>
+            <Text
+              style={{ fontSize: 16, marginBottom: 6 }}
+            >{`${matchupsFailures.length} unsuccessful scrapes: ${matchupsFailures}`}</Text>
+            <MyButton
+              touchableStyles={{
+                width: "50%",
+                borderWidth: 2,
+                borderColor: "#000000",
+                backgroundColor: "#007FFF",
+                padding: 5,
+                alignSelf: "center"
+              }}
+              textStyles={{ color: "#FFFFFF" }}
+              title="Close"
+              onPress={this.closeOverlay}
+            />
+          </View>
+        </View>
+      );
+    }
+  };
+
+  makeCall = () => {
+    const { completedYear, alreadyScraped } = this.state;
+    if (completedYear && !alreadyScraped) {
+      this.props.scrapeYearAllMatchups(completedYear);
+    }
+  };
+
   render() {
     const { navigation } = this.props;
 
     const title = "Commissioner Website Tools Page";
     const captionText =
       "Please don't do anything on this page, if you are not the commissioner";
-
-    console.log("ttttt", this.state.completedYear);
 
     const buttonText = `Scrape ${this.state.completedYear} Matchups into All-Time Matchups`;
 
@@ -68,13 +145,28 @@ class Commissioner extends PureComponent {
           title={buttonText}
           onPress={this.makeCall}
         />
+        {this.renderYearMatchupsScrapeOverlay()}
       </View>
     );
   }
 }
 
 const mapDispatchToProps = {
-  retrieveYearMatchups
+  scrapeYearAllMatchups
 };
 
-export default connect(null, mapDispatchToProps)(Commissioner);
+const mapStateToProps = state => {
+  const {
+    getYearMatchupsLoading,
+    getYearMatchupsIndividualSuccesses,
+    getYearMatchupsIndividualFailures
+  } = getCommissionerStateSelectors(state);
+
+  return {
+    matchupsLoading: getYearMatchupsLoading(),
+    matchupsSuccesses: getYearMatchupsIndividualSuccesses(),
+    matchupsFailures: getYearMatchupsIndividualFailures()
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Commissioner);

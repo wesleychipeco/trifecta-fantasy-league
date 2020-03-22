@@ -99,7 +99,7 @@ const homeScreenStyles = {
 
 const commissionerStyles = {
   container: {
-    justifyContent: "center",
+    flex: 1,
     alignItems: "center",
     backgroundColor: "#F5FCFF"
   },
