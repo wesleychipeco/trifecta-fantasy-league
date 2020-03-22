@@ -326,7 +326,6 @@ class Matchups extends PureComponent {
 
   shouldRenderTotalMatchups = () => {
     const { totalMatchups } = this.props;
-    console.log("sssss", totalMatchups);
 
     ///// Total Matchups /////
     const totalMatchupsHeaderRowHeight = 75;
