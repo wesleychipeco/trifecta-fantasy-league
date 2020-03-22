@@ -329,7 +329,7 @@ class Matchups extends PureComponent {
 
     ///// Total Matchups /////
     const totalMatchupsHeaderRowHeight = 75;
-    const totalMatchupsTotalHeight = 450;
+    const totalMatchupsTotalHeight = totalMatchups.length * 50;
     const totalMatchupsTotalWidth = 600;
     const totalMatchupsWidthArray = [200, 100, 100, 100, 100];
     const totalMatchupsObjectKeys = [
@@ -398,7 +398,7 @@ class Matchups extends PureComponent {
     ];
 
     const sportsMatchupsHeaderRowHeight = 75;
-    const sportsMatchupsTotalHeight = 450;
+    const sportsMatchupsTotalHeight = sportsMatchups.length * 50;
     const sportsMatchupsTotalWidth = !this.isFootball(sport) ? 600 : 900;
     const sportsMatchupsWidthArray = !this.isFootball(sport)
       ? defaultSportsMatchupsWidthArray
