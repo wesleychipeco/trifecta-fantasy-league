@@ -1,10 +1,7 @@
 import React, { PureComponent, Fragment } from "react";
 import { View, Text } from "react-native";
 
-import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/tradeHistory";
 import { Navbar } from "../components/Navbar";
-import { sortArrayBy, isEmptyArray } from "../utils";
-import { LinkText } from "../components/LinkText";
 import { commissionerStyles as styles } from "../styles/globalStyles";
 import { returnMongoCollection } from "../databaseManagement";
 import { MyButton } from "../components/MyButton";

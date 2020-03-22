@@ -9,8 +9,7 @@ import {
 } from "./commissionerActionTypes";
 import {
   deleteInsertDispatch,
-  returnMongoCollection,
-  findFromMongoSaveToRedux
+  returnMongoCollection
 } from "../../databaseManagement";
 
 const actions = {
