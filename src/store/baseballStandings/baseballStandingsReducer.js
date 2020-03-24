@@ -28,6 +28,8 @@ const initialState = {
   rotoStandingsLoading: false,
   rotoStandingsSuccess: false,
   rotoStandings: [],
+  rotoStats: [],
+  trifectaStandings: [],
   lastScraped: null,
 };
 
