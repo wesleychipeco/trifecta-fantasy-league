@@ -19,6 +19,7 @@ import MatchupsHomeScreen from "./screens/MatchupsHomeScreen";
 import Matchups from "./screens/Matchups";
 import TradeHistory from "./screens/TradeHistory";
 import Commissioner from "./screens/Commissioner";
+import OwnerProfilesHomeScreen from "./screens/OwnerProfilesHomeScreen";
 
 const routeMap = {
   Home: {
@@ -69,6 +70,11 @@ const routeMap = {
   Commissioner: {
     component: Commissioner,
     path: "/commissioner/wesley",
+    exact: true
+  },
+  OwnerProfilesHomeScreen: {
+    component: OwnerProfilesHomeScreen,
+    path: "/ownerprofileshome",
     exact: true
   },
   Second: {
