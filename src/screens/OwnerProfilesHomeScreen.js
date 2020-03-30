@@ -1,12 +1,8 @@
 import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
-import { connect } from "react-redux";
 import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { OwnerProfilesDropdown } from "../components/OwnerProfilesDropdown";
-import { MatchupsDropdown } from "../components/MatchupsDropdown";
-import { getOwnerProfilesStateSelectors } from "../store/ownerProfiles/ownerProfilesReducer";
-import { displayOwnerProfilesHomeScreen } from "../store/ownerProfiles/ownerProfilesActions";
 import { returnMongoCollection } from "../databaseManagement";
 import { homeScreenStyles as styles } from "../styles/globalStyles";
 import { isEmptyArray, sortArrayBy } from "../utils";
@@ -54,8 +50,6 @@ export class OwnerProfilesHomeScreen extends PureComponent {
     if (isEmptyArray(ownerProfilesHomeScreenArray)) {
       return <LoadingIndicator />;
     }
-
-    console.log("aaaaaaaaaaa", ownerProfilesHomeScreenArray);
 
     return (
       <View style={styles.container}>

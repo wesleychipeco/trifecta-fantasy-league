@@ -16,7 +16,7 @@ export class OwnerProfilesDropdown extends PureComponent {
   };
 
   render() {
-    const { navigation, ownerNames } = this.props;
+    const { navigation, ownerNames, teamNumber } = this.props;
     const dropdownText = `+ ${ownerNames}'s Owner Profile`;
 
     return (
@@ -24,7 +24,9 @@ export class OwnerProfilesDropdown extends PureComponent {
         <MenuTrigger customStyles={triggerStyles} text={dropdownText} />
         <MenuOptions customStyles={optionsStyles}>
           <MenuOption
-            onSelect={() => console.log("Press - Seasons Recap")}
+            onSelect={() =>
+              navigation.navigate("OwnerProfiles", { teamNumber })
+            }
             text="Seasons Recap"
           />
           <MenuOption

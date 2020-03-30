@@ -93,7 +93,6 @@ const simpleFindFromMongoSaveToRedux = (
     .find({}, { projection: { _id: 0 } })
     .asArray()
     .then(docs => {
-      console.log("DOCSSSSSSSSSS", docs);
       dispatch(action(sortArrayBy(docs, defaultSortColumn, true)));
     })
     .catch(err => {
