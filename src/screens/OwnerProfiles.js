@@ -8,7 +8,7 @@ import { getOwnerProfilesStateSelectors } from "../store/ownerProfiles/ownerProf
 import { displaySeasonsRecap } from "../store/ownerProfiles/ownerProfilesActions";
 import { returnMongoCollection } from "../databaseManagement";
 import { standingsStyles as styles } from "../styles/globalStyles";
-import { isEmptyArray, sortArrayBy } from "../utils";
+import { isEmptyArray, sortArrayBy, sum } from "../utils";
 
 export class OwnerProfiles extends PureComponent {
   constructor(props) {
@@ -61,25 +61,50 @@ export class OwnerProfiles extends PureComponent {
     }
 
     const title = `${ownerNames}'s Seasons Recap`;
-    const headerRow = [
+
+    const headerRowHeight = 75;
+
+    ///// Trifecta History /////
+    const trifectaHistoryHeaderRow = [
       "Year",
       "Basketball Trifecta Points",
       "Baseball Trifecta Points",
       "Football Trifecta Points",
       "Total Trifecta Points"
     ];
-
-    const headerRowHeight = 75;
-    const totalWidth = 500;
-    const widthArray = [100, 100, 100, 100, 100];
-    const totalHeight = trifectaHistory.length * 50;
-    const objectKeys = [
+    const trifectaHistoryTotalWidth = 500;
+    const trifectaHistoryWidthArray = [100, 100, 100, 100, 100];
+    const trifectaHistoryTotalHeight = trifectaHistory.length * 50;
+    const trifectaHistoryObjectKeys = [
       "year",
       "basketballTrifectaPoints",
       "baseballTrifectaPoints",
       "footballTrifectaPoints",
       "totalTrifectaPoints"
     ];
+
+    ///// All-Time Records /////
+    const allTimeRecordsHeaderRow = [
+      "Sport",
+      "Wins",
+      "Losses",
+      "Ties",
+      "Win %",
+      "Avg Roto Pts/Pts For"
+    ];
+    const allTimeRecordsObjectKeys = [
+      "sport",
+      "wins",
+      "losses",
+      "winPer",
+      "ties",
+      "avgPoints"
+    ];
+    const allTimeRecordsWidthArray = Array(
+      allTimeRecordsObjectKeys.length
+    ).fill(100);
+    const allTimeRecordsTotalWidth = sum(allTimeRecordsWidthArray);
+    const allTimeRecordsTotalHeight = allTimeRecords.length * 50;
 
     return (
       <View style={styles.container}>
@@ -90,19 +115,38 @@ export class OwnerProfiles extends PureComponent {
         <View style={styles.table}>
           <Text style={styles.subtext}>Trifecta History</Text>
           <Row
-            data={headerRow}
+            data={trifectaHistoryHeaderRow}
             height={headerRowHeight}
-            totalwidth={totalWidth}
-            widthArray={widthArray}
+            totalwidth={trifectaHistoryTotalWidth}
+            widthArray={trifectaHistoryWidthArray}
             rowStyle={styles.header}
             numberOfLines={2}
           />
           <Rows
             data={trifectaHistory}
-            totalheight={totalHeight}
-            totalwidth={totalWidth}
-            widthArray={widthArray}
-            objectKeys={objectKeys}
+            totalheight={trifectaHistoryTotalHeight}
+            totalwidth={trifectaHistoryTotalWidth}
+            widthArray={trifectaHistoryWidthArray}
+            objectKeys={trifectaHistoryObjectKeys}
+            numberOfLines={2}
+          />
+        </View>
+        <View style={styles.table}>
+          <Text style={styles.subtext}>All-Time Records</Text>
+          <Row
+            data={allTimeRecordsHeaderRow}
+            height={headerRowHeight}
+            totalwidth={allTimeRecordsTotalWidth}
+            widthArray={allTimeRecordsWidthArray}
+            rowStyle={styles.header}
+            numberOfLines={2}
+          />
+          <Rows
+            data={allTimeRecords}
+            totalheight={allTimeRecordsTotalHeight}
+            totalwidth={allTimeRecordsTotalWidth}
+            widthArray={allTimeRecordsWidthArray}
+            objectKeys={allTimeRecordsObjectKeys}
             numberOfLines={2}
           />
         </View>
