@@ -19,6 +19,9 @@ import tradeHistoryReducer, {
 import commissionerReducer, {
   COMMISSIONER_STATE_PATH
 } from "./commissioner/commissionerReducer";
+import ownerProfilesReducer, {
+  OWNER_PROFILES_STATE_PATH
+} from "./ownerProfiles/ownerProfilesReducer";
 
 export default {
   [BASEBALL_STANDINGS_STATE_PATH]: baseballStandingsReducer,
@@ -27,5 +30,6 @@ export default {
   [TRIFECTA_STANDINGS_STATE_PATH]: trifectaStandingsReducer,
   [MATCHUPS_STATE_PATCH]: matchupsReducer,
   [TRADE_HISTORY_STATE_PATH]: tradeHistoryReducer,
-  [COMMISSIONER_STATE_PATH]: commissionerReducer
+  [COMMISSIONER_STATE_PATH]: commissionerReducer,
+  [OWNER_PROFILES_STATE_PATH]: ownerProfilesReducer
 };

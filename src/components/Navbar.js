@@ -31,14 +31,20 @@ export class Navbar extends PureComponent {
           textStyles={styles.text}
         />
         <MyButton
+          title="Trade History"
+          onPress={() => navigation.navigate("TradeHistory")}
+          touchableStyles={styles.button}
+          textStyles={styles.text}
+        />
+        <MyButton
           title="Owner Matchups"
           onPress={() => navigation.navigate("MatchupsHomeScreen")}
           touchableStyles={styles.button}
           textStyles={styles.text}
         />
         <MyButton
-          title="Trade History"
-          onPress={() => navigation.navigate("TradeHistory")}
+          title="Owner Profiles"
+          onPress={() => navigation.navigate("OwnerProfilesHomeScreen")}
           touchableStyles={styles.button}
           textStyles={styles.text}
         />

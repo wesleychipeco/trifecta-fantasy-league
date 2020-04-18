@@ -119,5 +119,5 @@ export {
   deleteInsertDispatch,
   findFromMongoSaveToRedux,
   simpleFindFromMongoSaveToRedux,
-  filterIdField,
+  filterIdField
 };
