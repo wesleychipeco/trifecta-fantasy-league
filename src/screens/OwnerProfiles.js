@@ -6,16 +6,15 @@ import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { getOwnerProfilesStateSelectors } from "../store/ownerProfiles/ownerProfilesReducer";
 import { displaySeasonsRecap } from "../store/ownerProfiles/ownerProfilesActions";
-import { returnMongoCollection } from "../databaseManagement";
 import { standingsStyles as styles } from "../styles/globalStyles";
-import { isEmptyArray, sortArrayBy, sum } from "../utils";
+import { isEmptyArray, sum } from "../utils";
 
 export class OwnerProfiles extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      teamNumber: null
+      teamNumber: null,
     };
   }
 
@@ -41,7 +40,7 @@ export class OwnerProfiles extends PureComponent {
       allTimeRecords,
       allTimeBasketball,
       allTimeBaseball,
-      allTimeFootball
+      allTimeFootball,
     } = this.props;
 
     console.log("trifectaHistory", trifectaHistory);
@@ -70,7 +69,7 @@ export class OwnerProfiles extends PureComponent {
       "Basketball Trifecta Points",
       "Baseball Trifecta Points",
       "Football Trifecta Points",
-      "Total Trifecta Points"
+      "Total Trifecta Points",
     ];
     const trifectaHistoryTotalWidth = 500;
     const trifectaHistoryWidthArray = [100, 100, 100, 100, 100];
@@ -80,7 +79,7 @@ export class OwnerProfiles extends PureComponent {
       "basketballTrifectaPoints",
       "baseballTrifectaPoints",
       "footballTrifectaPoints",
-      "totalTrifectaPoints"
+      "totalTrifectaPoints",
     ];
 
     ///// All-Time Records /////
@@ -90,21 +89,92 @@ export class OwnerProfiles extends PureComponent {
       "Losses",
       "Ties",
       "Win %",
-      "Avg Roto Pts/Pts For"
+      "Avg Roto Pts/Pts For",
     ];
     const allTimeRecordsObjectKeys = [
       "sport",
       "wins",
       "losses",
-      "winPer",
       "ties",
-      "avgPoints"
+      "winPer",
+      "avgPoints",
     ];
     const allTimeRecordsWidthArray = Array(
       allTimeRecordsObjectKeys.length
     ).fill(100);
     const allTimeRecordsTotalWidth = sum(allTimeRecordsWidthArray);
     const allTimeRecordsTotalHeight = allTimeRecords.length * 50;
+
+    ///// All-Time Basketball /////
+    const allTimeBasketballHeaderRow = [
+      "Year",
+      "Team Name",
+      "Wins",
+      "Losses",
+      "Ties",
+      "Win %",
+      "Roto Points",
+    ];
+    const allTimeBasketballObjectKeys = [
+      "year",
+      "teamName",
+      "wins",
+      "losses",
+      "ties",
+      "winPer",
+      "rotoPoints",
+    ];
+    const allTimeBasketballWidthArray = [100, 250, 100, 100, 100, 100, 100];
+    const allTimeBasketballTotalWidth = sum(allTimeBasketballWidthArray);
+    const allTimeBasketballTotalHeight = allTimeBasketball.length * 50;
+
+    ///// All-Time Baseball /////
+    const allTimeBaseballHeaderRow = [
+      "Year",
+      "Team Name",
+      "Wins",
+      "Losses",
+      "Ties",
+      "Win %",
+      "Roto Points",
+    ];
+    const allTimeBaseballObjectKeys = [
+      "year",
+      "teamName",
+      "wins",
+      "losses",
+      "ties",
+      "winPer",
+      "rotoPoints",
+    ];
+    const allTimeBaseballWidthArray = [100, 250, 100, 100, 100, 100, 100];
+    const allTimeBaseballTotalWidth = sum(allTimeBaseballWidthArray);
+    const allTimeBaseballTotalHeight = allTimeBaseball.length * 50;
+
+    ///// All-Time Football /////
+    const allTimeFootballHeaderRow = [
+      "Year",
+      "Team Name",
+      "Wins",
+      "Losses",
+      "Ties",
+      "Win %",
+      "Points For",
+      "Points Against",
+    ];
+    const allTimeFootballObjectKeys = [
+      "year",
+      "teamName",
+      "wins",
+      "losses",
+      "ties",
+      "winPer",
+      "pointsFor",
+      "pointsAgainst",
+    ];
+    const allTimeFootballWidthArray = [100, 250, 100, 100, 100, 100, 100, 100];
+    const allTimeFootballTotalWidth = sum(allTimeFootballWidthArray);
+    const allTimeFootballTotalHeight = allTimeFootball.length * 50;
 
     return (
       <View style={styles.container}>
@@ -150,19 +220,76 @@ export class OwnerProfiles extends PureComponent {
             numberOfLines={2}
           />
         </View>
+        <View style={styles.table}>
+          <Text style={styles.subtext}>All-Time Basketball</Text>
+          <Row
+            data={allTimeBasketballHeaderRow}
+            height={headerRowHeight}
+            totalwidth={allTimeBasketballTotalWidth}
+            widthArray={allTimeBasketballWidthArray}
+            rowStyle={styles.header}
+            numberOfLines={2}
+          />
+          <Rows
+            data={allTimeBasketball}
+            totalheight={allTimeBasketballTotalHeight}
+            totalwidth={allTimeBasketballTotalWidth}
+            widthArray={allTimeBasketballWidthArray}
+            objectKeys={allTimeBasketballObjectKeys}
+            numberOfLines={2}
+          />
+        </View>
+        <View style={styles.table}>
+          <Text style={styles.subtext}>All-Time Baseball</Text>
+          <Row
+            data={allTimeBaseballHeaderRow}
+            height={headerRowHeight}
+            totalwidth={allTimeBaseballTotalWidth}
+            widthArray={allTimeBaseballWidthArray}
+            rowStyle={styles.header}
+            numberOfLines={2}
+          />
+          <Rows
+            data={allTimeBaseball}
+            totalheight={allTimeBaseballTotalHeight}
+            totalwidth={allTimeBaseballTotalWidth}
+            widthArray={allTimeBaseballWidthArray}
+            objectKeys={allTimeBaseballObjectKeys}
+            numberOfLines={2}
+          />
+        </View>
+        <View style={styles.table}>
+          <Text style={styles.subtext}>All-Time Football</Text>
+          <Row
+            data={allTimeFootballHeaderRow}
+            height={headerRowHeight}
+            totalwidth={allTimeFootballTotalWidth}
+            widthArray={allTimeFootballWidthArray}
+            rowStyle={styles.header}
+            numberOfLines={2}
+          />
+          <Rows
+            data={allTimeFootball}
+            totalheight={allTimeFootballTotalHeight}
+            totalwidth={allTimeFootballTotalWidth}
+            widthArray={allTimeFootballWidthArray}
+            objectKeys={allTimeFootballObjectKeys}
+            numberOfLines={2}
+          />
+        </View>
       </View>
     );
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     getOwnerNames,
     getTrifectaHistory,
     getAllTimeRecords,
     getAllTimeBasketball,
     getAllTimeBaseball,
-    getAllTimeFootball
+    getAllTimeFootball,
   } = getOwnerProfilesStateSelectors(state);
 
   return {
@@ -171,12 +298,12 @@ const mapStateToProps = state => {
     allTimeRecords: getAllTimeRecords(),
     allTimeBasketball: getAllTimeBasketball(),
     allTimeBaseball: getAllTimeBaseball(),
-    allTimeFootball: getAllTimeFootball()
+    allTimeFootball: getAllTimeFootball(),
   };
 };
 
 const mapDispatchToProps = {
-  displaySeasonsRecap
+  displaySeasonsRecap,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OwnerProfiles);
