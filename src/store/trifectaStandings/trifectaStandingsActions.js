@@ -31,9 +31,9 @@ const actions = {
 const retrieveSportStandings = (year, sport) => {
   const standingsName = `${sport}Standings`;
   const collection = returnMongoCollection(standingsName);
-  // TODO - need to change after 2019 Trifecta season ends
+  // TODO need to change when figuring out football weights
   const trifectaPointsKey =
-    sport !== "baseball" ? standingsName : "trifectaStandings";
+    sport === "football" ? standingsName : "trifectaStandings";
 
   const projection1 = trifectaPointsKey + ".ownerIds";
   const projection2 = trifectaPointsKey + ".totalTrifectaPoints";
@@ -41,21 +41,21 @@ const retrieveSportStandings = (year, sport) => {
   const sportsStandings = collection
     .find({ year }, { projection: { [projection1]: 1, [projection2]: 1 } })
     .asArray()
-    .then(docs => {
+    .then((docs) => {
       return docs[0][trifectaPointsKey];
     })
-    .catch(err => {
+    .catch((err) => {
       console.log("error finding sports standings", err);
     });
   return sportsStandings;
 };
 
-const retrieveOwnersPerTeamArray = year => {
+const retrieveOwnersPerTeamArray = (year) => {
   const teamListsCollection = returnMongoCollection("teamLists");
   const teamList = teamListsCollection
     .find({ year }, { projection: { _id: 0, year: 0 } })
     .asArray()
-    .then(docs => docs[0].teams);
+    .then((docs) => docs[0].teams);
   return teamList;
 };
 
@@ -71,7 +71,7 @@ const checkSameArray = (array1, array2) => {
 };
 
 const returnSportTrifectaPoints = (sportStandings, ownersPerTeam) => {
-  return sportStandings.find(sportsTeam =>
+  return sportStandings.find((sportsTeam) =>
     checkSameArray(sportsTeam.ownerIds, ownersPerTeam)
   ).totalTrifectaPoints;
 };
@@ -92,7 +92,7 @@ const sumTrifectaPoints = (
 
   const trifectaStandings = [];
 
-  ownerIdsPerTeamArray.forEach(ownersPerTeam => {
+  ownerIdsPerTeamArray.forEach((ownersPerTeam) => {
     const teamTrifectaStandings = {};
     const totalTrifectaPointsArray = [];
 
@@ -153,17 +153,19 @@ const calculateTrifectaStandings = (
   baseballSeasonEnded,
   footballSeasonEnded
 ) => {
-  return async function(dispatch) {
+  return async function (dispatch) {
     const trifectaSportsStandingsArray = [];
 
     const ownerIdsPerTeamArray = await retrieveOwnersPerTeamArray(year);
     const ownerIdsOwnerNamesArray = await retriveOwnerIdsOwnerNamesArray();
 
     if (basketballSeasonEnded) {
+      console.log("here");
       const basketballStandings = await retrieveSportStandings(
         year,
         "basketball"
       );
+      console.log("basketabllstandings", basketballStandings);
       trifectaSportsStandingsArray.push(basketballStandings);
     } else {
       trifectaSportsStandingsArray.push(null);
@@ -226,8 +228,8 @@ const calculateTrifectaStandings = (
   };
 };
 
-const displayTrifectaStandings = year => {
-  return async function(dispatch) {
+const displayTrifectaStandings = (year) => {
+  return async function (dispatch) {
     const trifectaStandingsCollection = returnMongoCollection(
       "trifectaStandings"
     );
@@ -243,8 +245,8 @@ const displayTrifectaStandings = year => {
   };
 };
 
-const sortTable = standings => {
-  return async function(dispatch) {
+const sortTable = (standings) => {
+  return async function (dispatch) {
     dispatch(actions.sortTrifectaStandingsTable(standings));
   };
 };
