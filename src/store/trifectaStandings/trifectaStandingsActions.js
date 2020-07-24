@@ -160,12 +160,10 @@ const calculateTrifectaStandings = (
     const ownerIdsOwnerNamesArray = await retriveOwnerIdsOwnerNamesArray();
 
     if (basketballSeasonEnded) {
-      console.log("here");
       const basketballStandings = await retrieveSportStandings(
         year,
         "basketball"
       );
-      console.log("basketabllstandings", basketballStandings);
       trifectaSportsStandingsArray.push(basketballStandings);
     } else {
       trifectaSportsStandingsArray.push(null);

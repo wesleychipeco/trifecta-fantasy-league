@@ -25,6 +25,7 @@ const StandingsHomeScreen = ({ navigation }) => {
           marginTop: 20,
         }}
       >
+        <StandingsDropdownPost2019 year="2020" navigation={navigation} />
         <StandingsDropdownPost2019 year="2019" navigation={navigation} />
         <StandingsDropdownPre2019
           year1="2017"
