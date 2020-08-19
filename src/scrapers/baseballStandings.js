@@ -1,16 +1,16 @@
 import axios from "axios";
 import round from "lodash/round";
 
-const baseballStandingsScraper = year => {
+const baseballStandingsScraper = (year) => {
   return axios
     .get(
-      `http://fantasy.espn.com/apis/v3/games/flb/seasons/${year}/segments/0/leagues/109364?view=standings`
+      `https://fantasy.espn.com/apis/v3/games/flb/seasons/${year}/segments/0/leagues/109364?view=mTeam`
     )
-    .then(response => {
+    .then((response) => {
       const h2hStandingsArray = [];
       const rotoStatsArray = [];
 
-      response.data.teams.forEach(team => {
+      response.data.teams.forEach((team) => {
         const teamName = `${team.location}  ${team.nickname}`;
         const ownerIds = team.owners;
         h2hStandingsArray.push({
