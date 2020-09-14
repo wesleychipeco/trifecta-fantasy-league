@@ -146,7 +146,6 @@ class FootballStandings extends PureComponent {
     } else {
       const columnDefaultSortDirection =
         tableDefaultSortDirections[tableType][columnKey];
-      console.log("column default sort Direction", columnDefaultSortDirection);
       this.setState({
         [tableType]: {
           sortedColumn: columnKey,
@@ -474,12 +473,22 @@ class FootballStandings extends PureComponent {
     const { navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
-    const subtext =
+    const subtext2018 =
       "Due to sport re-arrangement in the Trifecta cycle, 2018 Football is not part of any Trifecta season and for variety, was an auction draft";
+    const subtextTop5Bottom5 =
+      "Record based of weekly Top 5/Bottom 5 finishes. Highlighted green box means Top 5 finish that week";
 
+    let text = "";
     if (Number(year) === 2018) {
-      return <Text style={styles.subtext}>{subtext}</Text>;
+      text = subtext2018;
+    } else if (Number(year) > 2019) {
+      text = subtextTop5Bottom5;
     }
+
+    if (text) {
+      return <Text style={styles.subtext}>{text}</Text>;
+    }
+
     return null;
   };
 
@@ -650,8 +659,19 @@ class FootballStandings extends PureComponent {
         week1: this.sortTop5Bottom5StandingsByWeek1,
         week2: this.sortTop5Bottom5StandingsByWeek2,
         week3: this.sortTop5Bottom5StandingsByWeek3,
+        week4: this.sortTop5Bottom5StandingsByWeek4,
+        week5: this.sortTop5Bottom5StandingsByWeek5,
+        week6: this.sortTop5Bottom5StandingsByWeek6,
+        week7: this.sortTop5Bottom5StandingsByWeek7,
+        week8: this.sortTop5Bottom5StandingsByWeek8,
+        week9: this.sortTop5Bottom5StandingsByWeek9,
+        week10: this.sortTop5Bottom5StandingsByWeek10,
+        week11: this.sortTop5Bottom5StandingsByWeek11,
+        week12: this.sortTop5Bottom5StandingsByWeek12,
+        week13: this.sortTop5Bottom5StandingsByWeek13,
       };
 
+      // Add correct sorter per week
       for (let i = 1; i <= numberOfNeededWeekNumberColumns; i++) {
         top5Bottom5StandingsWidthArray.push(75);
         top5Bottom5StandingsObjectKeys.push(`week${i}`);
@@ -685,7 +705,6 @@ class FootballStandings extends PureComponent {
           <Navbar navigation={navigation} />
           <View style={styles.headerSection}>
             <Text style={styles.title}>{title}</Text>
-            {this.shouldRenderSubtext()}
             <View style={styles.dropdown}>
               {this.renderStandingsDropdown()}
             </View>
@@ -728,6 +747,7 @@ class FootballStandings extends PureComponent {
             </View>
             <View style={styles.table}>
               <Text style={styles.subtext}>Top5 Bottom5 Standings</Text>
+              {this.shouldRenderSubtext()}
               <Row
                 data={top5Bottom5StandingsHeaderRow}
                 height={top5Bottom5StandingsHeaderRowHeight}

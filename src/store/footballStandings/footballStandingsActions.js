@@ -127,7 +127,6 @@ const scrapeFootballStandings = (year) => {
       const top5Bottom5Totals = await top5Bottom5Collection
         .find({ year }, { projection: { _id: 0 } })
         .asArray();
-      console.log("T5B5", top5Bottom5Totals);
 
       const ownerNamesUnderscoredObject = returnOwnerNamesUnderscored(
         h2hStandings
@@ -163,7 +162,6 @@ const scrapeFootballStandings = (year) => {
         top5Bottom5Standings,
         trifectaStandings,
       };
-      console.log("compiled standings", compiledStandings);
 
       // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings to redux & save once to Mongo
       dispatch(actions.saveScrapedH2HStandings(h2hStandings));
