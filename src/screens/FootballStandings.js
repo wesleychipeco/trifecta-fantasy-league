@@ -16,7 +16,12 @@ import {
 
 import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/footballStandings";
 import { returnMongoCollection } from "../databaseManagement";
-import { sortArrayBy, isYear1BeforeYear2, isEmptyArray } from "../utils";
+import {
+  sortArrayBy,
+  sortArrayByTop5Bottom5,
+  isYear1BeforeYear2,
+  isEmptyArray,
+} from "../utils";
 import { standingsStyles as styles } from "../styles/globalStyles";
 
 class FootballStandings extends PureComponent {
@@ -118,24 +123,55 @@ class FootballStandings extends PureComponent {
 
     if (sortedColumn === columnKey) {
       this.setState({
-        footballStandings: {
+        [tableType]: {
           sortedColumn: columnKey,
           highToLow: !highToLow,
         },
       });
-      sortTable(sortArrayBy(tableArraySorted, columnKey, !highToLow));
+      // If Top5Bottom5 Week sort, use different sorter that reads points
+      if (
+        tableType === "top5Bottom5Standings" &&
+        columnKey.search("week") >= 0
+      ) {
+        sortTable([
+          sortArrayByTop5Bottom5(tableArraySorted, columnKey, !highToLow),
+          tableType,
+        ]);
+      } else {
+        sortTable([
+          sortArrayBy(tableArraySorted, columnKey, !highToLow),
+          tableType,
+        ]);
+      }
     } else {
       const columnDefaultSortDirection =
-        tableDefaultSortDirections.footballStandings[columnKey];
+        tableDefaultSortDirections[tableType][columnKey];
+      console.log("column default sort Direction", columnDefaultSortDirection);
       this.setState({
-        footballStandings: {
+        [tableType]: {
           sortedColumn: columnKey,
           highToLow: columnDefaultSortDirection,
         },
       });
-      sortTable(
-        sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection)
-      );
+      // If Top5Bottom5 Week sort, use different sorter that reads points
+      if (
+        tableType === "top5Bottom5Standings" &&
+        columnKey.search("week") >= 0
+      ) {
+        sortTable([
+          sortArrayByTop5Bottom5(
+            tableArraySorted,
+            columnKey,
+            columnDefaultSortDirection
+          ),
+          tableType,
+        ]);
+      } else {
+        sortTable([
+          sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection),
+          tableType,
+        ]);
+      }
     }
   };
 
@@ -208,6 +244,16 @@ class FootballStandings extends PureComponent {
     this.sortTableByColumn(h2hStandings, "winPer", "h2hStandings");
   };
 
+  sortH2HStandingsByPointsFor = () => {
+    const { h2hStandings } = this.props;
+    this.sortTableByColumn(h2hStandings, "pointsFor", "h2hStandings");
+  };
+
+  sortH2HStandingsByPointsAgainst = () => {
+    const { h2hStandings } = this.props;
+    this.sortTableByColumn(h2hStandings, "pointsAgainst", "h2hStandings");
+  };
+
   sortH2HStandingsByTrifectaPoints = () => {
     const { h2hStandings } = this.props;
     this.sortTableByColumn(h2hStandings, "h2hTrifectaPoints", "h2hStandings");
@@ -216,62 +262,155 @@ class FootballStandings extends PureComponent {
   // Top5 Bottom5 standings table sort methods
   sortTop5Bottom5StandingsByWins = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "wins");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "wins",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByLosses = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "losses");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "losses",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByWinPer = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "winPer");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "winPer",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByTrifectaPoints = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "top5Bottom5TrifectaPoints");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "top5Bottom5TrifectaPoints",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByWeek1 = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "week1");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week1",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByWeek2 = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "week2");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week2",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByWeek3 = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "week3");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week3",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByWeek4 = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "week4");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week4",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByWeek5 = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "week5");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week5",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByWeek6 = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "week6");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week6",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByWeek7 = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "week7");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week7",
+      "top5Bottom5Standings"
+    );
   };
 
   sortTop5Bottom5StandingsByWeek8 = () => {
     const { top5Bottom5Standings } = this.props;
-    this.sortTableByColumn(top5Bottom5Standings, "week8");
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week8",
+      "top5Bottom5Standings"
+    );
+  };
+
+  sortTop5Bottom5StandingsByWeek9 = () => {
+    const { top5Bottom5Standings } = this.props;
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week9",
+      "top5Bottom5Standings"
+    );
+  };
+
+  sortTop5Bottom5StandingsByWeek10 = () => {
+    const { top5Bottom5Standings } = this.props;
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week10",
+      "top5Bottom5Standings"
+    );
+  };
+
+  sortTop5Bottom5StandingsByWeek11 = () => {
+    const { top5Bottom5Standings } = this.props;
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week11",
+      "top5Bottom5Standings"
+    );
+  };
+
+  sortTop5Bottom5StandingsByWeek12 = () => {
+    const { top5Bottom5Standings } = this.props;
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week12",
+      "top5Bottom5Standings"
+    );
+  };
+
+  sortTop5Bottom5StandingsByWeek13 = () => {
+    const { top5Bottom5Standings } = this.props;
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week13",
+      "top5Bottom5Standings"
+    );
   };
 
   // OLD - Football standings table sort methods
@@ -456,14 +595,16 @@ class FootballStandings extends PureComponent {
       ///// H2H Standings /////
       const h2hStandingsHeaderRowHeight = 75;
       const h2hStandingsTotalHeight = 500;
-      const h2hStandingsTotalWidth = 700;
-      const h2hStandingsWidthArray = [200, 100, 100, 100, 100, 100];
+      const h2hStandingsTotalWidth = 900;
+      const h2hStandingsWidthArray = [200, 100, 100, 100, 100, 100, 100, 100];
       const h2hStandingsObjectKeys = [
         "teamName",
         "wins",
         "losses",
         "ties",
         "winPer",
+        "pointsFor",
+        "pointsAgainst",
         "h2hTrifectaPoints",
       ];
       // Create header row for H2H Standings Table
@@ -473,6 +614,11 @@ class FootballStandings extends PureComponent {
         { title: "Losses", onPress: this.sortH2HStandingsByLosses },
         { title: "Ties", onPress: this.sortH2HStandingsByTies },
         { title: "Win %", onPress: this.sortH2HStandingsByWinPer },
+        { title: "Points For", onPress: this.sortH2HStandingsByPointsFor },
+        {
+          title: "Points Against",
+          onPress: this.sortH2HStandingsByPointsAgainst,
+        },
         {
           title: "H2H Trifecta Points",
           onPress: this.sortH2HStandingsByTrifectaPoints,
