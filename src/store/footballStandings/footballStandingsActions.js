@@ -3,7 +3,12 @@ import {
   SCRAPE_FOOTBALL_STANDINGS_START,
   SCRAPE_FOOTBALL_STANDINGS_SUCCESS,
   SCRAPE_FOOTBALL_STANDINGS_FAILED,
-  SAVE_SCRAPED_FOOTBALL_STANDINGS,
+  SAVE_SCRAPED_H2H_STANDINGS,
+  SAVE_EXISTING_H2H_STANDINGS,
+  SAVE_SCRAPED_TOP5_BOTTOM5_STANDINGS,
+  SAVE_EXISTING_TOP5_BOTTOM5_STANDINGS,
+  SAVE_SCRAPED_TRIFECTA_STANDINGS,
+  SAVE_EXISTING_TRIFECTA_STANDINGS,
   SAVE_EXISTING_FOOTBALL_STANDINGS,
   SORT_FOOTBALL_STANDINGS_TABLE,
   SET_FOOTBALL_STANDINGS_LAST_SCRAPED,
@@ -12,7 +17,6 @@ import { footballStandingsScraper } from "../../scrapers/footballStandings";
 import { format } from "date-fns";
 import { assignRankPoints } from "../../computators/assignRankPoints";
 import { calculateTop5Bottom5Standings } from "../../computators/compileTop5Bottom5Standings";
-// import { assignFootballTrifectaPoints } from "../../computators/assignFootballTrifectaPoints";
 import {
   deleteInsertDispatch,
   returnMongoCollection,
@@ -23,7 +27,7 @@ import {
   addOwnerNames,
   returnOwnerNamesUnderscored,
 } from "../../computators/addOwnerNames";
-import { sortArrayBy } from "../../utils";
+import { sortArrayBy, isYear1BeforeYear2 } from "../../utils";
 
 const actions = {
   scrapeFootballStandingsStart: createAction(SCRAPE_FOOTBALL_STANDINGS_START),
@@ -31,7 +35,16 @@ const actions = {
     SCRAPE_FOOTBALL_STANDINGS_SUCCESS
   ),
   scrapeFootballStandingsFailed: createAction(SCRAPE_FOOTBALL_STANDINGS_FAILED),
-  saveScrapedFootballStandings: createAction(SAVE_SCRAPED_FOOTBALL_STANDINGS),
+  saveScrapedH2HStandings: createAction(SAVE_SCRAPED_H2H_STANDINGS),
+  saveExistingH2HStandings: createAction(SAVE_EXISTING_H2H_STANDINGS),
+  saveScrapedTop5Bottom5Standings: createAction(
+    SAVE_SCRAPED_TOP5_BOTTOM5_STANDINGS
+  ),
+  saveExistingTop5Bottom5Standings: createAction(
+    SAVE_EXISTING_TOP5_BOTTOM5_STANDINGS
+  ),
+  saveScrapedTrifectaStandings: createAction(SAVE_SCRAPED_TRIFECTA_STANDINGS),
+  saveExistingTrifectaStandings: createAction(SAVE_EXISTING_TRIFECTA_STANDINGS),
   saveExistingFootballStandings: createAction(SAVE_EXISTING_FOOTBALL_STANDINGS),
   sortFootballStandingsTable: createAction(SORT_FOOTBALL_STANDINGS_TABLE),
   setFootballStandingsLastScraped: createAction(
@@ -64,7 +77,7 @@ const calculateFootballTrifectaPoints = (
       const h2hPoints = teamH2H.h2hTrifectaPoints;
       const top5Bottom5Points = teamTop5Bottom5.top5Bottom5TrifectaPoints;
 
-      combinedStandings.teamName;
+      combinedStandings.teamName = teamH2H.teamName;
       combinedStandings.ownerIds = teamH2H.ownerIds;
       combinedStandings.ownerNames = teamH2H.ownerNames;
       combinedStandings.h2hTrifectaPoints = h2hPoints;
@@ -108,17 +121,20 @@ const scrapeFootballStandings = (year) => {
       );
 
       // Top 5, Bottom 5 Standings
-      const top5Bottom5Collection = returnMongoCollection("footballStandings");
+      const top5Bottom5Collection = returnMongoCollection(
+        "footballTop5Bottom5Totals"
+      );
       const top5Bottom5Totals = await top5Bottom5Collection
-        .find({ year }, { projection: { top5Bottom5Totals: 1 } })
+        .find({ year }, { projection: { _id: 0 } })
         .asArray();
+      console.log("T5B5", top5Bottom5Totals);
 
       const ownerNamesUnderscoredObject = returnOwnerNamesUnderscored(
         h2hStandings
       );
 
       const unrankedTop5Bottom5Standings = calculateTop5Bottom5Standings(
-        top5Bottom5Totals[0].top5Bottom5Totals,
+        top5Bottom5Totals[0].top5Bottom5TotalsObject,
         ownerNamesUnderscoredObject
       );
 
@@ -147,17 +163,22 @@ const scrapeFootballStandings = (year) => {
         top5Bottom5Standings,
         trifectaStandings,
       };
-
       console.log("compiled standings", compiledStandings);
-      // deleteInsertDispatch(
-      //   dispatch,
-      //   actions.saveScrapedFootballStandings,
-      //   footballStandingsCollection,
-      //   year,
-      //   compiledStandings,
-      //   "footballStandings",
-      //   true
-      // );
+
+      // Save H2H Standings, Roto Standings, Roto Stats, and Trifecta Standings to redux & save once to Mongo
+      dispatch(actions.saveScrapedH2HStandings(h2hStandings));
+      dispatch(actions.saveScrapedTop5Bottom5Standings(top5Bottom5Standings));
+      dispatch(actions.saveScrapedTrifectaStandings(trifectaStandings));
+
+      deleteInsertDispatch(
+        null,
+        null,
+        footballStandingsCollection,
+        year,
+        compiledStandings,
+        null,
+        false
+      );
     } else {
       dispatch(actions.scrapeFootballStandingsFailed);
     }
@@ -170,14 +191,41 @@ const displayFootballStandings = (year, sortColumn = "totalTrifectaPoints") => {
       "footballStandings"
     );
 
-    findFromMongoSaveToRedux(
-      dispatch,
-      actions.saveExistingFootballStandings,
-      footballStandingsCollection,
-      year,
-      sortColumn,
-      "footballStandings"
-    );
+    if (isYear1BeforeYear2(year, "2020")) {
+      findFromMongoSaveToRedux(
+        dispatch,
+        actions.saveExistingFootballStandings,
+        footballStandingsCollection,
+        year,
+        sortColumn,
+        "footballStandings"
+      );
+    } else {
+      findFromMongoSaveToRedux(
+        dispatch,
+        actions.saveExistingH2HStandings,
+        footballStandingsCollection,
+        year,
+        "h2hTrifectaPoints",
+        "h2hStandings"
+      );
+      findFromMongoSaveToRedux(
+        dispatch,
+        actions.saveExistingTop5Bottom5Standings,
+        footballStandingsCollection,
+        year,
+        "top5Bottom5TrifectaPoints",
+        "top5Bottom5Standings"
+      );
+      findFromMongoSaveToRedux(
+        dispatch,
+        actions.saveExistingTrifectaStandings,
+        footballStandingsCollection,
+        year,
+        sortColumn,
+        "trifectaStandings"
+      );
+    }
   };
 };
 

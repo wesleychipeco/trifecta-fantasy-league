@@ -13,7 +13,6 @@ const calculateTop5Bottom5Standings = (
 
     // Per owner object for display
     const top5Bottom5OwnerObject = {
-      ownerNames: ownerNames.replaceAll("_", " "),
       teamName: teamName,
     };
 
@@ -35,9 +34,9 @@ const calculateTop5Bottom5Standings = (
     }
 
     // Add record string and winPer to object
-    const recordString = `${wins}-${losses}`;
     const winPer = round(wins / (wins + losses), 3);
-    top5Bottom5OwnerObject.record = recordString;
+    top5Bottom5OwnerObject.wins = wins;
+    top5Bottom5OwnerObject.losses = losses;
     top5Bottom5OwnerObject.winPer = winPer;
 
     top5Bottom5CompiledStandings.push(top5Bottom5OwnerObject);
