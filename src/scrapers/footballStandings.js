@@ -1,16 +1,16 @@
 import axios from "axios";
 import round from "lodash/round";
 
-const footballStandingsScraper = year => {
+const footballStandingsScraper = (year) => {
   return axios
     .get(
-      `http://fantasy.espn.com/apis/v3/games/ffl/seasons/${year}/segments/0/leagues/154802?view=standings`
+      `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${year}/segments/0/leagues/154802?view=mTeam`
     )
-    .then(response => {
-      const standingsArray = [];
+    .then((response) => {
+      const h2hStandingsArray = [];
 
-      response.data.teams.forEach(team => {
-        standingsArray.push({
+      response.data.teams.forEach((team) => {
+        h2hStandingsArray.push({
           teamName: `${team.location} ${team.nickname}`,
           ownerIds: team.owners,
           wins: team.record.overall.wins,
@@ -22,7 +22,7 @@ const footballStandingsScraper = year => {
         });
       });
 
-      return standingsArray;
+      return h2hStandingsArray;
     });
 };
 

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { sum } from "../utils";
 import { Cell } from "./Cell";
 import { rowStyles as styles } from "../styles/globalStyles";
+import { Top5Bottom5Cell } from "./Top5Bottom5Cell";
 
 export class Row extends PureComponent {
   // totalheight: sets the outer "table" height independent of each row height
@@ -31,7 +32,7 @@ export class Row extends PureComponent {
     widthArray: PropTypes.array,
     flexArray: PropTypes.array,
     rowStyle: PropTypes.object,
-    top3StylingIndex: PropTypes.number
+    top3StylingIndex: PropTypes.number,
   };
 
   render() {
@@ -76,6 +77,19 @@ export class Row extends PureComponent {
               const cellWidth = widthArray
                 ? widthArray[i]
                 : totalwidth / data.length;
+              // For Top5 Bottom5
+              if (typeof data[objectKey] === "object") {
+                return (
+                  <Top5Bottom5Cell
+                    key={i}
+                    data={data[objectKey]}
+                    height={height}
+                    width={cellWidth}
+                    flex={cellFlex}
+                    {...props}
+                  />
+                );
+              }
               return (
                 <Cell
                   key={i}
@@ -125,7 +139,7 @@ export class Rows extends PureComponent {
     widthArray: PropTypes.array,
     flexArray: PropTypes.array,
     rowStyle: PropTypes.object,
-    top3Styling: PropTypes.bool
+    top3Styling: PropTypes.bool,
   };
   render() {
     const {
@@ -151,7 +165,7 @@ export class Rows extends PureComponent {
             width,
             height,
             ...rowsStyle,
-            ...styles.rows
+            ...styles.rows,
           }}
         >
           {data.map((row, index) => {

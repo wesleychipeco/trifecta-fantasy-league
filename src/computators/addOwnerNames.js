@@ -6,17 +6,17 @@ const retriveOwnerIdsOwnerNamesArray = () => {
   return ownerIdsCollection
     .find({}, { projection: { _id: 0 } })
     .asArray()
-    .then(docs => docs);
+    .then((docs) => docs);
 };
 
 const returnOwnerNamesArray = (ownerIdsOwnerNamesArray, ownersPerTeam) => {
   const ownerNames = [];
   // for each ownerId per trifecta team
-  ownersPerTeam.forEach(ownerId => {
+  ownersPerTeam.forEach((ownerId) => {
     // in the array of ownerId/ownerNames, find the object where the ownerIds are the same
     // and return the "ownerName" value from that object and add it to the array
     const ownerName = ownerIdsOwnerNamesArray.find(
-      ownerIdsOwnerNames => ownerIdsOwnerNames.ownerId === ownerId
+      (ownerIdsOwnerNames) => ownerIdsOwnerNames.ownerId === ownerId
     ).ownerName;
     ownerNames.push(ownerName);
   });
@@ -27,7 +27,7 @@ const returnOwnerNamesArray = (ownerIdsOwnerNamesArray, ownersPerTeam) => {
 
 const addOwnerNames = (ownerIdsOwnerNamesArray, dataArray) => {
   // for each team in the standings
-  dataArray.forEach(team => {
+  dataArray.forEach((team) => {
     const teamOwnerIds = team.ownerIds;
     // pass into the function the array of ownerIds per team
     const ownerNames = returnOwnerNamesArray(
@@ -40,4 +40,22 @@ const addOwnerNames = (ownerIdsOwnerNamesArray, dataArray) => {
   return dataArray;
 };
 
-export { addOwnerNames, returnOwnerNamesArray, retriveOwnerIdsOwnerNamesArray };
+const returnOwnerNamesUnderscored = (standingsWithOwnerNames) => {
+  const ownerNamesUnderscored = [];
+  standingsWithOwnerNames.forEach((team) => {
+    const underscoredNames = team.ownerNames.replaceAll(" ", "_");
+    const ownerTeamNameObject = {
+      ownerNames: underscoredNames,
+      teamName: team.teamName,
+    };
+    ownerNamesUnderscored.push(ownerTeamNameObject);
+  });
+  return ownerNamesUnderscored;
+};
+
+export {
+  addOwnerNames,
+  returnOwnerNamesArray,
+  retriveOwnerIdsOwnerNamesArray,
+  returnOwnerNamesUnderscored,
+};
