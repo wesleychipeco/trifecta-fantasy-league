@@ -78,7 +78,10 @@ export class Row extends PureComponent {
                 ? widthArray[i]
                 : totalwidth / data.length;
               // For Top5 Bottom5
-              if (typeof data[objectKey] === "object") {
+              if (
+                typeof data[objectKey] === "object" &&
+                !Array.isArray(data[objectKey])
+              ) {
                 return (
                   <Top5Bottom5Cell
                     key={i}
