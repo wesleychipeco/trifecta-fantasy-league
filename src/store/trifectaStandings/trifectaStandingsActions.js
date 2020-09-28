@@ -59,20 +59,21 @@ const retrieveOwnersPerTeamArray = (year) => {
   return teamList;
 };
 
-const checkSameArray = (array1, array2) => {
-  const arrayLengthCondition = array1.length === array2.length;
-  const arrayValuesCondtion =
-    JSON.stringify(array1.sort()) === JSON.stringify(array2.sort());
-  if (arrayLengthCondition && arrayValuesCondtion) {
-    return true;
-  } else {
-    return false;
+const atLeastOneInTheOther = (array1, array2) => {
+  // for each in 1, check 2
+  for (let i1 = 0; i1 < array1.length; i1++) {
+    for (let i2 = 0; i2 < array2.length; i2++) {
+      if (array1[i1] === array2[i2]) {
+        return true;
+      }
+    }
   }
+  return false;
 };
 
 const returnSportTrifectaPoints = (sportStandings, ownersPerTeam) => {
   return sportStandings.find((sportsTeam) =>
-    checkSameArray(sportsTeam.ownerIds, ownersPerTeam)
+    atLeastOneInTheOther(sportsTeam.ownerIds, ownersPerTeam)
   ).totalTrifectaPoints;
 };
 
