@@ -23,9 +23,9 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
 
 ### CREATE AWS INSTANCE
 
-Ubuntu  
-Create security groups to expose ports 3000, 8091 to all IPs  
-ssh -v -i .\Downloads\trifectav2.pem ubuntu@ec2-54-183-130-154.us-west-1.compute.amazonaws.com
+Ubuntu AMI
+Create security groups to expose ports 22, 3000 to all IPs  
+ssh -v -i .\Downloads\trifecta2020.pem ubuntu@ec2-13-56-19-13.us-west-1.compute.amazonaws.com
 
 ### INSTALL
 
@@ -43,8 +43,8 @@ Install node https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/
 
 To open tunnel:  
 `yarn add ngrok`  
-manually add authtoken to created file: `/home/ubuntu/ngrok.yml`  
-run `ngrok http 3000 -bind-tls=true -config=ngrok.yml` from `/home/ubuntu`
+Add authtoken to ngrok config on server 
+run `ngrok http 3000 -bind-tls=true`
 
 ### Use screen to start processes
 
