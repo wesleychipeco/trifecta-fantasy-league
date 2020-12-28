@@ -4,7 +4,7 @@ import {
   Menu,
   MenuOptions,
   MenuOption,
-  MenuTrigger
+  MenuTrigger,
 } from "react-native-popup-menu";
 import { triggerStyles, optionsStyles } from "../styles/globalStyles";
 
@@ -12,7 +12,7 @@ export class OwnerProfilesDropdown extends PureComponent {
   static propTypes = {
     teamNumber: PropTypes.number.isRequired,
     ownerNames: PropTypes.string.isRequired,
-    navigation: PropTypes.object.isRequired
+    navigation: PropTypes.object.isRequired,
   };
 
   render() {
@@ -29,10 +29,10 @@ export class OwnerProfilesDropdown extends PureComponent {
             }
             text="Seasons Recap"
           />
-          <MenuOption
+          {/* <MenuOption
             onSelect={() => console.log("Press - Trophy Case")}
             text="Trophy Case"
-          />
+          /> */}
         </MenuOptions>
       </Menu>
     );
