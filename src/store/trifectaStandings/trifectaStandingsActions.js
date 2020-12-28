@@ -31,9 +31,7 @@ const actions = {
 const retrieveSportStandings = (year, sport) => {
   const standingsName = `${sport}Standings`;
   const collection = returnMongoCollection(standingsName);
-  // TODO need to change when figuring out football weights
-  const trifectaPointsKey =
-    sport === "football" ? standingsName : "trifectaStandings";
+  const trifectaPointsKey = "trifectaStandings";
 
   const projection1 = trifectaPointsKey + ".ownerIds";
   const projection2 = trifectaPointsKey + ".totalTrifectaPoints";
@@ -180,7 +178,9 @@ const calculateTrifectaStandings = (
     if (footballSeasonEnded) {
       const footballStandings = await retrieveSportStandings(year, "football");
       trifectaSportsStandingsArray.push(footballStandings);
+      console.log("footballStandings", footballStandings);
     } else {
+      console.log("blehs");
       trifectaSportsStandingsArray.push(null);
     }
 
@@ -208,6 +208,7 @@ const calculateTrifectaStandings = (
         year,
         trifectaStandings,
       };
+      console.log("compiled standings", compiledStandings);
 
       const trifectaStandingsCollection = returnMongoCollection(
         "trifectaStandings"
