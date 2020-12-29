@@ -10,6 +10,11 @@ import {
   GET_BASEBALL_BEST_H2H,
   GET_BASEBALL_BEST_ROTO,
   SORT_BASEBALL_HALL_OF_FAME,
+  GET_FOOTBALL_ALL_TIME_RECORDS,
+  GET_FOOTBALL_PAST_CHAMPIONS,
+  GET_FOOTBALL_BEST_H2H,
+  GET_FOOTBALL_BEST_WEEKS,
+  SORT_FOOTBALL_HALL_OF_FAME,
 } from "./hallOfFameActionTypes";
 import { returnMongoCollection } from "../../databaseManagement";
 import { sortArrayBy } from "../../utils";
@@ -27,9 +32,16 @@ const actions = {
     bestH2H: createAction(GET_BASEBALL_BEST_H2H),
     bestRoto: createAction(GET_BASEBALL_BEST_ROTO),
   },
+  football: {
+    allTimeRecords: createAction(GET_FOOTBALL_ALL_TIME_RECORDS),
+    pastChampions: createAction(GET_FOOTBALL_PAST_CHAMPIONS),
+    bestH2H: createAction(GET_FOOTBALL_BEST_H2H),
+    bestWeeks: createAction(GET_FOOTBALL_BEST_WEEKS),
+  },
 };
 const sortBasketball = createAction(SORT_BASKETBALL_HALL_OF_FAME);
 const sortBaseball = createAction(SORT_BASEBALL_HALL_OF_FAME);
+const sortFootball = createAction(SORT_FOOTBALL_HALL_OF_FAME);
 
 const displayHallOfFame = (sport) => {
   return async function (dispatch) {
@@ -46,6 +58,7 @@ const displayHallOfFame = (sport) => {
           pastChampions,
           bestH2H,
           bestRoto,
+          bestWeeks,
         } = extractedObject;
         dispatch(
           sportActions.allTimeRecords(
@@ -56,9 +69,15 @@ const displayHallOfFame = (sport) => {
           sportActions.pastChampions(sortArrayBy(pastChampions, "year", false))
         );
         dispatch(sportActions.bestH2H(sortArrayBy(bestH2H, "winPer", true)));
-        dispatch(
-          sportActions.bestRoto(sortArrayBy(bestRoto, "rotoPoints", true))
-        );
+        if (sport === "football") {
+          dispatch(
+            sportActions.bestWeeks(sortArrayBy(bestWeeks, "pointsFor", true))
+          );
+        } else {
+          dispatch(
+            sportActions.bestRoto(sortArrayBy(bestRoto, "rotoPoints", true))
+          );
+        }
       });
   };
 };
@@ -75,4 +94,15 @@ const sortBaseballTable = (table) => {
   };
 };
 
-export { displayHallOfFame, sortBasketballTable, sortBaseballTable };
+const sortFootballTable = (table) => {
+  return async function (dispatch) {
+    dispatch(sortFootball(table));
+  };
+};
+
+export {
+  displayHallOfFame,
+  sortBasketballTable,
+  sortBaseballTable,
+  sortFootballTable,
+};

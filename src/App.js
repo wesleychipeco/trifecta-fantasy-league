@@ -24,6 +24,7 @@ import OwnerProfiles from "./screens/OwnerProfiles";
 import HallOfFameHomeScreen from "./screens/HallOfFameHomeScreen";
 import HallOfFameBasketball from "./screens/HallOfFameBasketball";
 import HallOfFameBaseball from "./screens/HallOfFameBaseball";
+import HallOfFameFootball from "./screens/HallOfFameFootball";
 
 const routeMap = {
   Home: {
@@ -99,6 +100,11 @@ const routeMap = {
   HallOfFameBaseball: {
     component: HallOfFameBaseball,
     path: "/halloffame/baseball",
+    exact: true,
+  },
+  HallOfFameFootball: {
+    component: HallOfFameFootball,
+    path: "/halloffame/football",
     exact: true,
   },
   Second: {

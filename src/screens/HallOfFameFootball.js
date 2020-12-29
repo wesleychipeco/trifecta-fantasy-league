@@ -4,17 +4,17 @@ import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
-import { getBasketballHallOfFameStateSelectors } from "../store/hallOfFame/basketballHallOfFameReducer";
+import { getFootballHallOfFameStateSelectors } from "../store/hallOfFame/footballHallOfFameReducer";
 import {
   displayHallOfFame,
-  sortBasketballTable,
+  sortFootballTable,
 } from "../store/hallOfFame/hallOfFameActions";
-import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/hallOfFame/basketball";
+import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/hallOfFame/football";
 import { standingsStyles as styles } from "../styles/globalStyles";
 import { isEmptyArray, sum, sortArrayBy } from "../utils";
 import { LinkText } from "../components/LinkText";
 
-export class HallOfFameBasketball extends PureComponent {
+export class HallOfFameFootball extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -31,21 +31,21 @@ export class HallOfFameBasketball extends PureComponent {
         sortedColumn: "winPer",
         highToLow: true,
       },
-      bestRoto: {
-        sortedColumn: "rotoPoints",
+      bestWeeks: {
+        sortedColumn: "pointsFor",
         highToLow: true,
       },
     };
   }
 
   componentDidMount() {
-    this.props.displayHallOfFame("basketball");
+    this.props.displayHallOfFame("football");
   }
 
   noop = () => {};
 
   sortTableByColumn = (tableArray, columnKey, tableType) => {
-    const { sortBasketballTable } = this.props;
+    const { sortFootballTable } = this.props;
     const { sortedColumn, highToLow } = this.state[tableType];
     const tableArraySorted = [...tableArray];
 
@@ -56,7 +56,7 @@ export class HallOfFameBasketball extends PureComponent {
           highToLow: !highToLow,
         },
       });
-      sortBasketballTable([
+      sortFootballTable([
         sortArrayBy(tableArraySorted, columnKey, !highToLow),
         tableType,
       ]);
@@ -69,7 +69,7 @@ export class HallOfFameBasketball extends PureComponent {
           highToLow: columnDefaultSortDirection,
         },
       });
-      sortBasketballTable([
+      sortFootballTable([
         sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection),
         tableType,
       ]);
@@ -79,7 +79,6 @@ export class HallOfFameBasketball extends PureComponent {
   // All-Time Records Table Sort methods
   sortAllTimeRecordsBySeasons = () => {
     const { allTimeRecords } = this.props;
-    console.log("hi");
     this.sortTableByColumn(allTimeRecords, "seasons", "allTimeRecords");
   };
 
@@ -103,9 +102,9 @@ export class HallOfFameBasketball extends PureComponent {
     this.sortTableByColumn(allTimeRecords, "winPer", "allTimeRecords");
   };
 
-  sortAllTimeRecordsByRotoPoints = () => {
+  sortAllTimeRecordsByPointsFor = () => {
     const { allTimeRecords } = this.props;
-    this.sortTableByColumn(allTimeRecords, "rotoPoints", "allTimeRecords");
+    this.sortTableByColumn(allTimeRecords, "pointsFor", "allTimeRecords");
   };
 
   sortPastChampionsByYear = () => {
@@ -133,9 +132,9 @@ export class HallOfFameBasketball extends PureComponent {
     this.sortTableByColumn(pastChampions, "winPer", "pastChampions");
   };
 
-  sortPastChampionsByRotoPoints = () => {
+  sortPastChampionsByPointsFor = () => {
     const { pastChampions } = this.props;
-    this.sortTableByColumn(pastChampions, "rotoPoints", "pastChampions");
+    this.sortTableByColumn(pastChampions, "pointsFor", "pastChampions");
   };
 
   sortBestH2HByYear = () => {
@@ -163,14 +162,14 @@ export class HallOfFameBasketball extends PureComponent {
     this.sortTableByColumn(bestH2H, "winPer", "bestH2H");
   };
 
-  sortBestRotoByYear = () => {
-    const { bestRoto } = this.props;
-    this.sortTableByColumn(bestRoto, "year", "bestRoto");
+  sortBestH2HByPointsFor = () => {
+    const { bestH2H } = this.props;
+    this.sortTableByColumn(bestH2H, "pointsFor", "bestH2H");
   };
 
-  sortBestRotoByRotoPoints = () => {
-    const { bestRoto } = this.props;
-    this.sortTableByColumn(bestRoto, "rotoPoints", "bestRoto");
+  sortBestWeeksByPointsFor = () => {
+    const { bestWeeks } = this.props;
+    this.sortTableByColumn(bestWeeks, "pointsFor", "bestWeeks");
   };
 
   renderHeaderRowColumn = ({ title, onPress }) => {
@@ -191,20 +190,20 @@ export class HallOfFameBasketball extends PureComponent {
       allTimeRecords,
       pastChampions,
       bestH2H,
-      bestRoto,
+      bestWeeks,
     } = this.props;
 
     const emptyCheck =
       isEmptyArray(allTimeRecords) ||
       isEmptyArray(pastChampions) ||
       isEmptyArray(bestH2H) ||
-      isEmptyArray(bestRoto);
+      isEmptyArray(bestWeeks);
 
     if (emptyCheck) {
       return <LoadingIndicator />;
     }
 
-    const title = `Trifecta Basketball Hall of Fame`;
+    const title = `Trifecta Football Hall of Fame`;
 
     const headerRowHeight = 75;
 
@@ -217,8 +216,8 @@ export class HallOfFameBasketball extends PureComponent {
       { title: "Ties", onPress: this.sortAllTimeRecordsByTies },
       { title: "Win %", onPress: this.sortAllTimeRecordsByWinPer },
       {
-        title: "Average Roto Points",
-        onPress: this.sortAllTimeRecordsByRotoPoints,
+        title: "Average Points For",
+        onPress: this.sortAllTimeRecordsByPointsFor,
       },
     ];
 
@@ -236,7 +235,7 @@ export class HallOfFameBasketball extends PureComponent {
       "losses",
       "ties",
       "winPer",
-      "rotoPoints",
+      "pointsFor",
     ];
 
     ///// Past Champions /////
@@ -249,8 +248,8 @@ export class HallOfFameBasketball extends PureComponent {
       { title: "Ties", onPress: this.sortPastChampionsByTies },
       { title: "Win %", onPress: this.sortPastChampionsByWinPer },
       {
-        title: "Roto Points",
-        onPress: this.sortPastChampionsByRotoPoints,
+        title: "Points For",
+        onPress: this.sortPastChampionsByPointsFor,
       },
     ];
     const pastChampionsHeaderRow = pastChampionsHeaderRowMap.map(
@@ -264,7 +263,7 @@ export class HallOfFameBasketball extends PureComponent {
       "losses",
       "ties",
       "winPer",
-      "rotoPoints",
+      "pointsFor",
     ];
     const pastChampionsWidthArray = [75, 250, 250, 75, 75, 75, 75, 75];
     const pastChampionsTotalWidth = sum(pastChampionsWidthArray);
@@ -279,6 +278,10 @@ export class HallOfFameBasketball extends PureComponent {
       { title: "Losses", onPress: this.sortBestH2HByLosses },
       { title: "Ties", onPress: this.sortBestH2HByTies },
       { title: "Win %", onPress: this.sortBestH2HByWinPer },
+      {
+        title: "Points For",
+        onPress: this.sortBestH2HByPointsFor,
+      },
     ];
     const bestH2HHeaderRow = bestH2HHeaderRowMap.map(
       this.renderHeaderRowColumn
@@ -292,25 +295,33 @@ export class HallOfFameBasketball extends PureComponent {
       "losses",
       "ties",
       "winPer",
+      "pointsFor",
     ];
-    const bestH2HWidthArray = [75, 250, 250, 75, 75, 75, 75];
+    const bestH2HWidthArray = [75, 250, 250, 75, 75, 75, 75, 75];
     const bestH2HTotalWidth = sum(bestH2HWidthArray);
     const bestH2HTotalHeight = bestH2H.length * 50;
 
-    ///// Best Roto /////
-    const bestRotoHeaderRowMap = [
-      { title: "Year", onPress: this.sortBestRotoByYear },
+    ///// Best Weeks /////
+    const bestWeeksHeaderRowMap = [
+      { title: "Year", onPress: this.noop },
+      { title: "Week", onPress: this.noop },
       { title: "Owner Names", onPress: this.noop },
       { title: "Team Name", onPress: this.noop },
-      { title: "Average Roto Points", onPress: this.sortBestRotoByWinPer },
+      { title: "Points Scored", onPress: this.sortBestWeeksByPointsFor },
     ];
-    const bestRotoHeaderRow = bestRotoHeaderRowMap.map(
+    const bestWeeksHeaderRow = bestWeeksHeaderRowMap.map(
       this.renderHeaderRowColumn
     );
-    const bestRotoObjectKeys = ["year", "ownerNames", "teamName", "rotoPoints"];
-    const bestRotoWidthArray = [75, 250, 250, 75];
-    const bestRotoTotalWidth = sum(bestRotoWidthArray);
-    const bestRotoTotalHeight = bestRoto.length * 50;
+    const bestWeeksObjectKeys = [
+      "year",
+      "week",
+      "ownerNames",
+      "teamName",
+      "pointsFor",
+    ];
+    const bestWeeksWidthArray = [75, 75, 250, 250, 75];
+    const bestWeeksTotalWidth = sum(bestWeeksWidthArray);
+    const bestWeeksTotalHeight = bestWeeks.length * 50;
 
     return (
       <View style={styles.container}>
@@ -321,8 +332,7 @@ export class HallOfFameBasketball extends PureComponent {
         <View style={styles.table}>
           <Text style={styles.subtext}>All-Time Records</Text>
           <Text style={styles.subtext}>
-            Does not include 2018, which was not part of Trifecta cycle due to
-            re-alignment
+            Roto points only calculated starting in 2020
           </Text>
           <Row
             data={allTimeRecordsHeaderRow}
@@ -361,7 +371,7 @@ export class HallOfFameBasketball extends PureComponent {
           />
         </View>
         <View style={styles.table}>
-          <Text style={styles.subtext}>Top 5 H2H Seasons</Text>
+          <Text style={styles.subtext}>10+ Win H2H Seasons</Text>
           <Row
             data={bestH2HHeaderRow}
             height={headerRowHeight}
@@ -380,24 +390,26 @@ export class HallOfFameBasketball extends PureComponent {
           />
         </View>
         <View style={styles.table}>
-          <Text style={styles.subtext}>Top 5 Roto Seasons</Text>
+          <Text style={styles.subtext}>Top 5 Highest Scoring Single Weeks</Text>
           <Text style={styles.subtext}>
-            Roto points only calculated starting in 2020
+            In 2017, scoring changed from standard to 0.5 PPR.{"\n"}In 2020,
+            additional FLEX starting lineup spot added.{"\n"}Highest single week
+            scores from previous scoring formats are also recorded below.
           </Text>
           <Row
-            data={bestRotoHeaderRow}
+            data={bestWeeksHeaderRow}
             height={headerRowHeight}
-            totalwidth={bestRotoTotalWidth}
-            widthArray={bestRotoWidthArray}
+            totalwidth={bestWeeksTotalWidth}
+            widthArray={bestWeeksWidthArray}
             rowStyle={styles.header}
             numberOfLines={2}
           />
           <Rows
-            data={bestRoto}
-            totalheight={bestRotoTotalHeight}
-            totalwidth={bestRotoTotalWidth}
-            widthArray={bestRotoWidthArray}
-            objectKeys={bestRotoObjectKeys}
+            data={bestWeeks}
+            totalheight={bestWeeksTotalHeight}
+            totalwidth={bestWeeksTotalWidth}
+            widthArray={bestWeeksWidthArray}
+            objectKeys={bestWeeksObjectKeys}
             numberOfLines={2}
           />
         </View>
@@ -412,24 +424,21 @@ const mapStateToProps = (state) => {
     getAllTimeRecords,
     getPastChampions,
     getBestH2H,
-    getBestRoto,
-  } = getBasketballHallOfFameStateSelectors(state);
+    getBestWeeks,
+  } = getFootballHallOfFameStateSelectors(state);
 
   return {
     sport: getSport(),
     allTimeRecords: getAllTimeRecords(),
     pastChampions: getPastChampions(),
     bestH2H: getBestH2H(),
-    bestRoto: getBestRoto(),
+    bestWeeks: getBestWeeks(),
   };
 };
 
 const mapDispatchToProps = {
   displayHallOfFame,
-  sortBasketballTable,
+  sortFootballTable,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HallOfFameBasketball);
+export default connect(mapStateToProps, mapDispatchToProps)(HallOfFameFootball);
