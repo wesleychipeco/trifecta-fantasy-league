@@ -21,14 +21,8 @@ const HallOfFameHomeScreen = ({ navigation }) => {
         }}
       >
         <MyButton
-          title="Trifecta Hall of Fame"
-          onPress={() => navigation.navigate("HallOfChampions")}
-          touchableStyles={styles.buttonTouchable}
-          textStyles={styles.buttonText}
-        />
-        <MyButton
           title="Basketball Hall of Fame"
-          onPress={() => navigation.navigate("HallOfChampions")}
+          onPress={() => navigation.navigate("HallOfFameBasketball")}
           touchableStyles={styles.buttonTouchable}
           textStyles={styles.buttonText}
         />

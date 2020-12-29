@@ -16,7 +16,7 @@ export class Navbar extends PureComponent {
           textStyles={styles.text}
         />
         <MyButton
-          title="2021 Baksetball Standings"
+          title="2021 Basketball Standings"
           onPress={() =>
             navigation.navigate("BasketballStandings", { year: "2021" })
           }
