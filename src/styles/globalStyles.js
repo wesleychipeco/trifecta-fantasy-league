@@ -98,6 +98,70 @@ const homeScreenStyles = {
   },
 };
 
+const hallOfFameStyles = {
+  container: {
+    justifyContent: "flex-start",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF",
+  },
+  header: {
+    width: "80%",
+    marginTop: 20,
+  },
+  trifectaBanner: {
+    height: 250,
+    width: "100%",
+  },
+  welcome: {
+    fontSize: 30,
+    textAlign: "center",
+  },
+  caption: {
+    textAlign: "center",
+    fontSize: 16,
+    marginVertical: 20,
+  },
+  buttonTouchable: {
+    borderWidth: 2,
+    borderColor: "#000000",
+    backgroundColor: "#007FFF",
+    padding: 5,
+    marginHorizontal: 10,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+  },
+  trifectaTrophy: {
+    height: "100%",
+    width: "50%",
+  },
+  championsContainer: {
+    marginTop: 25,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    width: "90%",
+    height: 500,
+  },
+  championHeader: {
+    marginTop: 25,
+    alignItems: "center",
+  },
+  championHeaderText: {
+    fontSize: 24,
+  },
+  trifectaChampions: {
+    flexDirection: "column",
+    height: "100%",
+    width: "50%",
+    alignItems: "flex-start",
+    marginLeft: 50,
+  },
+  championText: {
+    fontSize: 18,
+    marginBottom: 8,
+  },
+};
+
 const commissionerStyles = {
   container: {
     flex: 1,
@@ -270,4 +334,5 @@ export {
   navbarStyles,
   triggerStyles,
   optionsStyles,
+  hallOfFameStyles,
 };

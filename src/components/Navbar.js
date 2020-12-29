@@ -42,6 +42,12 @@ export class Navbar extends PureComponent {
           textStyles={styles.text}
         />
         <MyButton
+          title="Hall Of Fame"
+          onPress={() => navigation.navigate("HallOfFameHomeScreen")}
+          touchableStyles={styles.button}
+          textStyles={styles.text}
+        />
+        <MyButton
           title="Owner Matchups"
           onPress={() => navigation.navigate("MatchupsHomeScreen")}
           touchableStyles={styles.button}
