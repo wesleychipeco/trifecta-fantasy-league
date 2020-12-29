@@ -331,8 +331,10 @@ export class HallOfFameFootball extends PureComponent {
         </View>
         <View style={styles.table}>
           <Text style={styles.subtext}>All-Time Records</Text>
+
           <Text style={styles.subtext}>
-            Roto points only calculated starting in 2020
+            Does not include 2018, which was not part of Trifecta cycle due to
+            re-alignment
           </Text>
           <Row
             data={allTimeRecordsHeaderRow}

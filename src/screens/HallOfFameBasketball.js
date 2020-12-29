@@ -321,8 +321,7 @@ export class HallOfFameBasketball extends PureComponent {
         <View style={styles.table}>
           <Text style={styles.subtext}>All-Time Records</Text>
           <Text style={styles.subtext}>
-            Does not include 2018, which was not part of Trifecta cycle due to
-            re-alignment
+            Roto points only calculated starting in 2020
           </Text>
           <Row
             data={allTimeRecordsHeaderRow}
