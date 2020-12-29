@@ -28,7 +28,7 @@ const HallOfFameHomeScreen = ({ navigation }) => {
         />
         <MyButton
           title="Baseball Hall of Fame"
-          onPress={() => navigation.navigate("HallOfChampions")}
+          onPress={() => navigation.navigate("HallOfFameBaseball")}
           touchableStyles={styles.buttonTouchable}
           textStyles={styles.buttonText}
         />

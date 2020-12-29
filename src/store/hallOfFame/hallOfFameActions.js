@@ -5,8 +5,11 @@ import {
   GET_BASKETBALL_BEST_H2H,
   GET_BASKETBALL_BEST_ROTO,
   SORT_BASKETBALL_HALL_OF_FAME,
-  GET_BASEBALL_HALL_OF_FAME,
-  GET_FOOTBALL_HALL_OF_FAME,
+  GET_BASEBALL_ALL_TIME_RECORDS,
+  GET_BASEBALL_PAST_CHAMPIONS,
+  GET_BASEBALL_BEST_H2H,
+  GET_BASEBALL_BEST_ROTO,
+  SORT_BASEBALL_HALL_OF_FAME,
 } from "./hallOfFameActionTypes";
 import { returnMongoCollection } from "../../databaseManagement";
 import { sortArrayBy } from "../../utils";
@@ -18,10 +21,15 @@ const actions = {
     bestH2H: createAction(GET_BASKETBALL_BEST_H2H),
     bestRoto: createAction(GET_BASKETBALL_BEST_ROTO),
   },
-  baseball: createAction(GET_BASEBALL_HALL_OF_FAME),
-  football: createAction(GET_FOOTBALL_HALL_OF_FAME),
+  baseball: {
+    allTimeRecords: createAction(GET_BASEBALL_ALL_TIME_RECORDS),
+    pastChampions: createAction(GET_BASEBALL_PAST_CHAMPIONS),
+    bestH2H: createAction(GET_BASEBALL_BEST_H2H),
+    bestRoto: createAction(GET_BASEBALL_BEST_ROTO),
+  },
 };
 const sortBasketball = createAction(SORT_BASKETBALL_HALL_OF_FAME);
+const sortBaseball = createAction(SORT_BASEBALL_HALL_OF_FAME);
 
 const displayHallOfFame = (sport) => {
   return async function (dispatch) {
@@ -55,10 +63,16 @@ const displayHallOfFame = (sport) => {
   };
 };
 
-const sortTable = (table) => {
+const sortBasketballTable = (table) => {
   return async function (dispatch) {
     dispatch(sortBasketball(table));
   };
 };
 
-export { displayHallOfFame, sortTable };
+const sortBaseballTable = (table) => {
+  return async function (dispatch) {
+    dispatch(sortBaseball(table));
+  };
+};
+
+export { displayHallOfFame, sortBasketballTable, sortBaseballTable };

@@ -25,6 +25,9 @@ import ownerProfilesReducer, {
 import basketballHallOfFameReducer, {
   BASKETBALL_HALL_OF_FAME_STATE_PATH,
 } from "./hallOfFame/basketballHallOfFameReducer";
+import baseballHallOfFameReducer, {
+  BASEBALL_HALL_OF_FAME_STATE_PATH,
+} from "./hallOfFame/baseballHallOfFameReducer";
 
 export default {
   [BASEBALL_STANDINGS_STATE_PATH]: baseballStandingsReducer,
@@ -36,4 +39,5 @@ export default {
   [COMMISSIONER_STATE_PATH]: commissionerReducer,
   [OWNER_PROFILES_STATE_PATH]: ownerProfilesReducer,
   [BASKETBALL_HALL_OF_FAME_STATE_PATH]: basketballHallOfFameReducer,
+  [BASEBALL_HALL_OF_FAME_STATE_PATH]: baseballHallOfFameReducer,
 };

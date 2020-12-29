@@ -4,17 +4,17 @@ import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
-import { getBasketballHallOfFameStateSelectors } from "../store/hallOfFame/basketballHallOfFameReducer";
+import { getBaseballHallOfFameStateSelectors } from "../store/hallOfFame/baseballHallOfFameReducer";
 import {
   displayHallOfFame,
-  sortBasketballTable,
+  sortBaseballTable,
 } from "../store/hallOfFame/hallOfFameActions";
-import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/hallOfFame/basketball";
+import { tableDefaultSortDirections } from "../consts/tableDefaultSortDirections/hallOfFame/baseball";
 import { standingsStyles as styles } from "../styles/globalStyles";
 import { isEmptyArray, sum, sortArrayBy } from "../utils";
 import { LinkText } from "../components/LinkText";
 
-export class HallOfFameBasketball extends PureComponent {
+export class HallOfFameBaseball extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -39,13 +39,13 @@ export class HallOfFameBasketball extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.displayHallOfFame("basketball");
+    this.props.displayHallOfFame("baseball");
   }
 
   noop = () => {};
 
   sortTableByColumn = (tableArray, columnKey, tableType) => {
-    const { sortBasketballTable } = this.props;
+    const { sortBaseballTable } = this.props;
     const { sortedColumn, highToLow } = this.state[tableType];
     const tableArraySorted = [...tableArray];
 
@@ -56,7 +56,7 @@ export class HallOfFameBasketball extends PureComponent {
           highToLow: !highToLow,
         },
       });
-      sortBasketballTable([
+      sortBaseballTable([
         sortArrayBy(tableArraySorted, columnKey, !highToLow),
         tableType,
       ]);
@@ -69,7 +69,7 @@ export class HallOfFameBasketball extends PureComponent {
           highToLow: columnDefaultSortDirection,
         },
       });
-      sortBasketballTable([
+      sortBaseballTable([
         sortArrayBy(tableArraySorted, columnKey, columnDefaultSortDirection),
         tableType,
       ]);
@@ -204,7 +204,7 @@ export class HallOfFameBasketball extends PureComponent {
       return <LoadingIndicator />;
     }
 
-    const title = `Trifecta Basketball Hall of Fame`;
+    const title = `Trifecta Baseball Hall of Fame`;
 
     const headerRowHeight = 75;
 
@@ -320,9 +320,6 @@ export class HallOfFameBasketball extends PureComponent {
         </View>
         <View style={styles.table}>
           <Text style={styles.subtext}>All-Time Records</Text>
-          <Text style={styles.subtext}>
-            Roto points only calculated starting in 2020
-          </Text>
           <Row
             data={allTimeRecordsHeaderRow}
             height={headerRowHeight}
@@ -380,9 +377,6 @@ export class HallOfFameBasketball extends PureComponent {
         </View>
         <View style={styles.table}>
           <Text style={styles.subtext}>Top 5 Roto Seasons</Text>
-          <Text style={styles.subtext}>
-            Roto points only calculated starting in 2020
-          </Text>
           <Row
             data={bestRotoHeaderRow}
             height={headerRowHeight}
@@ -412,7 +406,7 @@ const mapStateToProps = (state) => {
     getPastChampions,
     getBestH2H,
     getBestRoto,
-  } = getBasketballHallOfFameStateSelectors(state);
+  } = getBaseballHallOfFameStateSelectors(state);
 
   return {
     sport: getSport(),
@@ -425,10 +419,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   displayHallOfFame,
-  sortBasketballTable,
+  sortBaseballTable,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HallOfFameBasketball);
+export default connect(mapStateToProps, mapDispatchToProps)(HallOfFameBaseball);
