@@ -107,6 +107,16 @@ export class HallOfFameFootball extends PureComponent {
     this.sortTableByColumn(allTimeRecords, "pointsFor", "allTimeRecords");
   };
 
+  sortAllTimeRecordsByPointsAgainst = () => {
+    const { allTimeRecords } = this.props;
+    this.sortTableByColumn(allTimeRecords, "pointsAgainst", "allTimeRecords");
+  };
+
+  sortAllTimeRecordsByPointsDiff = () => {
+    const { allTimeRecords } = this.props;
+    this.sortTableByColumn(allTimeRecords, "pointsDiff", "allTimeRecords");
+  };
+
   sortPastChampionsByYear = () => {
     const { pastChampions } = this.props;
     this.sortTableByColumn(pastChampions, "year", "pastChampions");
@@ -137,6 +147,16 @@ export class HallOfFameFootball extends PureComponent {
     this.sortTableByColumn(pastChampions, "pointsFor", "pastChampions");
   };
 
+  sortPastChampionsByPointsAgainst = () => {
+    const { pastChampions } = this.props;
+    this.sortTableByColumn(pastChampions, "pointsAgainst", "pastChampions");
+  };
+
+  sortPastChampionsByPointsDiff = () => {
+    const { pastChampions } = this.props;
+    this.sortTableByColumn(pastChampions, "pointsDiff", "pastChampions");
+  };
+
   sortBestH2HByYear = () => {
     const { bestH2H } = this.props;
     this.sortTableByColumn(bestH2H, "year", "bestH2H");
@@ -165,6 +185,16 @@ export class HallOfFameFootball extends PureComponent {
   sortBestH2HByPointsFor = () => {
     const { bestH2H } = this.props;
     this.sortTableByColumn(bestH2H, "pointsFor", "bestH2H");
+  };
+
+  sortBestH2HByPointsAgainst = () => {
+    const { bestH2H } = this.props;
+    this.sortTableByColumn(bestH2H, "pointsAgainst", "bestH2H");
+  };
+
+  sortBestH2HByPointsDiff = () => {
+    const { bestH2H } = this.props;
+    this.sortTableByColumn(bestH2H, "pointsDiff", "bestH2H");
   };
 
   sortBestWeeksByPointsFor = () => {
@@ -219,14 +249,22 @@ export class HallOfFameFootball extends PureComponent {
         title: "Average Points For",
         onPress: this.sortAllTimeRecordsByPointsFor,
       },
+      {
+        title: "Average Points Against",
+        onPress: this.sortAllTimeRecordsByPointsAgainst,
+      },
+      {
+        title: "Average Point Differential",
+        onPress: this.sortAllTimeRecordsByPointsDiff,
+      },
     ];
 
     const allTimeRecordsHeaderRow = allTimeRecordsHeaderRowMap.map(
       this.renderHeaderRowColumn
     );
 
-    const allTimeRecordsTotalWidth = 650;
-    const allTimeRecordsWidthArray = [200, 75, 75, 75, 75, 75, 75];
+    const allTimeRecordsWidthArray = [200, 75, 75, 75, 75, 75, 75, 75, 75];
+    const allTimeRecordsTotalWidth = sum(allTimeRecordsWidthArray);
     const allTimeRecordsTotalHeight = allTimeRecords.length * 50;
     const allTimeRecordsObjectKeys = [
       "ownerNames",
@@ -236,6 +274,8 @@ export class HallOfFameFootball extends PureComponent {
       "ties",
       "winPer",
       "pointsFor",
+      "pointsAgainst",
+      "pointsDiff",
     ];
 
     ///// Past Champions /////
@@ -251,6 +291,14 @@ export class HallOfFameFootball extends PureComponent {
         title: "Points For",
         onPress: this.sortPastChampionsByPointsFor,
       },
+      {
+        title: "Points Against",
+        onPress: this.sortPastChampionsByPointsAgainst,
+      },
+      {
+        title: "Point Differential",
+        onPress: this.sortPastChampionsByPointsDiff,
+      },
     ];
     const pastChampionsHeaderRow = pastChampionsHeaderRowMap.map(
       this.renderHeaderRowColumn
@@ -264,8 +312,10 @@ export class HallOfFameFootball extends PureComponent {
       "ties",
       "winPer",
       "pointsFor",
+      "pointsAgainst",
+      "pointsDiff",
     ];
-    const pastChampionsWidthArray = [75, 250, 250, 75, 75, 75, 75, 75];
+    const pastChampionsWidthArray = [75, 250, 250, 75, 75, 75, 75, 75, 75, 75];
     const pastChampionsTotalWidth = sum(pastChampionsWidthArray);
     const pastChampionsTotalHeight = pastChampions.length * 50;
 
@@ -282,6 +332,14 @@ export class HallOfFameFootball extends PureComponent {
         title: "Points For",
         onPress: this.sortBestH2HByPointsFor,
       },
+      {
+        title: "Points Against",
+        onPress: this.sortBestH2HByPointsAgainst,
+      },
+      {
+        title: "Point Differential",
+        onPress: this.sortBestH2HByPointsDiff,
+      },
     ];
     const bestH2HHeaderRow = bestH2HHeaderRowMap.map(
       this.renderHeaderRowColumn
@@ -296,8 +354,10 @@ export class HallOfFameFootball extends PureComponent {
       "ties",
       "winPer",
       "pointsFor",
+      "pointsAgainst",
+      "pointsDiff",
     ];
-    const bestH2HWidthArray = [75, 250, 250, 75, 75, 75, 75, 75];
+    const bestH2HWidthArray = [75, 250, 250, 75, 75, 75, 75, 75, 75, 75];
     const bestH2HTotalWidth = sum(bestH2HWidthArray);
     const bestH2HTotalHeight = bestH2H.length * 50;
 
