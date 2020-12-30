@@ -216,7 +216,6 @@ export class HallOfFameFootball extends PureComponent {
   render() {
     const {
       navigation,
-      sport,
       allTimeRecords,
       pastChampions,
       bestH2H,
@@ -482,7 +481,6 @@ export class HallOfFameFootball extends PureComponent {
 
 const mapStateToProps = (state) => {
   const {
-    getSport,
     getAllTimeRecords,
     getPastChampions,
     getBestH2H,
@@ -490,7 +488,6 @@ const mapStateToProps = (state) => {
   } = getFootballHallOfFameStateSelectors(state);
 
   return {
-    sport: getSport(),
     allTimeRecords: getAllTimeRecords(),
     pastChampions: getPastChampions(),
     bestH2H: getBestH2H(),

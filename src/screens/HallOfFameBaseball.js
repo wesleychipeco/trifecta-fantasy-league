@@ -79,7 +79,6 @@ export class HallOfFameBaseball extends PureComponent {
   // All-Time Records Table Sort methods
   sortAllTimeRecordsBySeasons = () => {
     const { allTimeRecords } = this.props;
-    console.log("hi");
     this.sortTableByColumn(allTimeRecords, "seasons", "allTimeRecords");
   };
 
@@ -187,7 +186,6 @@ export class HallOfFameBaseball extends PureComponent {
   render() {
     const {
       navigation,
-      sport,
       allTimeRecords,
       pastChampions,
       bestH2H,
@@ -401,7 +399,6 @@ export class HallOfFameBaseball extends PureComponent {
 
 const mapStateToProps = (state) => {
   const {
-    getSport,
     getAllTimeRecords,
     getPastChampions,
     getBestH2H,
@@ -409,7 +406,6 @@ const mapStateToProps = (state) => {
   } = getBaseballHallOfFameStateSelectors(state);
 
   return {
-    sport: getSport(),
     allTimeRecords: getAllTimeRecords(),
     pastChampions: getPastChampions(),
     bestH2H: getBestH2H(),

@@ -15,7 +15,7 @@ const tableDefaultSortDirections = {
     winPer: true,
     pointsFor: true,
   },
-  pastChampions: {
+  bestH2H: {
     year: false,
     wins: true,
     losses: true,
