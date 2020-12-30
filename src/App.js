@@ -21,82 +21,106 @@ import TradeHistory from "./screens/TradeHistory";
 import Commissioner from "./screens/Commissioner";
 import OwnerProfilesHomeScreen from "./screens/OwnerProfilesHomeScreen";
 import OwnerProfiles from "./screens/OwnerProfiles";
+import HallOfFameHomeScreen from "./screens/HallOfFameHomeScreen";
+import HallOfFameBasketball from "./screens/HallOfFameBasketball";
+import HallOfFameBaseball from "./screens/HallOfFameBaseball";
+import HallOfFameFootball from "./screens/HallOfFameFootball";
 
 const routeMap = {
   Home: {
     component: HomeScreen,
     path: "/",
-    exact: true
+    exact: true,
   },
   StandingsHomeScreen: {
     component: StandingsHomeScreen,
     path: "/standingshome",
-    exact: true
+    exact: true,
   },
   BaseballStandings: {
     component: BaseballStandings,
     path: "/standings/baseball/:year?",
-    exact: true
+    exact: true,
   },
   BasketballStandings: {
     component: BasketballStandings,
     path: "/standings/basketball/:year?",
-    exact: true
+    exact: true,
   },
   FootballStandings: {
     component: FootballStandings,
     path: "/standings/football/:year?",
-    exact: true
+    exact: true,
   },
   TrifectaStandings: {
     component: TrifectaStandings,
     path: "/standings/trifecta/:year?",
-    exact: true
+    exact: true,
   },
   MatchupsHomeScreen: {
     component: MatchupsHomeScreen,
     path: "/matchupshome",
-    exact: true
+    exact: true,
   },
   Matchups: {
     component: Matchups,
     path: "/matchups/:teamNumber?/:year?",
-    exact: true
+    exact: true,
   },
   TradeHistory: {
     component: TradeHistory,
     path: "/tradehistory",
-    exact: true
+    exact: true,
   },
   Commissioner: {
     component: Commissioner,
     path: "/commissioner/wesley",
-    exact: true
+    exact: true,
   },
   OwnerProfilesHomeScreen: {
     component: OwnerProfilesHomeScreen,
     path: "/ownerprofileshome",
-    exact: true
+    exact: true,
   },
   OwnerProfiles: {
     component: OwnerProfiles,
     path: "/ownerprofiles/:teamNumber?",
-    exact: true
+    exact: true,
+  },
+  HallOfFameHomeScreen: {
+    component: HallOfFameHomeScreen,
+    path: "/halloffamehome",
+    exact: true,
+  },
+  HallOfFameBasketball: {
+    component: HallOfFameBasketball,
+    path: "/halloffame/basketball",
+    exact: true,
+  },
+  HallOfFameBaseball: {
+    component: HallOfFameBaseball,
+    path: "/halloffame/baseball",
+    exact: true,
+  },
+  HallOfFameFootball: {
+    component: HallOfFameFootball,
+    path: "/halloffame/football",
+    exact: true,
   },
   Second: {
     component: SecondScreen,
-    path: "/second"
+    path: "/second",
   },
   User: {
     component: UserScreen,
     path: "/user/:name?",
-    exact: true
+    exact: true,
   },
   DasModal: {
     component: DasModalScreen,
     path: "*/dasmodal",
-    modal: true
-  }
+    modal: true,
+  },
 };
 
 class App extends Component {
@@ -106,7 +130,7 @@ class App extends Component {
     this.state = {
       currentUser: undefined,
       client: undefined,
-      isLoadingComplete: false
+      isLoadingComplete: false,
     };
 
     this._loadClient = this._loadClient.bind(this);
@@ -118,16 +142,16 @@ class App extends Component {
 
   _loadClient() {
     Stitch.initializeDefaultAppClient("trifectafantasyleague-xqqjr").then(
-      client => {
+      (client) => {
         this.setState({ client });
         this.state.client.auth
           .loginWithCredential(new AnonymousCredential())
-          .then(user => {
+          .then((user) => {
             console.log(`Successfully logged in as user ${user.id}`);
             this.setState({ currentUser: user.id });
             this.setState({ currentUser: client.auth.user.id });
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(`Failed to login anonymously: ${err}`);
             this.setState({ currentUser: undefined });
           });

@@ -178,9 +178,7 @@ const calculateTrifectaStandings = (
     if (footballSeasonEnded) {
       const footballStandings = await retrieveSportStandings(year, "football");
       trifectaSportsStandingsArray.push(footballStandings);
-      console.log("footballStandings", footballStandings);
     } else {
-      console.log("blehs");
       trifectaSportsStandingsArray.push(null);
     }
 

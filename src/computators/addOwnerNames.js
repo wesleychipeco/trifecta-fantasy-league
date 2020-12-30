@@ -15,10 +15,12 @@ const returnOwnerNamesArray = (ownerIdsOwnerNamesArray, ownersPerTeam) => {
   ownersPerTeam.forEach((ownerId) => {
     // in the array of ownerId/ownerNames, find the object where the ownerIds are the same
     // and return the "ownerName" value from that object and add it to the array
-    const ownerName = ownerIdsOwnerNamesArray.find(
+    const ownerNameObject = ownerIdsOwnerNamesArray.find(
       (ownerIdsOwnerNames) => ownerIdsOwnerNames.ownerId === ownerId
-    ).ownerName;
-    ownerNames.push(ownerName);
+    );
+    if (ownerNameObject) {
+      ownerNames.push(ownerNameObject.ownerName);
+    }
   });
 
   // return the ownerNames array to be joined into string later

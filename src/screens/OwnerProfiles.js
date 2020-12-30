@@ -43,11 +43,6 @@ export class OwnerProfiles extends PureComponent {
       allTimeFootball,
     } = this.props;
 
-    console.log("trifectaHistory", trifectaHistory);
-    console.log("allTimeRecords", allTimeRecords);
-    console.log("allTimeBasketball", allTimeBasketball);
-    console.log("allTimeBaseball", allTimeBaseball);
-    console.log("allTimeFootball", allTimeFootball);
     const emptyCheck =
       isEmptyArray(trifectaHistory) ||
       isEmptyArray(allTimeRecords) ||
