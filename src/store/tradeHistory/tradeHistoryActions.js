@@ -14,8 +14,9 @@ const actions = {
 };
 
 const displayTradeHistory = () => {
-  return async function(dispatch) {
-    const tradeHistoryCollection = returnMongoCollection("tradeHistory");
+  return async function (dispatch) {
+    const tradeHistoryCollection = await returnMongoCollection("tradeHistory");
+    console.log("TRADE", tradeHistoryCollection);
     simpleFindFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingTradeHistory,
@@ -25,8 +26,8 @@ const displayTradeHistory = () => {
   };
 };
 
-const sortTable = history => {
-  return async function(dispatch) {
+const sortTable = (history) => {
+  return async function (dispatch) {
     dispatch(actions.sortTradeHistory(history));
   };
 };
