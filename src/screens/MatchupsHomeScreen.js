@@ -12,19 +12,19 @@ export class MatchupsHomeScreen extends PureComponent {
     super(props);
 
     this.state = {
-      teamObjectsArray: []
+      teamObjectsArray: [],
     };
   }
 
-  componentDidMount() {
-    const allTimeTeamsCollection = returnMongoCollection("allTimeTeams");
+  async componentDidMount() {
+    const allTimeTeamsCollection = await returnMongoCollection("allTimeTeams");
 
     allTimeTeamsCollection
       .find({}, { projection: { _id: 0, ownerIds: 0 } })
       .asArray()
-      .then(teamObjectsArray => {
+      .then((teamObjectsArray) => {
         this.setState({
-          teamObjectsArray
+          teamObjectsArray,
         });
       });
   }
@@ -63,7 +63,7 @@ export class MatchupsHomeScreen extends PureComponent {
           style={{
             flex: 1,
             justifyContent: "space-evenly",
-            marginTop: 20
+            marginTop: 20,
           }}
         >
           {this.state.teamObjectsArray.map(this.renderTeamMatchupsDropdown)}
