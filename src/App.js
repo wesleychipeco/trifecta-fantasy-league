@@ -1,8 +1,9 @@
 // App.js - WEB
 import React, { Component } from "react";
 import { View, Text } from "react-native";
-import WebRoutesGenerator from "./NativeWebRouteWrapper";
 import { ModalContainer } from "react-router-modal";
+import WebRoutesGenerator from "./NativeWebRouteWrapper";
+import { STITCH_APP_ID } from "./consts/StitchConstants";
 
 import { Stitch, AnonymousCredential } from "mongodb-stitch-react-native-sdk";
 
@@ -141,22 +142,20 @@ class App extends Component {
   }
 
   _loadClient() {
-    Stitch.initializeDefaultAppClient("trifectafantasyleague-xqqjr").then(
-      (client) => {
-        this.setState({ client });
-        this.state.client.auth
-          .loginWithCredential(new AnonymousCredential())
-          .then((user) => {
-            console.log(`Successfully logged in as user ${user.id}`);
-            this.setState({ currentUser: user.id });
-            this.setState({ currentUser: client.auth.user.id });
-          })
-          .catch((err) => {
-            console.log(`Failed to login anonymously: ${err}`);
-            this.setState({ currentUser: undefined });
-          });
-      }
-    );
+    Stitch.initializeDefaultAppClient(STITCH_APP_ID).then((client) => {
+      this.setState({ client });
+      this.state.client.auth
+        .loginWithCredential(new AnonymousCredential())
+        .then((user) => {
+          console.log(`Successfully logged in as user ${user.id}`);
+          this.setState({ currentUser: user.id });
+          this.setState({ currentUser: client.auth.user.id });
+        })
+        .catch((err) => {
+          console.log(`Failed to login anonymously: ${err}`);
+          this.setState({ currentUser: undefined });
+        });
+    });
   }
 
   render() {

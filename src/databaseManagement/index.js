@@ -1,15 +1,38 @@
-import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
+import {
+  Stitch,
+  RemoteMongoClient,
+  AnonymousCredential,
+} from "mongodb-stitch-react-native-sdk";
+import {
+  STITCH_SERVICE_NAME,
+  STITCH_DB_NAME,
+  STITCH_APP_ID,
+} from "../consts/StitchConstants";
 import { sortArrayBy, sortArrayBySecondaryParameter } from "../utils";
 
-const returnMongoCollection = collectionName => {
-  const stitchAppClient = Stitch.defaultAppClient;
-  const mongoClient = stitchAppClient.getServiceClient(
+const getMongoCollection = (appClient, collectionName) => {
+  const mongoClient = appClient.getServiceClient(
     RemoteMongoClient.factory,
-    "mongodb-atlas"
+    STITCH_SERVICE_NAME
   );
 
-  const db = mongoClient.db("trifecta");
+  const db = mongoClient.db(STITCH_DB_NAME);
   return db.collection(collectionName);
+};
+
+const returnMongoCollection = (collectionName) => {
+  if (Stitch.hasAppClient(STITCH_APP_ID)) {
+    const app = Stitch.getAppClient(STITCH_APP_ID);
+    return getMongoCollection(app, collectionName);
+  } else {
+    return Stitch.initializeAppClient(STITCH_APP_ID).then((app) => {
+      return app.auth
+        .loginWithCredential(new AnonymousCredential())
+        .then(() => {
+          return getMongoCollection(app, collectionName);
+        });
+    });
+  }
 };
 
 const deleteInsertDispatch = (
@@ -23,21 +46,21 @@ const deleteInsertDispatch = (
 ) => {
   collection
     .deleteOne({ year })
-    .then(result => {
+    .then((result) => {
       console.log(`Deleted ${result.deletedCount} documents.`);
       collection
         .insertOne(data)
-        .then(result1 => {
+        .then((result1) => {
           console.log(`Mongo db documents inserted!`);
           if (shouldDispatch) {
             dispatch(action(data[key]));
           }
         })
-        .catch(err1 => {
+        .catch((err1) => {
           console.log(`Failed to insert documents: ${err1}`);
         });
     })
-    .catch(err => console.log(`Failed to delete documents: ${err}`));
+    .catch((err) => console.log(`Failed to delete documents: ${err}`));
 };
 
 const findFromMongoSaveToRedux = (
@@ -54,7 +77,7 @@ const findFromMongoSaveToRedux = (
     collection
       .find(findQuery, findProjection)
       .asArray()
-      .then(docs => {
+      .then((docs) => {
         const extractedArray = docs[0][extractKey];
         dispatch(
           action(
@@ -66,18 +89,18 @@ const findFromMongoSaveToRedux = (
           )
         );
       })
-      .catch(err => {
+      .catch((err) => {
         console.log("error!", err);
       });
   } else {
     collection
       .find(findQuery, findProjection)
       .asArray()
-      .then(docs => {
+      .then((docs) => {
         const extractedArray = docs[0][extractKey];
         dispatch(action(sortArrayBy(extractedArray, defaultSortColumn, true)));
       })
-      .catch(err => {
+      .catch((err) => {
         console.log("error!", err);
       });
   }
@@ -92,19 +115,19 @@ const simpleFindFromMongoSaveToRedux = (
   collection
     .find({}, { projection: { _id: 0 } })
     .asArray()
-    .then(docs => {
+    .then((docs) => {
       dispatch(action(sortArrayBy(docs, defaultSortColumn, true)));
     })
-    .catch(err => {
+    .catch((err) => {
       console.log("Error!", err);
     });
 };
 
-const filterIdField = array => {
+const filterIdField = (array) => {
   const filteredArray = [];
-  array.forEach(eachPayload => {
+  array.forEach((eachPayload) => {
     const filteredPayload = Object.keys(eachPayload)
-      .filter(key => key.valueOf() !== "_id")
+      .filter((key) => key.valueOf() !== "_id")
       .reduce((object, key) => {
         object[key] = eachPayload[key];
         return object;
@@ -119,5 +142,5 @@ export {
   deleteInsertDispatch,
   findFromMongoSaveToRedux,
   simpleFindFromMongoSaveToRedux,
-  filterIdField
+  filterIdField,
 };

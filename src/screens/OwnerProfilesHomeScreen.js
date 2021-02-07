@@ -12,19 +12,21 @@ export class OwnerProfilesHomeScreen extends PureComponent {
     super(props);
 
     this.state = {
-      ownerProfilesHomeScreenArray: []
+      ownerProfilesHomeScreenArray: [],
     };
   }
 
-  componentDidMount() {
-    const ownerProfilesCollection = returnMongoCollection("ownerProfiles");
+  async componentDidMount() {
+    const ownerProfilesCollection = await returnMongoCollection(
+      "ownerProfiles"
+    );
 
     ownerProfilesCollection
       .find({}, { projection: { _id: 0, teamNumber: 1, ownerNames: 1 } })
       .asArray()
-      .then(docs => {
+      .then((docs) => {
         this.setState({
-          ownerProfilesHomeScreenArray: sortArrayBy(docs, "teamNumber", false)
+          ownerProfilesHomeScreenArray: sortArrayBy(docs, "teamNumber", false),
         });
       });
   }
@@ -61,7 +63,7 @@ export class OwnerProfilesHomeScreen extends PureComponent {
           style={{
             flex: 1,
             justifyContent: "space-evenly",
-            marginTop: 20
+            marginTop: 20,
           }}
         >
           {this.state.ownerProfilesHomeScreenArray.map(

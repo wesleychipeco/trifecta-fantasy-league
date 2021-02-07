@@ -8,7 +8,9 @@ const actions = {
 
 const displaySeasonsRecap = (teamNumber) => {
   return async function (dispatch) {
-    const ownerProfilesCollection = returnMongoCollection("ownerProfiles");
+    const ownerProfilesCollection = await returnMongoCollection(
+      "ownerProfiles"
+    );
 
     ownerProfilesCollection
       .find(

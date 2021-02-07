@@ -5,11 +5,11 @@ import {
   SCRAPE_YEAR_MATCHUPS_START,
   SCRAPE_YEAR_INDIVIDUAL_MATCHUPS_SUCCESS,
   SCRAPE_YEAR_INDIVIDUAL_MATCHUPS_FAILURE,
-  SCRAPE_YEAR_MATCHUPS_FINISH
+  SCRAPE_YEAR_MATCHUPS_FINISH,
 } from "./commissionerActionTypes";
 import {
   deleteInsertDispatch,
-  returnMongoCollection
+  returnMongoCollection,
 } from "../../databaseManagement";
 
 const actions = {
@@ -20,40 +20,40 @@ const actions = {
   scrapeYearIndividualMatchupsFailure: createAction(
     SCRAPE_YEAR_INDIVIDUAL_MATCHUPS_FAILURE
   ),
-  scrapeYearMatchupsFinish: createAction(SCRAPE_YEAR_MATCHUPS_FINISH)
+  scrapeYearMatchupsFinish: createAction(SCRAPE_YEAR_MATCHUPS_FINISH),
 };
 
-const retrieveTeamsForYear = year => {
-  const teamNumbersPerSportCollection = returnMongoCollection(
+const retrieveTeamsForYear = async (year) => {
+  const teamNumbersPerSportCollection = await returnMongoCollection(
     "teamNumbersPerSport"
   );
   const teamsList = teamNumbersPerSportCollection
     .find({ year }, { projection: { _id: 0 } })
     .asArray()
-    .then(docs => {
+    .then((docs) => {
       return Object.keys(docs[0].teamNumbers);
     });
   return teamsList;
 };
 
 const getEachTeamYearMatchups = async (teamMatchupsCollectionName, year) => {
-  const teamMatchupsCollection = returnMongoCollection(
+  const teamMatchupsCollection = await returnMongoCollection(
     teamMatchupsCollectionName
   );
   return teamMatchupsCollection
     .findOne({ year }, { projection: { _id: 0 } })
-    .then(docs => {
+    .then((docs) => {
       return docs;
     });
 };
 
-const getEachTeamAllMatchups = async teamMatchupsCollectionName => {
-  const teamMatchupsCollection = returnMongoCollection(
+const getEachTeamAllMatchups = async (teamMatchupsCollectionName) => {
+  const teamMatchupsCollection = await returnMongoCollection(
     teamMatchupsCollectionName
   );
   return teamMatchupsCollection
     .findOne({ year: "all" }, { projection: { _id: 0 } })
-    .then(docs => {
+    .then((docs) => {
       return docs;
     });
 };
@@ -71,14 +71,14 @@ const getAllMappedMatchupValues = async (allMatchups, sport) => {
       losses,
       ties,
       pointsFor,
-      pointsAgainst
+      pointsAgainst,
     } = opposingOwner;
     matchupsMapped[ownerNames] = {
       wins,
       losses,
       ties,
       pointsFor,
-      pointsAgainst
+      pointsAgainst,
     };
   }
   return matchupsMapped;
@@ -103,7 +103,7 @@ const calculateUpdatedAllMatchups = (
       winPer,
       pointsFor,
       pointsAgainst,
-      pointsDiff
+      pointsDiff,
     } = opposingOwner;
 
     const matchedExistingOwnerMatchupValues =
@@ -123,7 +123,7 @@ const calculateUpdatedAllMatchups = (
         wins: newWins,
         losses: newLosses,
         ties: newTies,
-        winPer: round(newWinPer, 3)
+        winPer: round(newWinPer, 3),
       };
 
       if (sport === "footballMatchups") {
@@ -145,7 +145,7 @@ const calculateUpdatedAllMatchups = (
         wins,
         losses,
         ties,
-        winPer
+        winPer,
       };
 
       if (sport === "footballMatchups") {
@@ -162,10 +162,10 @@ const calculateUpdatedAllMatchups = (
   // once done doing all owners from that year and sport, need to do old owners who have data
   // ex: 2019 does not include "Nick Wang", thus need to add in previous data for "Nick Wang"
   const allNewMappedOwnerNames = allUpdatedMatchups.map(
-    allOwner => allOwner.ownerNames
+    (allOwner) => allOwner.ownerNames
   );
   const missingOldOwners = allSportMatchups.filter(
-    oldOwner => !allNewMappedOwnerNames.includes(oldOwner.ownerNames)
+    (oldOwner) => !allNewMappedOwnerNames.includes(oldOwner.ownerNames)
   );
 
   return [...allUpdatedMatchups, ...missingOldOwners];
@@ -175,7 +175,7 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
   const sportsMatchupsList = [
     "basketballMatchups",
     "baseballMatchups",
-    "footballMatchups"
+    "footballMatchups",
   ];
   const uploadObject = { year: "all" };
 
@@ -208,12 +208,12 @@ const totalAllMatchups = async (yearMatchups, allMatchups) => {
   return uploadObject;
 };
 
-const calculateTotalMatchups = async matchupsObject => {
+const calculateTotalMatchups = async (matchupsObject) => {
   const totalMatchups = [];
   const {
     basketballMatchups,
     baseballMatchups,
-    footballMatchups
+    footballMatchups,
   } = matchupsObject;
 
   // Loop through each owner in basketballMatchups (should be same owners for each sport/total now)
@@ -222,13 +222,13 @@ const calculateTotalMatchups = async matchupsObject => {
 
     const basketballWinPer = basketballMatchup.winPer;
 
-    const baseballOpposingOwner = baseballMatchups.filter(opposingOwner => {
+    const baseballOpposingOwner = baseballMatchups.filter((opposingOwner) => {
       return opposingOwner.ownerNames === opposingOwnerNames;
     });
     const baseballWinPer = baseballOpposingOwner[0].winPer;
 
     const footballOpposingOwner = footballMatchups.filter(
-      opposingOwner => opposingOwner.ownerNames === opposingOwnerNames
+      (opposingOwner) => opposingOwner.ownerNames === opposingOwnerNames
     );
     const footballWinPer = footballOpposingOwner[0].winPer;
 
@@ -242,7 +242,7 @@ const calculateTotalMatchups = async matchupsObject => {
       basketballWinPer,
       baseballWinPer,
       footballWinPer,
-      totalWinPer
+      totalWinPer,
     };
     totalMatchups.push(totalMatchupsObject);
   }
@@ -264,7 +264,7 @@ const uploadDocuments = async (teamNumber, matchupsObject, dispatch) => {
       matchupsObject.footballMatchups.length >= 9;
 
     if (includesArrayLengthBoolean) {
-      const ownerMatchupsCollection = returnMongoCollection(
+      const ownerMatchupsCollection = await returnMongoCollection(
         `owner${teamNumber}Matchups`
       );
       dispatch(actions.scrapeYearIndividualMatchupsSuccess(teamNumber));
@@ -284,8 +284,8 @@ const uploadDocuments = async (teamNumber, matchupsObject, dispatch) => {
   return matchupsObject;
 };
 
-const scrapeYearAllMatchups = year => {
-  return async function(dispatch) {
+const scrapeYearAllMatchups = (year) => {
+  return async function (dispatch) {
     dispatch(actions.scrapeYearMatchupsStart);
     const teamsList = await retrieveTeamsForYear(year);
 
@@ -310,14 +310,14 @@ const scrapeYearAllMatchups = year => {
           totalMatchups,
           basketballMatchups,
           baseballMatchups,
-          footballMatchups
+          footballMatchups,
         } = yearMatchups;
         uploadAllMatchups = {
           year: "all",
           totalMatchups,
           basketballMatchups,
           baseballMatchups,
-          footballMatchups
+          footballMatchups,
         };
       } else {
         uploadAllMatchups = await totalAllMatchups(yearMatchups, allMatchups);

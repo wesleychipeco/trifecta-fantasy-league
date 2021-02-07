@@ -1,8 +1,8 @@
 import { returnMongoCollection } from "../databaseManagement";
 
 // function that returns an array of the ownerId to ownerName object mappings from mongodb
-const retriveOwnerIdsOwnerNamesArray = () => {
-  const ownerIdsCollection = returnMongoCollection("ownerIds");
+const retriveOwnerIdsOwnerNamesArray = async () => {
+  const ownerIdsCollection = await returnMongoCollection("ownerIds");
   return ownerIdsCollection
     .find({}, { projection: { _id: 0 } })
     .asArray()

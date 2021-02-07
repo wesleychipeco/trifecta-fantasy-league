@@ -4,7 +4,7 @@ import {
   Menu,
   MenuOptions,
   MenuOption,
-  MenuTrigger
+  MenuTrigger,
 } from "react-native-popup-menu";
 import { triggerStyles, optionsStyles } from "../styles/globalStyles";
 import { returnMongoCollection } from "../databaseManagement";
@@ -14,47 +14,48 @@ export class MatchupsDropdown extends PureComponent {
   static propTypes = {
     teamNumber: PropTypes.string.isRequired,
     ownerNames: PropTypes.string,
-    navigation: PropTypes.object.isRequired
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      yearsArray: []
+      yearsArray: [],
     };
   }
 
-  componentDidMount() {
-    const ownerMatchupsCollection = returnMongoCollection(
+  async componentDidMount() {
+    const ownerMatchupsCollection = await returnMongoCollection(
       `owner${this.props.teamNumber}Matchups`
     );
     ownerMatchupsCollection
       .find({}, { projection: { _id: 0, year: 1 } })
       .asArray()
-      .then(ownerMatchupsYearsArray => {
+      .then((ownerMatchupsYearsArray) => {
         // If this owner does not have any matchups yet, then first season. Add to years array the current year
         if (ownerMatchupsYearsArray.length > 0) {
           this.setState({
-            yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true)
+            yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true),
           });
         } else {
           const seasonVariablesCollection = returnMongoCollection(
             "seasonVariables"
-          );
-          seasonVariablesCollection
-            .find({}, { projection: { _id: 0 } })
-            .asArray()
-            .then(seasonVariables => {
-              this.setState({
-                yearsArray: [{ year: seasonVariables[0].currentYear }]
+          ).then(() => {
+            seasonVariablesCollection
+              .find({}, { projection: { _id: 0 } })
+              .asArray()
+              .then((seasonVariables) => {
+                this.setState({
+                  yearsArray: [{ year: seasonVariables[0].currentYear }],
+                });
               });
-            });
+          });
         }
       });
   }
 
-  convertSubtractRevert = year2 => {
+  convertSubtractRevert = (year2) => {
     const year1 = Number(year2) - 1;
     return [year1.toString(), year2.toString()];
   };

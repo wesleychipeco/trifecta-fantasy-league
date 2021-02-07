@@ -65,7 +65,7 @@ const actions = {
   sortBaseballStandingsTable: createAction(SORT_BASEBALL_STANDINGS_TABLE),
 };
 
-const assignRotoCategoryPoints = rotoStandings => {
+const assignRotoCategoryPoints = (rotoStandings) => {
   const rotoCategoriesArray = [
     { category: "R", sortDirection: "highToLow" },
     { category: "HR", sortDirection: "highToLow" },
@@ -95,8 +95,8 @@ const assignRotoCategoryPoints = rotoStandings => {
   return sumBaseballRotoPoints(rotoStandings, "totalPoints");
 };
 
-const scrapeBaseballStandings = year => {
-  return async function(dispatch) {
+const scrapeBaseballStandings = (year) => {
+  return async function (dispatch) {
     const [
       h2hStandingsScrape,
       rotoStatsScrape,
@@ -146,7 +146,7 @@ const scrapeBaseballStandings = year => {
         );
 
         // connect to mongo
-        const baseballStandingsCollection = returnMongoCollection(
+        const baseballStandingsCollection = await returnMongoCollection(
           "baseballStandings"
         );
 
@@ -194,16 +194,16 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
     const combinedStandingsArray = [];
 
     // Loop through H2H Standings, each team
-    h2hStandings.forEach(team => {
+    h2hStandings.forEach((team) => {
       const combinedStandings = {};
       const teamName = team.teamName;
 
       const teamH2H = h2hStandings.find(
-        h2hLoopingTeam => h2hLoopingTeam.teamName === teamName
+        (h2hLoopingTeam) => h2hLoopingTeam.teamName === teamName
       );
 
       const teamRoto = rotoStandings.find(
-        rotoLoopingTeam => rotoLoopingTeam.teamName === teamName
+        (rotoLoopingTeam) => rotoLoopingTeam.teamName === teamName
       );
 
       const h2hPoints = teamH2H.h2hTrifectaPoints;
@@ -224,9 +224,9 @@ const calculateTrifectaBaseballStandings = (h2hStandings, rotoStandings) => {
 };
 
 const displayBaseballStandings = (year, sortColumn = "totalTrifectaPoints") => {
-  return async function(dispatch) {
+  return async function (dispatch) {
     // connect to mongo
-    const baseballStandingsCollection = returnMongoCollection(
+    const baseballStandingsCollection = await returnMongoCollection(
       "baseballStandings"
     );
 
@@ -266,8 +266,8 @@ const displayBaseballStandings = (year, sortColumn = "totalTrifectaPoints") => {
   };
 };
 
-const sortTable = standings => {
-  return async function(dispatch) {
+const sortTable = (standings) => {
+  return async function (dispatch) {
     dispatch(actions.sortBaseballStandingsTable(standings));
   };
 };

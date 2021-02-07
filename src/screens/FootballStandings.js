@@ -67,11 +67,13 @@ class FootballStandings extends PureComponent {
     }
   }
 
-  retrieveData = () => {
+  retrieveData = async () => {
     const { lastScraped, navigation } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
 
-    const seasonVariablesCollection = returnMongoCollection("seasonVariables");
+    const seasonVariablesCollection = await returnMongoCollection(
+      "seasonVariables"
+    );
     seasonVariablesCollection
       .find({}, { projection: { _id: 0 } })
       .asArray()

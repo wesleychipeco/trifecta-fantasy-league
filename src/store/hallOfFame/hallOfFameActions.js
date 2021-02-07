@@ -45,7 +45,7 @@ const sortFootball = createAction(SORT_FOOTBALL_HALL_OF_FAME);
 
 const displayHallOfFame = (sport) => {
   return async function (dispatch) {
-    const hallOfFameCollection = returnMongoCollection("hallOfFame");
+    const hallOfFameCollection = await returnMongoCollection("hallOfFame");
 
     hallOfFameCollection
       .find({ sport }, { projection: { _id: 0 } })

@@ -17,23 +17,25 @@ class Commissioner extends PureComponent {
       completedYear: null,
       showYearMatchupsScrapeOverlay: false,
       alreadyScraped: false,
-      showCommissionerPage: false
+      showCommissionerPage: false,
     };
   }
 
   noop = () => {};
 
-  componentDidMount() {
-    const seasonVariablesCollection = returnMongoCollection("seasonVariables");
+  async componentDidMount() {
+    const seasonVariablesCollection = await returnMongoCollection(
+      "seasonVariables"
+    );
     seasonVariablesCollection
       .find({}, { projection: { _id: 0 } })
       .asArray()
-      .then(seasonVariables => {
+      .then((seasonVariables) => {
         const { currentYear, showCommissionerPage } = seasonVariables[0];
         const lastYearNumber = Number(currentYear) - 1;
         this.setState({
           showCommissionerPage,
-          completedYear: lastYearNumber.toString()
+          completedYear: lastYearNumber.toString(),
         });
       });
   }
@@ -45,7 +47,7 @@ class Commissioner extends PureComponent {
 
     if (!matchupsLoading && matchupsScrapeNumber === 10) {
       this.setState({
-        showYearMatchupsScrapeOverlay: true
+        showYearMatchupsScrapeOverlay: true,
       });
     }
   }
@@ -53,7 +55,7 @@ class Commissioner extends PureComponent {
   closeOverlay = () => {
     this.setState({
       alreadyScraped: true,
-      showYearMatchupsScrapeOverlay: false
+      showYearMatchupsScrapeOverlay: false,
     });
   };
 
@@ -62,7 +64,7 @@ class Commissioner extends PureComponent {
     const {
       completedYear,
       showYearMatchupsScrapeOverlay,
-      alreadyScraped
+      alreadyScraped,
     } = this.state;
 
     if (showYearMatchupsScrapeOverlay && !alreadyScraped) {
@@ -134,20 +136,20 @@ class Commissioner extends PureComponent {
 }
 
 const mapDispatchToProps = {
-  scrapeYearAllMatchups
+  scrapeYearAllMatchups,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     getYearMatchupsLoading,
     getYearMatchupsIndividualSuccesses,
-    getYearMatchupsIndividualFailures
+    getYearMatchupsIndividualFailures,
   } = getCommissionerStateSelectors(state);
 
   return {
     matchupsLoading: getYearMatchupsLoading(),
     matchupsSuccesses: getYearMatchupsIndividualSuccesses(),
-    matchupsFailures: getYearMatchupsIndividualFailures()
+    matchupsFailures: getYearMatchupsIndividualFailures(),
   };
 };
 

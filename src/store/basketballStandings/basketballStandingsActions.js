@@ -57,7 +57,7 @@ const actions = {
   ),
 };
 
-const assignRotoCategoryPoints = rotoStats => {
+const assignRotoCategoryPoints = (rotoStats) => {
   const rotoCategoriesArray = [
     { category: "FGPER", sortDirection: "highToLow" },
     { category: "FTPER", sortDirection: "highToLow" },
@@ -89,16 +89,16 @@ const calculateTrifectaBasketballStandings = (h2hStandings, rotoStandings) => {
     const combinedStandingsArray = [];
 
     // Loop through H2H Standings, each team
-    h2hStandings.forEach(team => {
+    h2hStandings.forEach((team) => {
       const combinedStandings = {};
       const { teamName } = team;
 
       const teamH2H = h2hStandings.find(
-        h2hLoopingTeam => h2hLoopingTeam.teamName === teamName
+        (h2hLoopingTeam) => h2hLoopingTeam.teamName === teamName
       );
 
       const teamRoto = rotoStandings.find(
-        rotoLoopingTeam => rotoLoopingTeam.teamName === teamName
+        (rotoLoopingTeam) => rotoLoopingTeam.teamName === teamName
       );
 
       const h2hPoints = teamH2H.h2hTrifectaPoints;
@@ -118,8 +118,8 @@ const calculateTrifectaBasketballStandings = (h2hStandings, rotoStandings) => {
   }
 };
 
-const scrapeBasketballStandings = year => {
-  return async function(dispatch) {
+const scrapeBasketballStandings = (year) => {
+  return async function (dispatch) {
     dispatch(actions.scrapeBasketballStandingsStart);
     const [
       h2hStandingsScrape,
@@ -171,7 +171,7 @@ const scrapeBasketballStandings = year => {
       );
 
       // connect to Mongo
-      const basketballStandingsCollection = returnMongoCollection(
+      const basketballStandingsCollection = await returnMongoCollection(
         "basketballStandings"
       );
 
@@ -209,9 +209,9 @@ const displayBasketballStandings = (
   year,
   sortColumn = "totalTrifectaPoints"
 ) => {
-  return async function(dispatch) {
+  return async function (dispatch) {
     // connect to mongo
-    const basketballStandingsCollection = returnMongoCollection(
+    const basketballStandingsCollection = await returnMongoCollection(
       "basketballStandings"
     );
 
@@ -261,8 +261,8 @@ const displayBasketballStandings = (
   };
 };
 
-const sortTable = standings => {
-  return async function(dispatch) {
+const sortTable = (standings) => {
+  return async function (dispatch) {
     dispatch(actions.sortBasketballStandingsTable(standings));
   };
 };
