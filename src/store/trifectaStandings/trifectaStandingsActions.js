@@ -28,9 +28,9 @@ const actions = {
   sortTrifectaStandingsTable: createAction(SORT_TRIFECTA_STANDINGS_TABLE),
 };
 
-const retrieveSportStandings = (year, sport) => {
+const retrieveSportStandings = async (year, sport) => {
   const standingsName = `${sport}Standings`;
-  const collection = returnMongoCollection(standingsName);
+  const collection = await returnMongoCollection(standingsName);
   const trifectaPointsKey = "trifectaStandings";
 
   const projection1 = trifectaPointsKey + ".ownerIds";
@@ -48,8 +48,8 @@ const retrieveSportStandings = (year, sport) => {
   return sportsStandings;
 };
 
-const retrieveOwnersPerTeamArray = (year) => {
-  const teamListsCollection = returnMongoCollection("teamLists");
+const retrieveOwnersPerTeamArray = async (year) => {
+  const teamListsCollection = await returnMongoCollection("teamLists");
   const teamList = teamListsCollection
     .find({ year }, { projection: { _id: 0, year: 0 } })
     .asArray()
@@ -208,7 +208,7 @@ const calculateTrifectaStandings = (
       };
       console.log("compiled standings", compiledStandings);
 
-      const trifectaStandingsCollection = returnMongoCollection(
+      const trifectaStandingsCollection = await returnMongoCollection(
         "trifectaStandings"
       );
       deleteInsertDispatch(
@@ -228,7 +228,7 @@ const calculateTrifectaStandings = (
 
 const displayTrifectaStandings = (year) => {
   return async function (dispatch) {
-    const trifectaStandingsCollection = returnMongoCollection(
+    const trifectaStandingsCollection = await returnMongoCollection(
       "trifectaStandings"
     );
 
