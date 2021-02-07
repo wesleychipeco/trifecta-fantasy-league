@@ -3,32 +3,35 @@ import {
   RemoteMongoClient,
   AnonymousCredential,
 } from "mongodb-stitch-react-native-sdk";
+import {
+  STITCH_SERVICE_NAME,
+  STITCH_DB_NAME,
+  STITCH_APP_ID,
+} from "../consts/StitchConstants";
 import { sortArrayBy, sortArrayBySecondaryParameter } from "../utils";
 
 const getMongoCollection = (appClient, collectionName) => {
   const mongoClient = appClient.getServiceClient(
     RemoteMongoClient.factory,
-    "mongodb-atlas"
+    STITCH_SERVICE_NAME
   );
 
-  const db = mongoClient.db("trifecta");
+  const db = mongoClient.db(STITCH_DB_NAME);
   return db.collection(collectionName);
 };
 
 const returnMongoCollection = (collectionName) => {
-  if (Stitch.hasAppClient("trifectafantasyleague-xqqjr")) {
-    const app = Stitch.getAppClient("trifectafantasyleague-xqqjr");
+  if (Stitch.hasAppClient(STITCH_APP_ID)) {
+    const app = Stitch.getAppClient(STITCH_APP_ID);
     return getMongoCollection(app, collectionName);
   } else {
-    return Stitch.initializeAppClient("trifectafantasyleague-xqqjr").then(
-      (app) => {
-        return app.auth
-          .loginWithCredential(new AnonymousCredential())
-          .then(() => {
-            return getMongoCollection(app, collectionName);
-          });
-      }
-    );
+    return Stitch.initializeAppClient(STITCH_APP_ID).then((app) => {
+      return app.auth
+        .loginWithCredential(new AnonymousCredential())
+        .then(() => {
+          return getMongoCollection(app, collectionName);
+        });
+    });
   }
 };
 
