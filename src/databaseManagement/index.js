@@ -5,37 +5,21 @@ import {
 } from "mongodb-stitch-react-native-sdk";
 import { sortArrayBy, sortArrayBySecondaryParameter } from "../utils";
 
-const getMongoClient = () => {
-  if (Stitch.hasAppClient("trifectafantasyleague-xqqjr")) {
-    console.log("one");
-    return Stitch.defaultAppClient;
-  } else {
-    console.log("two");
-    return Stitch.initializeAppClient("trifectafantasyleague-xqqjr").then(
-      (app) => app
-    );
-  }
-};
-
 const getMongoCollection = (appClient, collectionName) => {
-  console.log("SAC", appClient);
   const mongoClient = appClient.getServiceClient(
     RemoteMongoClient.factory,
     "mongodb-atlas"
   );
 
   const db = mongoClient.db("trifecta");
-  console.log("DBBBBBBB", db);
   return db.collection(collectionName);
 };
 
 const returnMongoCollection = (collectionName) => {
   if (Stitch.hasAppClient("trifectafantasyleague-xqqjr")) {
-    console.log("one");
     const app = Stitch.getAppClient("trifectafantasyleague-xqqjr");
     return getMongoCollection(app, collectionName);
   } else {
-    console.log("two");
     return Stitch.initializeAppClient("trifectafantasyleague-xqqjr").then(
       (app) => {
         return app.auth
@@ -46,16 +30,6 @@ const returnMongoCollection = (collectionName) => {
       }
     );
   }
-
-  // const stitchAppClient = getMongoClient();
-  // console.log("SAC", stitchAppClient);
-  // const mongoClient = stitchAppClient.getServiceClient(
-  //   RemoteMongoClient.factory,
-  //   "mongodb-atlas"
-  // );
-
-  // const db = mongoClient.db("trifecta");
-  // return db.collection(collectionName);
 };
 
 const deleteInsertDispatch = (
