@@ -9,16 +9,16 @@ import {
   SAVE_EXISTING_BASEBALL_MATCHUPS,
   SAVE_EXISTING_FOOTBALL_MATCHUPS,
   SORT_MATCHUPS,
-  SET_MATCHUPS_LAST_SCRAPED
+  SET_MATCHUPS_LAST_SCRAPED,
 } from "./matchupsActionTypes";
 import {
   returnMongoCollection,
   findFromMongoSaveToRedux,
-  deleteInsertDispatch
+  deleteInsertDispatch,
 } from "../../databaseManagement";
 import {
   retrieveSportMatchups,
-  retrieveFootballPoints
+  retrieveFootballPoints,
 } from "../../scrapers/ownerMatchups";
 import { basketballMatchups2019 } from "../../dataJSONS/basketballMatchups2019";
 import { format } from "date-fns";
@@ -38,7 +38,7 @@ const actions = {
   saveExistingBaseballMatchups: createAction(SAVE_EXISTING_BASEBALL_MATCHUPS),
   saveExistingFootballMatchups: createAction(SAVE_EXISTING_FOOTBALL_MATCHUPS),
   sortMatchups: createAction(SORT_MATCHUPS),
-  setLastScraped: createAction(SET_MATCHUPS_LAST_SCRAPED)
+  setLastScraped: createAction(SET_MATCHUPS_LAST_SCRAPED),
 };
 
 const scrapeMatchups = (
@@ -54,7 +54,7 @@ const scrapeMatchups = (
   footballTeamNumber,
   footballTeams
 ) => {
-  return async function(dispatch) {
+  return async function (dispatch) {
     dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:")));
 
     let rawBasketballMatchups;
@@ -116,7 +116,7 @@ const scrapeMatchups = (
       : [];
 
     // connect to mongo
-    const ownerMatchupsCollection = returnMongoCollection(
+    const ownerMatchupsCollection = await returnMongoCollection(
       `owner${teamNumber}Matchups`
     );
 
@@ -125,7 +125,7 @@ const scrapeMatchups = (
       totalMatchups,
       basketballMatchups,
       baseballMatchups,
-      footballMatchups
+      footballMatchups,
     };
 
     dispatch(
@@ -163,13 +163,13 @@ const scrapeMatchups = (
 
 const addFootballPoints = (footballMatchups, fullScheduleArray, teamNumber) => {
   // loop through each "week" (ie group of 5 matchups)
-  fullScheduleArray.forEach(week => {
+  fullScheduleArray.forEach((week) => {
     let myTeamPointsFor = 0;
     let opposingTeamId = "";
     let opposingTeamPointsAgainst = 0;
 
     // Loop through each matchup (5 in total), only return one that has desired team in it
-    const matchedMatchup = week.filter(matchup => {
+    const matchedMatchup = week.filter((matchup) => {
       const home = matchup.home.teamId.toString();
       const away = matchup.away.teamId.toString();
       return teamNumber === home || teamNumber === away;
@@ -213,7 +213,7 @@ const compileMatchups = (matchups, teamsList, sport) => {
           ties,
           pointsFor,
           pointsAgainst,
-          percentage
+          percentage,
         } = matchups[opposingTeams];
         const ownerMatchups = {
           ownerNames,
@@ -223,7 +223,7 @@ const compileMatchups = (matchups, teamsList, sport) => {
           pointsFor: round(pointsFor, 1),
           pointsAgainst: round(pointsAgainst, 1),
           pointsDiff: round(pointsFor - pointsAgainst, 1),
-          winPer: round(percentage, 3)
+          winPer: round(percentage, 3),
         };
         matchupsArray.push(ownerMatchups);
       }
@@ -244,7 +244,7 @@ const compileMatchups = (matchups, teamsList, sport) => {
             wins,
             losses,
             ties,
-            winPer
+            winPer,
           };
           matchupsArray.push(ownerMatchups);
         }
@@ -262,17 +262,17 @@ const compileTotalMatchups = (
 ) => {
   const totalMatchups = [];
   // loop through each opposing owner
-  basketballMatchups.forEach(basketballOpposingOwner => {
+  basketballMatchups.forEach((basketballOpposingOwner) => {
     const opposingOwnerNames = basketballOpposingOwner.ownerNames;
     const basketballWinPer = basketballOpposingOwner.winPer;
 
     const baseballOpposingOwner = baseballMatchups.filter(
-      opposingOwner => opposingOwnerNames === opposingOwner.ownerNames
+      (opposingOwner) => opposingOwnerNames === opposingOwner.ownerNames
     );
     const baseballWinPer = baseballOpposingOwner[0].winPer;
 
     const footballOpposingOwner = footballMatchups.filter(
-      opposingOwner => opposingOwnerNames === opposingOwner.ownerNames
+      (opposingOwner) => opposingOwnerNames === opposingOwner.ownerNames
     );
     const footballWinPer = footballOpposingOwner[0].winPer;
 
@@ -286,7 +286,7 @@ const compileTotalMatchups = (
       basketballWinPer,
       baseballWinPer,
       footballWinPer,
-      totalWinPer
+      totalWinPer,
     };
     totalMatchups.push(matchupJson);
   });
@@ -294,9 +294,11 @@ const compileTotalMatchups = (
 };
 
 const displayMatchups = (year, teamNumber) => {
-  return async function(dispatch) {
+  return async function (dispatch) {
     //connect to mongo
-    const ownerCollection = returnMongoCollection(`owner${teamNumber}Matchups`);
+    const ownerCollection = await returnMongoCollection(
+      `owner${teamNumber}Matchups`
+    );
 
     findFromMongoSaveToRedux(
       dispatch,
@@ -333,8 +335,8 @@ const displayMatchups = (year, teamNumber) => {
   };
 };
 
-const sortTable = matchups => {
-  return async function(dispatch) {
+const sortTable = (matchups) => {
+  return async function (dispatch) {
     dispatch(actions.sortMatchups(matchups));
   };
 };
