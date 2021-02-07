@@ -121,7 +121,7 @@ const scrapeFootballStandings = (year) => {
       );
 
       // Top 5, Bottom 5 Standings
-      const top5Bottom5Collection = returnMongoCollection(
+      const top5Bottom5Collection = await returnMongoCollection(
         "footballTop5Bottom5Totals"
       );
       const top5Bottom5Totals = await top5Bottom5Collection
@@ -152,7 +152,7 @@ const scrapeFootballStandings = (year) => {
         top5Bottom5Standings
       );
 
-      const footballStandingsCollection = returnMongoCollection(
+      const footballStandingsCollection = await returnMongoCollection(
         "footballStandings"
       );
 
@@ -185,7 +185,7 @@ const scrapeFootballStandings = (year) => {
 
 const displayFootballStandings = (year, sortColumn = "totalTrifectaPoints") => {
   return async function (dispatch) {
-    const footballStandingsCollection = returnMongoCollection(
+    const footballStandingsCollection = await returnMongoCollection(
       "footballStandings"
     );
 
