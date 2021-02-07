@@ -38,8 +38,11 @@ const returnMongoCollection = (collectionName) => {
     console.log("two");
     return Stitch.initializeAppClient("trifectafantasyleague-xqqjr").then(
       (app) => {
-        app.auth.loginWithCredential(new AnonymousCredential());
-        return getMongoCollection(app, collectionName);
+        return app.auth
+          .loginWithCredential(new AnonymousCredential())
+          .then(() => {
+            return getMongoCollection(app, collectionName);
+          });
       }
     );
   }
