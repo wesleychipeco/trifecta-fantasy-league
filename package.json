@@ -39,7 +39,7 @@
   },
   "scripts": {
     "test": "jest",
-    "start": "react-scripts start",
+    "start": "(set PORT=80 || export PORT=80) && react-scripts start",
     "build": "react-scripts build",
     "test-web": "react-scripts test --env=jsdom",
     "eject-web": "react-scripts eject"
