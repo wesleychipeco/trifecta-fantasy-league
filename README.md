@@ -1,205 +1,96 @@
-### START/END NEW SPORT
+### Manual Commissioner To-do Actions
 
-To start a sport, set its "seasonStarted" and "inSeason" to `true`  
+## Fantasy League Commissioner Upkeep
+
+- Set draft date and owner selection slot via reverse regular season standings of 2 sports ago
+- After draft, organize division into Evens and Odds
+- Create schedule based off of Trifecta Schedules Google sheet (Rank teams in each division E1 to E5 and O1 to O5 via last same sport season's standings)
+- Manually edit each team's H2H schedule
+- During playoffs, change initial consolation bracket matchup to be 7 vs 10 and 8 vs 9 instead of ESPN's ladder setup
+
+## Website Related
+
+- Each season's rule changes, update Trifecta League Manual accordingly
+- Enter MongoDB data (see **Data that needs to be updated in MongoDB manually** below)
+
+## START/END NEW SPORT
+
+To start a sport, set its "seasonStarted" and "inSeason" of that sport to `true`  
 If "seasonStarted" is `false`, standings will not be displayed at all  
 To end a sport, set its "seasonStarted" to `true` and "inSeason" to `false` --- equivalent to "seasonEnded" = `true`  
 Then immediately manually add `playoffPoints` and `totalTrifectaPoints` to sports's `trifectaStandings` for each owner  
-Also for each owner, go to the that owner's current year's matchups and scrape the just completed season
 Code looks for "seasonStarted" = `true` and "inSeason" = `false` to decide to look for `playoffPoints` and `totalTrifectaPoints`
+~~Also for each owner, go to the that owner's current year's matchups and scrape the just completed season~~
 
-### START NEW TRIFECTA SEASON
+## START NEW TRIFECTA SEASON
 
 Update `seasonVariables` collection with new "currentYear", each sport's variables (set "basketball": "seasonStarted" and "inSeason" to true, set everything else to false)
+Set `basektballAhead` to true, which will allow basketball of next trifecta season plus football of previous season to be updated
 Update `teamNumbersPerSport` collection for new Trifecta Season (per Trifecta season, maps "teamNumber" to "ownerNames") - used in Matchups  
 Update `teamLists` collection for new Trifecta Season (per Trifecta Season, array of participating "ownerIds") - used in Trifecta Standings
-Then to update "ALL" matchups to include the just completed Trifecta season, go to the commissioner page and scrape
+Then to update "ALL" matchups to include the just completed Trifecta season, ~~go to the commissioner page and scrape~~ have to do manually as of now 
 
-### ADD NEW TRIFECTA OWNER
+## ADD NEW TRIFECTA OWNER
 
 Add new owner to `allTimeTeams` collection in Mongo (matchups dropdown will auto populate with current season) - used in Matchups  
 If not already updated, update `teamNumbersPerSport` collection (per Trifecta season, maps "teamNumber" to "ownerNames") - used in Matchups  
 If not already updated, update `teamLists` collection (per Trifecta Season, array of participating "ownerIds") - used in Trifecta Standings  
-`ownerIds` and `ownerTeamNumbersList` are not used, but rather both just refernce collections for visual UI check
+`ownerIds` and `ownerTeamNumbersList` are not used, but rather both just refernce collections for visual check via the UI
 
-### CREATE AWS INSTANCE
+## Each time a new collection is created in MongoDB, to be able to interact with it, need to first add rules in Stitch
 
-Ubuntu AMI
-Create security groups to expose ports 22, 3000 to all IPs  
-ssh -v -i .\Downloads\trifecta2020.pem ubuntu@ec2-13-56-19-13.us-west-1.compute.amazonaws.com
+- Go to MongoDB Realm tab
+- Click on correct, registered application
+- Go to "Rules" tab on sidebar and add rules for Read/Write to collection
 
-### INSTALL
+## Data that needs to be updated in MongoDB manually
 
-`sudo apt install git`  
-`git clone https://github.com/wesleychipeco/trifecta-fantasy-league.git`  
-Install node https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/  
-`sudo apt-get install curl`  
-`curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -`  
-`sudo apt-get update`  
-`sudo apt-get install -y nodejs`  
-`curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`  
-`echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list`  
-`sudo apt update`  
-`sudo apt install yarn`
+- After sport's playoffs are complete, playoff points and total trifecta points
+- Trade History
+- Hall of Fame (at end of Trifecta season)
+- Owner Profiles (at end of Trifecta season)
+- Owner Matchups (at end of Trifecta season) [Need to make script that will do this automatically]
 
-To open tunnel:  
-`yarn add ngrok`  
-Add authtoken to ngrok config on server 
-run `ngrok http 3000 -bind-tls=true`
+## Pages that pull live data from API
 
-### Use screen to start processes
+- Individual standings of sports that are in-season (only regular season standings)
+- Trifecta standings of completely finished (regular season and playoffs) sports
 
-screen -S <screen_name> --- create screen  
-screen -ls --- see all screens  
-screen -x <screen_name> --- attach to screen  
-CTRL + a + d --- detach from screen
 
-## Create each collection in MongoDB first, and add rules in Stitch
+### Website Development and AWS Stuff
 
-- If in season -> pull data via API -> save to mongo & save to redux
-- If not in season or in season and already scraped today -> pull data via mongo -> save to redux
-- Sorting -> sort data and save to redux to re-render
+## AWS Architecture
 
-# React Native Web Boilerplate 🥘 with navigation 🗺
+- NameCheap Domain -> ELB with SSL termination -> EC2 instance running yarn server (in AutoScaling Group)
+- To make changes to production website, after merging PR to master, terminate running EC2 instance. This will trigger the ASG to start new EC2 instance with most-up-to-date master branch
 
-A small and simple boilerplate for lazy people to create a universal Web/Native React app. How is that possible? By code sharing between both of those worlds. The most crucial element of this puzzle is a brilliant [React Native Web](https://github.com/necolas/react-native-web) library by [Nicolas Gallagher](http://nicolasgallagher.com).
+## Each year reboot
 
-This boilerplate will save you the hassle of configuring it by your own. Like I said. Lazy bones.
-
-> There's also version without app navigation built in. [Check it out here.](https://github.com/inspmoore/rnw_boilerplate)
-
-## Installing 🔩
-
-Clone the repo and run
-
-```
-yarn
-```
-
-or
-
-```
-npm install
-```
-
-to install all the dependencies.
-
-## Scripts ️️️⚙️
-
-The scripts are a mix of [create-react-app](https://github.com/facebook/create-react-app#npm-start-or-yarn-start) and [react-native](https://facebook.github.io/react-native/docs/getting-started).
-
-### `yarn start-web` or `npm run start-web`
-
-Runs your app in the browser under the http://localhost:3000.
-
-### `yarn start` or `npm run start`
-
-Starts metro bundler for your react native project.
-
-### `yarn start-ios` or `npm run start-ios`
-
-Runs metro bundler and opens the app in the iOS simulator.
-
-### `yarn build` or `npm run build`
-
-Builds your web app for production.
-
-### `yarn test` or `npm run test`
-
-Runs the test environment for the native part.
-
-### `yarn test-web` or `npm run test-web`
-
-Runs the test environment for the web part.
-
-### `yarn eject` or `npm run eject`
-
-Eject your web project to your custom setup.
-
-## Usage 🛠
-
-Folder and file structure is also a result of combination of create-react-app and react-native boilerplates.
-
-```
-rnw_boilerplate
-├── android
-├── ios
-├── node_modules
-├── public
-├── src
-│    ├── NativeWebRouteWrapper
-│    │    ├── index.js
-│    │    ├── pop.native.js
-│    │    └── pop.web.js
-│    ├── App.js
-│    ├── App.native.js
-│    ├── HomeScreen.js
-│    ├── index.js - web index file
-│    └── registerServiceWorker.js
-├── app.json
-├── index.js - native index file
-├── package.json
-└── README.md
-```
-
-`HomeScreen.js` file is an example of a component shared between the platforms. Thanks to React Native Web lib, it is possible to use React Native primitives in the Web environment. Please check out [RNW guide](https://github.com/necolas/react-native-web) for more details.
-
-Also notice that there are separate `App.js` files for Web and Native. This gives a lot of advantages, including adding platform specific libraries to your app.
-
-### Navigation
-
-In the native environment things are simple and easy. Just use [`react-navigation`](https://reactnavigation.org).
-
-Web is however more complicated. In the spirit of RNW I've ported some `react-navigation` functionality using `react-router-dom`. Using a `WebRoutesGenerator` little helper function found in the `NativeWebRouteWrapper` lib you can create routes with a `react-navigation' like API.
-
-First create a route map and pass it to the `WebRoutesGenerator`
-
-```javascript
-const routeMap = {
-  Home: {
-    component: HomeScreen,
-    path: "/",
-    exact: true
-  },
-  Second: {
-    component: SecondScreen,
-    path: "/second"
-  },
-  User: {
-    component: UserScreen,
-    path: "/user/:name?",
-    exact: true
-  },
-  DasModal: {
-    component: DasModalScreen,
-    path: "*/dasmodal",
-    modal: true
-  }
-};
-
-// in the render method
-WebRoutesGenerator({ routeMap });
-```
-
-The components are wrapped in a HOC that adds `navigation` prop. This props has three methods to work with:
-
-- `this.props.navigation`
-  - `navigate(routeName, params)` - go to a screen, pass params
-  - `goBack` - goes one step back in history
-  - `getParam(paramName, fallback)` - get a specific param with fallback
-
-It's a limited copy of [react-navigation navigation prop](https://reactnavigation.org/docs/en/navigation-prop.html).
-
-If you want to have a modal:
-
-- add a `modal: true` flag the route map
-- add `<ModalContainer />` from `react-router-modal` to your app layout
-
-## Renaming the app ✏️
-
-This boilerplate comes with ios and android bundles already named. If you want to (and you should) change the name, use the [react-native-rename](https://github.com/junedomingo/react-native-rename) lib.
-
-## Contribution ❤️
-
-This boilerplate was made for my own convenience and is still a work in progress. Please consider it as an experiment and think twice or even trice (is that a word?) before using it in production.
-
-If you however would like to add something from yourself, please do make a PR! All contributions will be treated with great love!
+- Each trifecta season, create new gmail account `trifectacommissioner<year>@gmail.com`
+- Sign up for free AWS tier
+- In November, renew trifectafantasyleague domain
+- Create SSL termination in Amazon Certificate Manager (ACM)
+  - Request a certificate for: *.trifectafantasyleague.com
+  - Use DNS validation to validate ownership of domain (login via NameCheap)
+- Create Application Load Balancer
+  - Internet-facing
+  - ipv4
+  - 2 Listeners: 1) HTTP on Port 80 and 2) HTTPS on Port 443
+  - Make available in all AZs
+  - Attach ACM SSL termination certificate to ELB
+  - Create new Security Group
+    - Allow all traffic into ELB only on ports 80 and 443
+  - Create Target Group for routing traffic target
+    - Webserver Target Group receiving only HTTP traffic on port 3000
+    - Register Target EC2 instance to the Target Group (After create EC2 instance)
+- Create Auto Scaling Group
+  - First create Launch Template
+    - Specify AMI, instance type, key pair, desired capacity, minimum and maximum capacity
+    - Create new EC2-specific security group, only allowing SSH access and TCP connections on Port 3000 from ELB SG
+    - Under "Advanced Details" copy and paste in `user-data.sh` bash script in this repo
+  - Next create Auto Scaling Group
+    - Configure settings, scaling policies, and namely, attaching to an existing load balancer
+  - EC2 instance should be launched
+  - Check that user data script is run and webserver is active and reachable at localhost:3000
+  - Check that website is reachable via load balancer public IP DNS name
+- Register public DNS name of ELB to trifectafantasyleague.com DNS resolution (on NameCheap)
