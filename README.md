@@ -62,6 +62,7 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
 ## AWS Architecture
 
 - NameCheap Domain -> ELB with SSL termination -> EC2 instance running yarn server (in AutoScaling Group)
+- To make changes to production website, after merging PR to master, terminate running EC2 instance. This will trigger the ASG to start new EC2 instance with most-up-to-date master branch
 
 ## Each year reboot
 
@@ -69,7 +70,8 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
 - Sign up for free AWS tier
 - In November, renew trifectafantasyleague domain
 - Create SSL termination in Amazon Certificate Manager (ACM)
-  - **Need to complete**
+  - Request a certificate for: *.trifectafantasyleague.com
+  - Use DNS validation to validate ownership of domain (login via NameCheap)
 - Create Application Load Balancer
   - Internet-facing
   - ipv4
@@ -77,3 +79,18 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
   - Make available in all AZs
   - Attach ACM SSL termination certificate to ELB
   - Create new Security Group
+    - Allow all traffic into ELB only on ports 80 and 443
+  - Create Target Group for routing traffic target
+    - Webserver Target Group receiving only HTTP traffic on port 3000
+    - Register Target EC2 instance to the Target Group (After create EC2 instance)
+- Create Auto Scaling Group
+  - First create Launch Template
+    - Specify AMI, instance type, key pair, desired capacity, minimum and maximum capacity
+    - Create new EC2-specific security group, only allowing SSH access and TCP connections on Port 3000 from ELB SG
+    - Under "Advanced Details" copy and paste in `user-data.sh` bash script in this repo
+  - Next create Auto Scaling Group
+    - Configure settings, scaling policies, and namely, attaching to an existing load balancer
+  - EC2 instance should be launched
+  - Check that user data script is run and webserver is active and reachable at localhost:3000
+  - Check that website is reachable via load balancer public IP DNS name
+- Register public DNS name of ELB to trifectafantasyleague.com DNS resolution (on NameCheap)
