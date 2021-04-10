@@ -27,6 +27,8 @@ import HallOfFameBasketball from "./screens/HallOfFameBasketball";
 import HallOfFameBaseball from "./screens/HallOfFameBaseball";
 import HallOfFameFootball from "./screens/HallOfFameFootball";
 
+import DynastyBaseballStandings from "./screens/DynastyBaseballStandings"
+
 const routeMap = {
   Home: {
     component: HomeScreen,
@@ -107,6 +109,11 @@ const routeMap = {
     component: HallOfFameFootball,
     path: "/halloffame/football",
     exact: true,
+  },
+  DynastyBaseballStandings: {
+    component: DynastyBaseballStandings,
+    path: "/dynasty/standings/baseball",
+    exact: true
   },
   Second: {
     component: SecondScreen,
