@@ -32,6 +32,10 @@ import footballHallOfFameReducer, {
   FOOTBALL_HALL_OF_FAME_STATE_PATH,
 } from "./hallOfFame/footballHallOfFameReducer";
 
+import dynastyBaseballStandingsReducer, {
+  DYNASTY_BASEBALL_STANDINGS_STATE_PATH,
+} from "./dynastyBaseballStandings/dynastyBaseballStandingsReducer";
+
 export default {
   [BASEBALL_STANDINGS_STATE_PATH]: baseballStandingsReducer,
   [BASKETBALL_STANDINGS_STATE_PATH]: basketballStandingsReducer,
@@ -44,4 +48,5 @@ export default {
   [BASKETBALL_HALL_OF_FAME_STATE_PATH]: basketballHallOfFameReducer,
   [BASEBALL_HALL_OF_FAME_STATE_PATH]: baseballHallOfFameReducer,
   [FOOTBALL_HALL_OF_FAME_STATE_PATH]: footballHallOfFameReducer,
+  [DYNASTY_BASEBALL_STANDINGS_STATE_PATH]: dynastyBaseballStandingsReducer,
 };
