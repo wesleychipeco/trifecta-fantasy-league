@@ -18,7 +18,7 @@
 To start a sport, set its "seasonStarted" and "inSeason" of that sport to `true`  
 If "seasonStarted" is `false`, standings will not be displayed at all  
 To end a sport, set its "seasonStarted" to `true` and "inSeason" to `false` --- equivalent to "seasonEnded" = `true`  
-Then immediately manually add `playoffPoints` and `totalTrifectaPoints` to sports's `trifectaStandings` for each owner  
+Then immediately manually add `playoffPoints` and `totalTrifectaPoints` to sports's `trifectaStandings` for each owner, putting ? for playoff points and same total while playoffs are happening until playoffs finish
 Code looks for "seasonStarted" = `true` and "inSeason" = `false` to decide to look for `playoffPoints` and `totalTrifectaPoints`
 ~~Also for each owner, go to the that owner's current year's matchups and scrape the just completed season~~
 
