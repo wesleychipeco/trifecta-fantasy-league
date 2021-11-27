@@ -32,14 +32,14 @@ export class MatchupsDropdown extends PureComponent {
     ownerMatchupsCollection
       .find({}, { projection: { _id: 0, year: 1 } })
       .asArray()
-      .then((ownerMatchupsYearsArray) => {
+      .then(async (ownerMatchupsYearsArray) => {
         // If this owner does not have any matchups yet, then first season. Add to years array the current year
         if (ownerMatchupsYearsArray.length > 0) {
           this.setState({
             yearsArray: sortArrayBy(ownerMatchupsYearsArray, "year", true),
           });
         } else {
-          const seasonVariablesCollection = returnMongoCollection(
+          const seasonVariablesCollection = await returnMongoCollection(
             "seasonVariables"
           ).then(() => {
             seasonVariablesCollection

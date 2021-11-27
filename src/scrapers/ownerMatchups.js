@@ -4,7 +4,8 @@ const retrieveSportMatchups = (sport, year, teamNumber) => {
   let url;
   switch (sport) {
     case "basketball":
-      url = `http://fantasy.espn.com/apis/v3/games/fba/seasons/${year}/segments/0/leagues/100660?view=standings`;
+      // url = `http://fantasy.espn.com/apis/v3/games/fba/seasons/${year}/segments/0/leagues/100660?view=standings`;
+      url  = `https://fantasy.espn.com/apis/v3/games/fba/seasons/${year}/segments/0/leagues/100660?view=mMatchupScore`
       break;
     case "baseball":
       url = `http://fantasy.espn.com/apis/v3/games/flb/seasons/${year}/segments/0/leagues/109364?view=standings`;
@@ -18,6 +19,9 @@ const retrieveSportMatchups = (sport, year, teamNumber) => {
   }
 
   return axios.get(url).then(response => {
+    // console.log('RESPONSE', response);
+    const fullSchedule = response.data.schedule;
+    console.log('fs', fullSchedule)
     const teamNumberArrayIndex = Number(teamNumber) - 1;
     return response.data.teams[teamNumberArrayIndex].record.headToHead;
   });

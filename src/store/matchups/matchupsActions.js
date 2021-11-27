@@ -25,6 +25,12 @@ import { format } from "date-fns";
 import { sortArrayBy, sortArrayBySecondaryParameter } from "../../utils";
 import round from "lodash/round";
 import mean from "lodash/mean";
+import {
+  determineBaseballMatchups,
+  determineBasketballMatchups,
+  determineFootballMatchups,
+  determineTotalMatchups,
+} from "./calculateSportMatchups";
 
 const actions = {
   saveScrapedTotalMatchups: createAction(SAVE_SCRAPED_TOTAL_MATCHUPS),
@@ -42,124 +48,408 @@ const actions = {
 };
 
 const scrapeMatchups = (
-  year,
-  teamNumber,
-  basketballSeasonEnded,
-  basketballTeamNumber,
-  basketballTeams,
-  baseballSeasonEnded,
-  baseballTeamNumber,
-  baseballTeams,
-  footballSeasonEnded,
-  footballTeamNumber,
-  footballTeams
+  year
+  // basketballSeasonEnded,
+  // basketballTeamNumber,
+  // basketballTeams,
+  // baseballSeasonEnded,
+  // baseballTeamNumber,
+  // baseballTeams,
+  // footballSeasonEnded,
+  // footballTeamNumber,
+  // footballTeams
 ) => {
   return async function (dispatch) {
     dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:")));
-
-    let rawBasketballMatchups;
-    if (year === "2019") {
-      rawBasketballMatchups = basketballTeamNumber;
-    } else {
-      rawBasketballMatchups = basketballSeasonEnded
-        ? await retrieveSportMatchups("basketball", year, basketballTeamNumber)
-        : undefined;
-    }
-    const basketballMatchups = await compileMatchups(
-      rawBasketballMatchups,
-      basketballTeams,
-      "basketball"
-    );
-
-    const rawBaseballMatchups = baseballSeasonEnded
-      ? await retrieveSportMatchups("baseball", year, baseballTeamNumber)
-      : undefined;
-    const baseballMatchups = await compileMatchups(
-      rawBaseballMatchups,
-      baseballTeams,
-      "baseball"
-    );
-
-    // const rawFootballMatchups = true
-    const rawFootballMatchups = footballSeasonEnded
-      ? await retrieveSportMatchups("football", year, footballTeamNumber)
-      : undefined;
-
-    let footballSchedule;
-    // If rawFootballMatchups exist then need extra step of pulling schedule and adding points
-    if (rawFootballMatchups) {
-      footballSchedule = await retrieveFootballPoints(year);
-    }
-    const refinedFootballMatchups = rawFootballMatchups
-      ? await addFootballPoints(
-          rawFootballMatchups,
-          footballSchedule,
-          footballTeamNumber
-        )
-      : rawFootballMatchups;
-    const footballMatchups = await compileMatchups(
-      refinedFootballMatchups,
-      footballTeams,
-      "football"
-    );
-
-    const shouldCompileTotalMatchups =
-      basketballMatchups.length > 0 &&
-      baseballMatchups.length > 0 &&
-      footballMatchups.length > 0;
-    const totalMatchups = shouldCompileTotalMatchups
-      ? await compileTotalMatchups(
-          basketballMatchups,
-          baseballMatchups,
-          footballMatchups
-        )
-      : [];
-
     // connect to mongo
-    const ownerMatchupsCollection = await returnMongoCollection(
-      `owner${teamNumber}Matchups`
+    const seasonVariablesCollection = await returnMongoCollection(
+      "seasonVariables"
     );
+    const seasonVars = await seasonVariablesCollection
+      .find({}, { projection: { _id: 0 } })
+      .asArray()[0];
 
-    const compiledMatchups = {
-      year,
-      totalMatchups,
-      basketballMatchups,
-      baseballMatchups,
-      footballMatchups,
+    const teamNumbersOwnerNamesCollection = returnMongoCollection(
+      "ownersTeamNumbersList"
+    );
+    const teamNumbersOwnerNamesRaw = await teamNumbersOwnerNamesCollection
+      .find({})
+      .asArray();
+    const teamNumbersOwnerNames = teamNumbersOwnerNamesRaw[0];
+
+    const teamNumbersPerSportCollection = returnMongoCollection(
+      "teamNumbersPerSport"
+    );
+    const teamNumbersPerSportRaw = await teamNumbersPerSportCollection
+      .find({ year }, { projection: { id: 0, year: 0 } })
+      .asArray();
+    const teamNumbersPerSport = teamNumbersPerSportRaw[0];
+
+    const trifectaNumbersList = Object.keys(teamNumbersPerSport.teamNumbers);
+
+    // creates each sport's base matchups object
+    const createSportMatchupsObject = (sport) => {
+      const sportMatchupObject = {};
+      const defaultMatchupsData =
+        sport === "football"
+          ? {
+              wins: 0,
+              losses: 0,
+              ties: 0,
+              winPer: 0,
+              pointsFor: 0,
+              pointsAgainst: 0,
+              pointsDiff: 0,
+            }
+          : {
+              wins: 0,
+              losses: 0,
+              ties: 0,
+              winPer: 0,
+            };
+
+      // outer loop to add ownernames and matchups object per trifecta number
+      for (let i = 0; i < trifectaNumbersList.length; i++) {
+        const ownerNumber = trifectaNumbersList[i];
+        sportMatchupObject[ownerNumber] = {
+          ownerNames: teamNumbersOwnerNames[ownerNumber].ownerNames,
+          matchups: {},
+        };
+        // inner loop for each other trifecta number adding default matchups data
+        for (let j = 0; j < trifectaNumbersList.length; j++) {
+          if (i != j) {
+            const innerOwnerNumber = trifectaNumbersList[j];
+            sportMatchupObject[ownerNumber].matchups[innerOwnerNumber] = {
+              ...defaultMatchupsData,
+              ownerNames: teamNumbersOwnerNames[innerOwnerNumber].ownerNames,
+            };
+          }
+        }
+      }
+      return sportMatchupObject;
     };
 
-    dispatch(
-      actions.saveScrapedBasketballMatchups(
-        sortArrayBy(basketballMatchups, "winPer", true)
-      )
-    );
-    dispatch(
-      actions.saveScrapedBaseballMatchups(
-        sortArrayBy(baseballMatchups, "winPer", true)
-      )
-    );
-    dispatch(
-      actions.saveScrapedFootballMatchups(
-        sortArrayBySecondaryParameter(footballMatchups, "winPer", "pointsDiff")
-      )
-    );
-    dispatch(
-      actions.saveScrapedTotalMatchups(
-        sortArrayBy(totalMatchups, "totalWinPer", true)
-      )
+    // creates sport to trifecta numbers mapping object
+    const createSportNumbersMappingObject = (sport) => {
+      const sportNumbersMappingObject = {};
+      for (let i = 0; i < trifectaNumbersList.length; i++) {
+        const trifectaNumber = trifectaNumbersList[i];
+        const sportTeamNumber =
+          teamNumbersPerSport.teamNumbers[trifectaNumber][sport];
+        sportNumbersMappingObject[sportTeamNumber] = trifectaNumber;
+      }
+      return sportNumbersMappingObject;
+    };
+
+    const basketball = await determineBasketballMatchups(
+      year,
+      createSportMatchupsObject,
+      createSportNumbersMappingObject
     );
 
-    deleteInsertDispatch(
-      null,
-      null,
-      ownerMatchupsCollection,
+    const baseball = await determineBaseballMatchups(
       year,
-      compiledMatchups,
-      null,
-      false
+      createSportMatchupsObject,
+      createSportNumbersMappingObject
     );
+
+    const football = await determineFootballMatchups(
+      year,
+      createSportMatchupsObject,
+      createSportNumbersMappingObject
+    );
+
+    const allTrifectaMatchupsObject = {
+      basketball,
+      baseball,
+      football,
+    };
+    console.log("master trifecta matchups object", allTrifectaMatchupsObject);
+
+    // loop through all trifecta numbers and make each owner's own matchups object and upload to that owner's mongodb
+    for (let x = 0; x < trifectaNumbersList.length; x++) {
+      const trifectaNumber = trifectaNumbersList[x];
+      const eachTotalMatchupsObject = await determineTotalMatchups(
+        year,
+        trifectaNumber,
+        basketball,
+        baseball,
+        football
+      );
+      console.log(
+        `each total matchups object for trifecta owner number: ${trifectaNumber}!!`,
+        eachTotalMatchupsObject
+      );
+
+      // connect to mongo
+      const ownerMatchupsCollection = await returnMongoCollection(
+        `owner${trifectaNumber}Matchups`
+      );
+      deleteInsertDispatch(
+        null,
+        null,
+        ownerMatchupsCollection,
+        year,
+        eachTotalMatchupsObject,
+        null,
+        false
+      );
+    }
+    return;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //   console.log('ttttttt', {
+    //     teamNumber,
+    //     basketballSeasonEnded,
+    //     basketballTeamNumber,
+    //     basketballTeams,
+    //     baseballSeasonEnded,
+    //     baseballTeamNumber,
+    //     baseballTeams,
+    //     footballSeasonEnded,
+    //     footballTeamNumber,
+    //     footballTeams
+    //   });
+
+    //   let rawBasketballMatchups;
+    //   if (year === "2019") {
+    //     rawBasketballMatchups = basketballTeamNumber;
+    //   } else {
+    //     rawBasketballMatchups = basketballSeasonEnded
+    //       ? await retrieveSportMatchups("basketball", year, basketballTeamNumber)
+    //       : undefined;
+    //   }
+    //   const basketballMatchups = await compileMatchups(
+    //     rawBasketballMatchups,
+    //     basketballTeams,
+    //     "basketball"
+    //   );
+    //   console.log('BM', basketballMatchups)
+
+    //   const rawBaseballMatchups = baseballSeasonEnded
+    //     ? await retrieveSportMatchups("baseball", year, baseballTeamNumber)
+    //     : undefined;
+    //   const baseballMatchups = await compileMatchups(
+    //     rawBaseballMatchups,
+    //     baseballTeams,
+    //     "baseball"
+    //   );
+
+    //   // const rawFootballMatchups = true
+    //   const rawFootballMatchups = footballSeasonEnded
+    //     ? await retrieveSportMatchups("football", year, footballTeamNumber)
+    //     : undefined;
+
+    //   let footballSchedule;
+    //   // If rawFootballMatchups exist then need extra step of pulling schedule and adding points
+    //   if (rawFootballMatchups) {
+    //     footballSchedule = await retrieveFootballPoints(year);
+    //   }
+    //   const refinedFootballMatchups = rawFootballMatchups
+    //     ? await addFootballPoints(
+    //         rawFootballMatchups,
+    //         footballSchedule,
+    //         footballTeamNumber
+    //       )
+    //     : rawFootballMatchups;
+    //   const footballMatchups = await compileMatchups(
+    //     refinedFootballMatchups,
+    //     footballTeams,
+    //     "football"
+    //   );
+
+    //   const shouldCompileTotalMatchups =
+    //     basketballMatchups.length > 0 &&
+    //     baseballMatchups.length > 0 &&
+    //     footballMatchups.length > 0;
+    //   const totalMatchups = shouldCompileTotalMatchups
+    //     ? await compileTotalMatchups(
+    //         basketballMatchups,
+    //         baseballMatchups,
+    //         footballMatchups
+    //       )
+    //     : [];
+
+    //   // connect to mongo
+    //   const ownerMatchupsCollection = await returnMongoCollection(
+    //     `owner${teamNumber}Matchups`
+    //   );
+
+    //   const compiledMatchups = {
+    //     year,
+    //     totalMatchups,
+    //     basketballMatchups,
+    //     baseballMatchups,
+    //     footballMatchups,
+    //   };
+
+    //   dispatch(
+    //     actions.saveScrapedBasketballMatchups(
+    //       sortArrayBy(basketballMatchups, "winPer", true)
+    //     )
+    //   );
+    //   dispatch(
+    //     actions.saveScrapedBaseballMatchups(
+    //       sortArrayBy(baseballMatchups, "winPer", true)
+    //     )
+    //   );
+    //   dispatch(
+    //     actions.saveScrapedFootballMatchups(
+    //       sortArrayBySecondaryParameter(footballMatchups, "winPer", "pointsDiff")
+    //     )
+    //   );
+    //   dispatch(
+    //     actions.saveScrapedTotalMatchups(
+    //       sortArrayBy(totalMatchups, "totalWinPer", true)
+    //     )
+    //   );
+
+    //   deleteInsertDispatch(
+    //     null,
+    //     null,
+    //     ownerMatchupsCollection,
+    //     year,
+    //     compiledMatchups,
+    //     null,
+    //     false
+    //   );
   };
 };
+
+// const scrapeMatchups = (
+//   year,
+//   teamNumber,
+//   basketballSeasonEnded,
+//   basketballTeamNumber,
+//   basketballTeams,
+//   baseballSeasonEnded,
+//   baseballTeamNumber,
+//   baseballTeams,
+//   footballSeasonEnded,
+//   footballTeamNumber,
+//   footballTeams
+// ) => {
+//   return async function (dispatch) {
+//     dispatch(actions.setLastScraped(format(new Date(), "M/D/YY h:mm:")));
+//     console.log('ttttttt', {
+//       teamNumber,
+//       basketballSeasonEnded,
+//       basketballTeamNumber,
+//       basketballTeams,
+//       baseballSeasonEnded,
+//       baseballTeamNumber,
+//       baseballTeams,
+//       footballSeasonEnded,
+//       footballTeamNumber,
+//       footballTeams
+//     });
+
+//     let rawBasketballMatchups;
+//     if (year === "2019") {
+//       rawBasketballMatchups = basketballTeamNumber;
+//     } else {
+//       rawBasketballMatchups = basketballSeasonEnded
+//         ? await retrieveSportMatchups("basketball", year, basketballTeamNumber)
+//         : undefined;
+//     }
+//     const basketballMatchups = await compileMatchups(
+//       rawBasketballMatchups,
+//       basketballTeams,
+//       "basketball"
+//     );
+//     console.log('BM', basketballMatchups)
+//     return;
+
+//     const rawBaseballMatchups = baseballSeasonEnded
+//       ? await retrieveSportMatchups("baseball", year, baseballTeamNumber)
+//       : undefined;
+//     const baseballMatchups = await compileMatchups(
+//       rawBaseballMatchups,
+//       baseballTeams,
+//       "baseball"
+//     );
+
+//     // const rawFootballMatchups = true
+//     const rawFootballMatchups = footballSeasonEnded
+//       ? await retrieveSportMatchups("football", year, footballTeamNumber)
+//       : undefined;
+
+//     let footballSchedule;
+//     // If rawFootballMatchups exist then need extra step of pulling schedule and adding points
+//     if (rawFootballMatchups) {
+//       footballSchedule = await retrieveFootballPoints(year);
+//     }
+//     const refinedFootballMatchups = rawFootballMatchups
+//       ? await addFootballPoints(
+//           rawFootballMatchups,
+//           footballSchedule,
+//           footballTeamNumber
+//         )
+//       : rawFootballMatchups;
+//     const footballMatchups = await compileMatchups(
+//       refinedFootballMatchups,
+//       footballTeams,
+//       "football"
+//     );
+
+//     const shouldCompileTotalMatchups =
+//       basketballMatchups.length > 0 &&
+//       baseballMatchups.length > 0 &&
+//       footballMatchups.length > 0;
+//     const totalMatchups = shouldCompileTotalMatchups
+//       ? await compileTotalMatchups(
+//           basketballMatchups,
+//           baseballMatchups,
+//           footballMatchups
+//         )
+//       : [];
+
+//     // connect to mongo
+//     const ownerMatchupsCollection = await returnMongoCollection(
+//       `owner${teamNumber}Matchups`
+//     );
+
+//     const compiledMatchups = {
+//       year,
+//       totalMatchups,
+//       basketballMatchups,
+//       baseballMatchups,
+//       footballMatchups,
+//     };
+
+//     dispatch(
+//       actions.saveScrapedBasketballMatchups(
+//         sortArrayBy(basketballMatchups, "winPer", true)
+//       )
+//     );
+//     dispatch(
+//       actions.saveScrapedBaseballMatchups(
+//         sortArrayBy(baseballMatchups, "winPer", true)
+//       )
+//     );
+//     dispatch(
+//       actions.saveScrapedFootballMatchups(
+//         sortArrayBySecondaryParameter(footballMatchups, "winPer", "pointsDiff")
+//       )
+//     );
+//     dispatch(
+//       actions.saveScrapedTotalMatchups(
+//         sortArrayBy(totalMatchups, "totalWinPer", true)
+//       )
+//     );
+
+//     deleteInsertDispatch(
+//       null,
+//       null,
+//       ownerMatchupsCollection,
+//       year,
+//       compiledMatchups,
+//       null,
+//       false
+//     );
+//   };
+// };
 
 const addFootballPoints = (footballMatchups, fullScheduleArray, teamNumber) => {
   // loop through each "week" (ie group of 5 matchups)
@@ -193,9 +483,8 @@ const addFootballPoints = (footballMatchups, fullScheduleArray, teamNumber) => {
     // add to h2h json only if there was a match, otherwise keep moving on
     if (opposingTeamPointsAgainst !== 0) {
       footballMatchups[opposingTeamId].pointsFor += myTeamPointsFor;
-      footballMatchups[
-        opposingTeamId
-      ].pointsAgainst += opposingTeamPointsAgainst;
+      footballMatchups[opposingTeamId].pointsAgainst +=
+        opposingTeamPointsAgainst;
     }
   });
   return footballMatchups;
@@ -207,14 +496,8 @@ const compileMatchups = (matchups, teamsList, sport) => {
     if (sport === "football") {
       for (let opposingTeams in matchups) {
         const { ownerNames } = teamsList[opposingTeams];
-        const {
-          wins,
-          losses,
-          ties,
-          pointsFor,
-          pointsAgainst,
-          percentage,
-        } = matchups[opposingTeams];
+        const { wins, losses, ties, pointsFor, pointsAgainst, percentage } =
+          matchups[opposingTeams];
         const ownerMatchups = {
           ownerNames,
           wins,

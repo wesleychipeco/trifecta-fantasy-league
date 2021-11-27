@@ -89,76 +89,80 @@ class Matchups extends PureComponent {
         seasonVariablesCollection
           .find({}, { projection: { _id: 0 } })
           .asArray()
-          .then((seasonVariables) => {
+          .then(async (seasonVariables) => {
             const { currentYear } = seasonVariables[0];
             const { displayMatchups, scrapeMatchups } = this.props;
 
             this.setState({ year });
 
-            if (year === "all" || isYear1BeforeYear2(year, currentYear)) {
-              displayMatchups(year, teamNumber);
-            } else {
-              if (lastScraped && prevOwnerNames === docs[0].ownerNames) {
-                displayMatchups(year, teamNumber);
-              } else {
-                const basketballSeasonVariables = seasonVariables[0].basketball;
-                const basketballSeasonEnded = this.isSeasonEnded(
-                  basketballSeasonVariables
-                );
+            displayMatchups(year, teamNumber);
 
-                const baseballSeasonVariables = seasonVariables[0].baseball;
-                const baseballSeasonEnded = this.isSeasonEnded(
-                  baseballSeasonVariables
-                );
+            // if (year === "all" || isYear1BeforeYear2(year, currentYear)) {
+            //   displayMatchups(year, teamNumber);
+            // } else {
+            //   console.log('prevO', prevOwnerNames);
+            //   console.log('1', docs[0].ownerNames)
+            //   if (lastScraped && prevOwnerNames === docs[0].ownerNames) {
+            //     displayMatchups(year, teamNumber);
+            //   } else {
+            //     const basketballSeasonVariables = seasonVariables[0].basketball;
+            //     const basketballSeasonEnded = this.isSeasonEnded(
+            //       basketballSeasonVariables
+            //     );
 
-                const footballSeasonVariables = seasonVariables[0].football;
-                const footballSeasonEnded = this.isSeasonEnded(
-                  footballSeasonVariables
-                );
+            //     const baseballSeasonVariables = seasonVariables[0].baseball;
+            //     const baseballSeasonEnded = this.isSeasonEnded(
+            //       baseballSeasonVariables
+            //     );
 
-                this.setState({
-                  basketballSeasonEnded,
-                  baseballSeasonEnded,
-                  footballSeasonEnded,
-                });
+            //     const footballSeasonVariables = seasonVariables[0].football;
+            //     const footballSeasonEnded = this.isSeasonEnded(
+            //       footballSeasonVariables
+            //     );
 
-                const teamNumbersPerSportCollection = returnMongoCollection(
-                  "teamNumbersPerSport"
-                ).then(() => {
-                  teamNumbersPerSportCollection
-                    .find({ year }, { projection: { id: 0, year: 0 } })
-                    .asArray()
-                    .then((teamNumbersArray) => {
-                      const {
-                        teamNumbers,
-                        basketball: basketballTeams,
-                        baseball: baseballTeams,
-                        football: footballTeams,
-                      } = teamNumbersArray[0];
+            //     this.setState({
+            //       basketballSeasonEnded,
+            //       baseballSeasonEnded,
+            //       footballSeasonEnded,
+            //     });
 
-                      const {
-                        basketball: basketballTeamNumber,
-                        baseball: baseballTeamNumber,
-                        football: footballTeamNumber,
-                      } = teamNumbers[teamNumber];
+            //     const teamNumbersPerSportCollection = returnMongoCollection(
+            //       "teamNumbersPerSport"
+            //     )
+                
+            //   teamNumbersPerSportCollection
+            //     .find({ year }, { projection: { id: 0, year: 0 } })
+            //     .asArray()
+            //     .then((teamNumbersArray) => {
+            //       const {
+            //         teamNumbers,
+            //         basketball: basketballTeams,
+            //         baseball: baseballTeams,
+            //         football: footballTeams,
+            //       } = teamNumbersArray[0];
 
-                      scrapeMatchups(
-                        year,
-                        teamNumber,
-                        basketballSeasonEnded,
-                        basketballTeamNumber,
-                        basketballTeams,
-                        baseballSeasonEnded,
-                        baseballTeamNumber,
-                        baseballTeams,
-                        footballSeasonEnded,
-                        footballTeamNumber,
-                        footballTeams
-                      );
-                    });
-                });
-              }
-            }
+            //       const {
+            //         basketball: basketballTeamNumber,
+            //         baseball: baseballTeamNumber,
+            //         football: footballTeamNumber,
+            //       } = teamNumbers[teamNumber];
+
+            //       scrapeMatchups(
+            //         year,
+            //         teamNumber,
+            //         basketballSeasonEnded,
+            //         basketballTeamNumber,
+            //         basketballTeams,
+            //         baseballSeasonEnded,
+            //         baseballTeamNumber,
+            //         baseballTeams,
+            //         footballSeasonEnded,
+            //         footballTeamNumber,
+            //         footballTeams
+            //       );
+            //     });
+            //   }
+            // }
           });
       });
   };
