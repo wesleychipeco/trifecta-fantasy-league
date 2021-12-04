@@ -1,20 +1,22 @@
-const sum = (array) => array.reduce((acc, n) => acc + n, 0);
+import { round } from "lodash";
 
-const sortArrayBy = (array, sortKey, sortDirection) =>
+export const sum = (array) => array.reduce((acc, n) => acc + n, 0);
+
+export const sortArrayBy = (array, sortKey, sortDirection) =>
   // if sortDirection === true => highToLow
   // if sortDirection === false => lowToHigh
   sortDirection
     ? array.sort((a, b) => (a[sortKey] < b[sortKey] ? 1 : -1))
     : array.sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1));
 
-const sortArrayByTop5Bottom5 = (array, sortKey, sortDirection) =>
+export const sortArrayByTop5Bottom5 = (array, sortKey, sortDirection) =>
   // if sortDirection === true => highToLow
   // if sortDirection === false => lowToHigh
   sortDirection
     ? array.sort((a, b) => (a[sortKey].points < b[sortKey].points ? 1 : -1))
     : array.sort((a, b) => (a[sortKey].points > b[sortKey].points ? 1 : -1));
 
-const sortArrayBySecondaryParameter = (
+export const sortArrayBySecondaryParameter = (
   array,
   primarySortKey,
   secondarySortKey
@@ -30,16 +32,10 @@ const sortArrayBySecondaryParameter = (
       : -1
   );
 
-const isYear1BeforeYear2 = (year, currentYear) =>
+export const isYear1BeforeYear2 = (year, currentYear) =>
   Number(year) < Number(currentYear);
 
-const isEmptyArray = (array) => array.length === 0;
+export const isEmptyArray = (array) => array.length === 0;
 
-export {
-  sum,
-  sortArrayBy,
-  sortArrayByTop5Bottom5,
-  sortArrayBySecondaryParameter,
-  isYear1BeforeYear2,
-  isEmptyArray,
-};
+export const winPerCalculation = (wins, losses, ties) =>
+  round((wins + ties / 2) / (wins + losses + ties), 3);

@@ -15,9 +15,11 @@ export class Navbar extends PureComponent {
           touchableStyles={styles.button}
           textStyles={styles.text}
         />
-        <MyButton 
+        <MyButton
           title="2022 Basketball Standings"
-          onPress={() => navigation.navigate("BasketballStandings", { year: "2022" })} 
+          onPress={() =>
+            navigation.navigate("BasketballStandings", { year: "2022" })
+          }
           touchableStyles={{
             borderWidth: 2,
             borderColor: "#000000",
@@ -56,6 +58,19 @@ export class Navbar extends PureComponent {
           onPress={() => navigation.navigate("OwnerProfilesHomeScreen")}
           touchableStyles={styles.button}
           textStyles={styles.text}
+        />
+        <MyButton
+          title="Scrape Matchups"
+          onPress={() =>
+            navigation.navigate("MatchupsScraper", { year: "2021" })
+          }
+          touchableStyles={{
+            borderWidth: 2,
+            borderColor: "#000000",
+            backgroundColor: "#007FFF",
+            padding: 5,
+          }}
+          textStyles={{ color: "#FFFFFF" }}
         />
       </View>
     );

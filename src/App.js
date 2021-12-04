@@ -26,6 +26,7 @@ import HallOfFameHomeScreen from "./screens/HallOfFameHomeScreen";
 import HallOfFameBasketball from "./screens/HallOfFameBasketball";
 import HallOfFameBaseball from "./screens/HallOfFameBaseball";
 import HallOfFameFootball from "./screens/HallOfFameFootball";
+import MatchupsScraper from "./screens/MatchupsScraper";
 
 const routeMap = {
   Home: {
@@ -106,6 +107,11 @@ const routeMap = {
   HallOfFameFootball: {
     component: HallOfFameFootball,
     path: "/halloffame/football",
+    exact: true,
+  },
+  MatchupsScraper: {
+    component: MatchupsScraper,
+    path: "/matchupsscraper/:year?",
     exact: true,
   },
   Second: {
