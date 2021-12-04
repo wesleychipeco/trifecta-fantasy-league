@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { StandingsDropdownPost2019 } from "./StandingsDropdownPost2019";
 import { MyButton } from "./MyButton";
 import { navbarStyles as styles } from "../styles/globalStyles";
-import { scrapeMatchups } from "../store/matchups/matchupsActions";
 
 export class Navbar extends PureComponent {
   render() {
@@ -16,9 +15,11 @@ export class Navbar extends PureComponent {
           touchableStyles={styles.button}
           textStyles={styles.text}
         />
-        <MyButton 
+        <MyButton
           title="2022 Basketball Standings"
-          onPress={() => navigation.navigate("BasketballStandings", { year: "2022" })} 
+          onPress={() =>
+            navigation.navigate("BasketballStandings", { year: "2022" })
+          }
           touchableStyles={{
             borderWidth: 2,
             borderColor: "#000000",
@@ -58,9 +59,11 @@ export class Navbar extends PureComponent {
           touchableStyles={styles.button}
           textStyles={styles.text}
         />
-        <MyButton 
+        <MyButton
           title="Scrape Matchups"
-          onPress={() => navigation.navigate("MatchupsScraper", {year: "2021"})}
+          onPress={() =>
+            navigation.navigate("MatchupsScraper", { year: "2021" })
+          }
           touchableStyles={{
             borderWidth: 2,
             borderColor: "#000000",
@@ -68,7 +71,7 @@ export class Navbar extends PureComponent {
             padding: 5,
           }}
           textStyles={{ color: "#FFFFFF" }}
-        />        
+        />
       </View>
     );
   }

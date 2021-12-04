@@ -231,7 +231,7 @@ export const determineTotalMatchups = async (
   for (const [opposingTrifectaNumber, basketball] of Object.entries(
     basketballMatchups[trifectaNumber].matchups
   )) {
-    const eachTotalMatchupObject = {};
+    let eachTotalMatchupObject = {};
     const baseball =
       baseballMatchups[trifectaNumber].matchups[opposingTrifectaNumber];
     const football =

@@ -122,7 +122,7 @@ const scrapeMatchups = (year) => {
         };
         // inner loop for each other trifecta number adding default matchups data
         for (let j = 0; j < trifectaNumbersList.length; j++) {
-          if (i != j) {
+          if (i !== j) {
             const innerOwnerNumber = trifectaNumbersList[j];
             sportMatchupObject[ownerNumber].matchups[innerOwnerNumber] = {
               ...defaultMatchupsData,
