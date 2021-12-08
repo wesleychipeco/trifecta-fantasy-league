@@ -1,6 +1,10 @@
 import axios from "axios";
 import { round } from "lodash";
 import {
+  returnMongoCollection,
+  deleteInsertDispatch,
+} from "../../databaseManagement";
+import {
   sortArrayBy,
   sortArrayBySecondaryParameter,
   winPerCalculation,
@@ -261,4 +265,40 @@ export const determineTotalMatchups = async (
     true
   );
   return eachMatchupsObject;
+};
+
+export const addToAllTimeMatchups = async (
+  trifectaNumber,
+  eachTotalMatchupsObject
+) => {
+  // connect to mongo
+  const ownerMatchupsCollection = await returnMongoCollection(
+    `owner${trifectaNumber}Matchups`
+  );
+
+  // keep going for all-time practice
+  const allTimeOwnerMatchupsRaw = await ownerMatchupsCollection
+    .find({ year: "all" }, { projection: { _id: 0 } })
+    .asArray();
+  const allTimeOwnerMatchups =
+    allTimeOwnerMatchupsRaw && allTimeOwnerMatchupsRaw[0];
+  console.log("ALL TIME! for number", trifectaNumber, allTimeOwnerMatchups);
+
+  // if year: 'all' does not exist, upload full year's matchup object
+  if (!allTimeOwnerMatchups) {
+    const newYear = "allNew";
+    const eachMatchupsObjectCopy = {
+      ...eachTotalMatchupsObject,
+      year: newYear,
+    };
+    deleteInsertDispatch(
+      null,
+      null,
+      ownerMatchupsCollection,
+      newYear,
+      eachMatchupsObjectCopy,
+      null,
+      false
+    );
+  }
 };
