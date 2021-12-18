@@ -182,10 +182,10 @@ const scrapeMatchups = (year) => {
         baseball,
         football
       );
-      console.log(
-        `each total matchups object for trifecta owner number: ${trifectaNumber}!`,
-        eachTotalMatchupsObject
-      );
+      // console.log(
+      //   `each total matchups object for trifecta owner number: ${trifectaNumber}!`,
+      //   eachTotalMatchupsObject
+      // );
 
       // connect to mongo
       const ownerMatchupsCollection = await returnMongoCollection(

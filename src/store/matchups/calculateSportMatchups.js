@@ -267,6 +267,22 @@ export const determineTotalMatchups = async (
   return eachMatchupsObject;
 };
 
+const findIndexOfOwnerNames = (matchupsArray, ownerNamesToMatch) => {
+  // need to handle if owners are in different order in comma separated list
+  return matchupsArray.findIndex((matchup) => {
+    const commaIndex = matchup.ownerNames.indexOf(",");
+    const rearranged =
+      matchup.ownerNames.substring(commaIndex + 2) +
+      ", " +
+      matchup.ownerNames.substring(0, commaIndex);
+
+    return (
+      ownerNamesToMatch === matchup.ownerNames ||
+      ownerNamesToMatch === rearranged
+    );
+  });
+};
+
 export const addToAllTimeMatchups = async (
   trifectaNumber,
   eachTotalMatchupsObject
@@ -276,6 +292,7 @@ export const addToAllTimeMatchups = async (
     `owner${trifectaNumber}Matchups`
   );
 
+  console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++");
   // keep going for all-time practice
   const allTimeOwnerMatchupsRaw = await ownerMatchupsCollection
     .find({ year: "all" }, { projection: { _id: 0 } })
@@ -284,9 +301,9 @@ export const addToAllTimeMatchups = async (
     allTimeOwnerMatchupsRaw && allTimeOwnerMatchupsRaw[0];
   console.log("ALL TIME! for number", trifectaNumber, allTimeOwnerMatchups);
 
-  // if year: 'all' does not exist, upload full year's matchup object
+  const newYear = "allNew";
+  // if year: 'all' does not exist, simply upload full year's matchup object
   if (!allTimeOwnerMatchups) {
-    const newYear = "allNew";
     const eachMatchupsObjectCopy = {
       ...eachTotalMatchupsObject,
       year: newYear,
@@ -297,6 +314,156 @@ export const addToAllTimeMatchups = async (
       ownerMatchupsCollection,
       newYear,
       eachMatchupsObjectCopy,
+      null,
+      false
+    );
+  } else {
+    const eachAllTimeMatchupsUpdated = {
+      basketballMatchups: [],
+      baseballMatchups: [],
+      footballMatchups: [],
+      totalMatchups: [],
+    };
+
+    // loop through each sports matchups
+    const sportsList = [
+      "basketballMatchups",
+      "baseballMatchups",
+      "footballMatchups",
+      "totalMatchups",
+    ];
+    for (let sportIndex = 0; sportIndex < sportsList.length; sportIndex++) {
+      const listOfFoundOwnerNames = [];
+      const sport = sportsList[sportIndex];
+      console.log("-------------------------------------------------------");
+      console.log("this year's", sport, eachTotalMatchupsObject[sport]);
+      const sportMatchups = eachTotalMatchupsObject[sport];
+
+      // for each owner in this sport's matchups object, find match within allTimeMatchups
+      for (let i = 0; i < sportMatchups.length; i++) {
+        const ownerNames = sportMatchups[i].ownerNames;
+        listOfFoundOwnerNames.push(ownerNames);
+
+        // create new object for each owner within this sport
+        const ownerMatchupsObject = { ownerNames };
+
+        // need to handle if owners are in different order in comma separated list
+        const foundOwnerIndex = allTimeOwnerMatchups[sport].findIndex(
+          (matchup) => {
+            const commaIndex = matchup.ownerNames.indexOf(",");
+            const rearranged =
+              matchup.ownerNames.substring(commaIndex + 2) +
+              ", " +
+              matchup.ownerNames.substring(0, commaIndex);
+
+            return (
+              ownerNames === matchup.ownerNames || ownerNames === rearranged
+            );
+          }
+        );
+
+        // for total matchups, use updated matchups objects to compile totalWinPer
+        if (sport === "totalMatchups") {
+          const allTimeBasketball =
+            eachAllTimeMatchupsUpdated["basketballMatchups"];
+          const allTimeBaseball =
+            eachAllTimeMatchupsUpdated["baseballMatchups"];
+          const allTimeFootball =
+            eachAllTimeMatchupsUpdated["footballMatchups"];
+          const foundOwnerIndexBasketball = findIndexOfOwnerNames(
+            allTimeBasketball,
+            ownerNames
+          );
+          const foundOwnerIndexBaseball = findIndexOfOwnerNames(
+            allTimeBaseball,
+            ownerNames
+          );
+          const foundOwnerIndexFootball = findIndexOfOwnerNames(
+            allTimeFootball,
+            ownerNames
+          );
+
+          const updatedWinPerBasketball =
+            allTimeBasketball[foundOwnerIndexBasketball].winPer;
+          const updatedWinPerBaseball =
+            allTimeBaseball[foundOwnerIndexBaseball].winPer;
+          const updatedWinPerFootball =
+            allTimeFootball[foundOwnerIndexFootball].winPer;
+          const updatedTotalWinPer = round(
+            (updatedWinPerBasketball +
+              updatedWinPerBaseball +
+              updatedWinPerFootball) /
+              3,
+            3
+          );
+
+          ownerMatchupsObject.basketballWinPer = updatedWinPerBasketball;
+          ownerMatchupsObject.baseballWinPer = updatedWinPerBaseball;
+          ownerMatchupsObject.footballWinPer = updatedWinPerFootball;
+          ownerMatchupsObject.totalWinPer = updatedTotalWinPer;
+        }
+        // for non-total matchups sports
+        else {
+          // add this sport's matchup totals to all time
+          ownerMatchupsObject.wins =
+            allTimeOwnerMatchups[sport][foundOwnerIndex].wins +
+            sportMatchups[i].wins;
+          ownerMatchupsObject.losses =
+            allTimeOwnerMatchups[sport][foundOwnerIndex].losses +
+            sportMatchups[i].losses;
+          ownerMatchupsObject.ties =
+            allTimeOwnerMatchups[sport][foundOwnerIndex].ties +
+            sportMatchups[i].ties;
+          const { wins, losses, ties } = ownerMatchupsObject;
+          ownerMatchupsObject.winPer = winPerCalculation(wins, losses, ties);
+
+          if (sport === "footballMatchups") {
+            ownerMatchupsObject.pointsFor = round(
+              allTimeOwnerMatchups[sport][foundOwnerIndex].pointsFor +
+                sportMatchups[i].pointsFor,
+              1
+            );
+            ownerMatchupsObject.pointsAgainst = round(
+              allTimeOwnerMatchups[sport][foundOwnerIndex].pointsAgainst +
+                sportMatchups[i].pointsAgainst,
+              1
+            );
+            ownerMatchupsObject.pointsDiff =
+              ownerMatchupsObject.pointsFor - ownerMatchupsObject.pointsAgainst;
+          }
+        }
+
+        eachAllTimeMatchupsUpdated[sport].push(ownerMatchupsObject);
+      }
+
+      // for each sport (even total matchups), need to find which owners whose matchup stats have not changed
+      const copyOverOwners = allTimeOwnerMatchups[sport].filter((obj) => {
+        const allTimeOwnerNames = obj.ownerNames;
+
+        // look for name ownerNames in found list, rearranged or not
+        const foundIndex = listOfFoundOwnerNames.findIndex((name) => {
+          const commaIndex = name.indexOf(",");
+          const rearranged =
+            name.substring(commaIndex + 2) +
+            ", " +
+            name.substring(0, commaIndex);
+          return allTimeOwnerNames === name || allTimeOwnerNames === rearranged;
+        });
+
+        return foundIndex === -1;
+      });
+      // straight add to sport matchups
+      eachAllTimeMatchupsUpdated[sport].push(...copyOverOwners);
+    }
+
+    eachAllTimeMatchupsUpdated.year = newYear;
+    console.log("FINAL ALL-TIME MATCHUPS", eachAllTimeMatchupsUpdated);
+    deleteInsertDispatch(
+      null,
+      null,
+      ownerMatchupsCollection,
+      newYear,
+      eachAllTimeMatchupsUpdated,
       null,
       false
     );

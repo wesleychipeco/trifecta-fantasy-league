@@ -31,12 +31,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#F5FCFF",
+    backgroundColor: "black",
   },
   welcome: {
     fontSize: 20,
     textAlign: "center",
     margin: 10,
+    color: "white",
   },
 });
 
