@@ -80,10 +80,8 @@ class FootballStandings extends PureComponent {
       .then((seasonVariables) => {
         const { currentYear } = seasonVariables[0];
         const { seasonStarted, inSeason } = seasonVariables[0].football;
-        const {
-          scrapeFootballStandings,
-          displayFootballStandings,
-        } = this.props;
+        const { scrapeFootballStandings, displayFootballStandings } =
+          this.props;
 
         if (isYear1BeforeYear2(year, currentYear)) {
           displayFootballStandings(year);
@@ -414,6 +412,15 @@ class FootballStandings extends PureComponent {
     );
   };
 
+  sortTop5Bottom5StandingsByWeek14 = () => {
+    const { top5Bottom5Standings } = this.props;
+    this.sortTableByColumn(
+      top5Bottom5Standings,
+      "week14",
+      "top5Bottom5Standings"
+    );
+  };
+
   // OLD - Football standings table sort methods
   sortFootballStandingsByWins = () => {
     const { footballStandings } = this.props;
@@ -671,6 +678,7 @@ class FootballStandings extends PureComponent {
         week11: this.sortTop5Bottom5StandingsByWeek11,
         week12: this.sortTop5Bottom5StandingsByWeek12,
         week13: this.sortTop5Bottom5StandingsByWeek13,
+        week14: this.sortTop5Bottom5StandingsByWeek14,
       };
 
       // Add correct sorter per week
@@ -698,9 +706,8 @@ class FootballStandings extends PureComponent {
         }
       );
 
-      const top5Bottom5StandingsHeaderRow = top5Bottom5StandingsHeaderRowMap.map(
-        this.renderHeaderRowColumn
-      );
+      const top5Bottom5StandingsHeaderRow =
+        top5Bottom5StandingsHeaderRowMap.map(this.renderHeaderRowColumn);
 
       return (
         <View style={styles.container}>
