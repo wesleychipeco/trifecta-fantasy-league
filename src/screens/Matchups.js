@@ -67,7 +67,7 @@ class Matchups extends PureComponent {
   };
 
   retrieveData = async (prevOwnerNames) => {
-    const { navigation } = this.props;
+    const { navigation, displayMatchups } = this.props;
     const year = navigation.getParam("year", "No year was defined!");
     const teamNumber = navigation.getParam(
       "teamNumber",

@@ -19,6 +19,7 @@ import {
 // import { basketballMatchups2019 } from "../../dataJSONS/basketballMatchups2019";
 import { format } from "date-fns";
 import {
+  addToAllTimeMatchups,
   determineBaseballMatchups,
   determineBasketballMatchups,
   determineFootballMatchups,
@@ -181,10 +182,10 @@ const scrapeMatchups = (year) => {
         baseball,
         football
       );
-      console.log(
-        `each total matchups object for trifecta owner number: ${trifectaNumber}!`,
-        eachTotalMatchupsObject
-      );
+      // console.log(
+      //   `each total matchups object for trifecta owner number: ${trifectaNumber}!`,
+      //   eachTotalMatchupsObject
+      // );
 
       // connect to mongo
       const ownerMatchupsCollection = await returnMongoCollection(
@@ -199,6 +200,8 @@ const scrapeMatchups = (year) => {
         null,
         false
       );
+
+      await addToAllTimeMatchups(trifectaNumber, eachTotalMatchupsObject);
     }
   };
 };
