@@ -59,7 +59,7 @@ export class Navbar extends PureComponent {
           touchableStyles={styles.button}
           textStyles={styles.text}
         />
-        <MyButton
+        {/* <MyButton
           title="Scrape Matchups"
           onPress={() =>
             navigation.navigate("MatchupsScraper", { year: "2021" })
@@ -71,7 +71,7 @@ export class Navbar extends PureComponent {
             padding: 5,
           }}
           textStyles={{ color: "#FFFFFF" }}
-        />
+        /> */}
       </View>
     );
   }

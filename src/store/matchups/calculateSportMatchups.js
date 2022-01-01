@@ -161,15 +161,15 @@ export const determineFootballMatchups = async (
     );
     homeTeamMatchups.pointsFor = round(
       homeTeamMatchups.pointsFor + homeTeamPointsFor,
-      2
+      1
     );
     homeTeamMatchups.pointsAgainst = round(
       homeTeamMatchups.pointsAgainst + awayTeamPointsFor,
-      2
+      1
     );
     homeTeamMatchups.pointsDiff = round(
       homeTeamMatchups.pointsDiff + homeTeamPointsFor - awayTeamPointsFor,
-      2
+      1
     );
 
     const awayTeamMatchups =
@@ -184,15 +184,15 @@ export const determineFootballMatchups = async (
     );
     awayTeamMatchups.pointsFor = round(
       awayTeamMatchups.pointsFor + awayTeamPointsFor,
-      2
+      1
     );
     awayTeamMatchups.pointsAgainst = round(
       awayTeamMatchups.pointsAgainst + homeTeamPointsFor,
-      2
+      1
     );
     awayTeamMatchups.pointsDiff = round(
       awayTeamMatchups.pointsDiff + awayTeamPointsFor - homeTeamPointsFor,
-      2
+      1
     );
   }
   return matchupsObject;
@@ -428,8 +428,10 @@ export const addToAllTimeMatchups = async (
                 sportMatchups[i].pointsAgainst,
               1
             );
-            ownerMatchupsObject.pointsDiff =
-              ownerMatchupsObject.pointsFor - ownerMatchupsObject.pointsAgainst;
+            ownerMatchupsObject.pointsDiff = round(
+              ownerMatchupsObject.pointsFor - ownerMatchupsObject.pointsAgainst,
+              1
+            );
           }
         }
 
