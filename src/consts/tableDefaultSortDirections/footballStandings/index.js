@@ -29,6 +29,7 @@ const tableDefaultSortDirections = {
     week11: true,
     week12: true,
     week13: true,
+    week14: true,
     wins: true,
     losses: true,
     winPer: true,
