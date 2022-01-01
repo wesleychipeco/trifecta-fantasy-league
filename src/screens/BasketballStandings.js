@@ -80,10 +80,8 @@ class BasketballStandings extends PureComponent {
       .then((seasonVariables) => {
         const { currentYear, basketballAhead } = seasonVariables[0];
         const { seasonStarted, inSeason } = seasonVariables[0].basketball;
-        const {
-          scrapeBasketballStandings,
-          displayBasketballStandings,
-        } = this.props;
+        const { scrapeBasketballStandings, displayBasketballStandings } =
+          this.props;
 
         if (isYear1BeforeYear2(year, currentYear)) {
           displayBasketballStandings(year);
@@ -419,7 +417,8 @@ class BasketballStandings extends PureComponent {
       rotoStats,
       basketballStandings,
     } = this.props;
-    const { seasonStarted, inSeason, basketballAhead } = this.state;
+    const { seasonStarted, inSeason, basketballAhead, currentYear } =
+      this.state;
     const year = navigation.getParam("year", "No year was defined!");
 
     if (seasonStarted === false) {
@@ -448,7 +447,7 @@ class BasketballStandings extends PureComponent {
       const trifectaStandingsHeaderRowHeight = 75;
       const trifectaStandingsTotalHeight = 500;
       const trifectaStandingsTotalWidth =
-        inSeason || basketballAhead ? 700 : 900;
+        inSeason && year === currentYear ? 700 : 900;
       const trifectaStandingsWidthArray = [200, 200, 100, 100, 100];
       const trifectaStandingsObjectKeys = [
         "teamName",
@@ -476,7 +475,10 @@ class BasketballStandings extends PureComponent {
         },
       ];
 
-      if (!inSeason && !basketballAhead) {
+      console.log("one", !inSeason);
+      console.log("two", !basketballAhead);
+      console.log("three", year === currentYear);
+      if (!inSeason && year === currentYear) {
         trifectaStandingsWidthArray.push(100, 100);
         trifectaStandingsObjectKeys.push(
           "playoffPoints",
@@ -532,18 +534,7 @@ class BasketballStandings extends PureComponent {
       const rotoStandingsTotalHeight = 500;
       const rotoStandingsTotalWidth = 1025;
       const rotoStandingsWidthArray = [
-        200,
-        75,
-        75,
-        75,
-        75,
-        75,
-        75,
-        75,
-        75,
-        75,
-        75,
-        75,
+        200, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75,
       ];
       const rotoStandingsObjectKeys = [
         "teamName",
