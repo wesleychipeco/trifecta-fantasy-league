@@ -214,13 +214,8 @@ export class HallOfFameFootball extends PureComponent {
   };
 
   render() {
-    const {
-      navigation,
-      allTimeRecords,
-      pastChampions,
-      bestH2H,
-      bestWeeks,
-    } = this.props;
+    const { navigation, allTimeRecords, pastChampions, bestH2H, bestWeeks } =
+      this.props;
 
     const emptyCheck =
       isEmptyArray(allTimeRecords) ||
@@ -453,7 +448,7 @@ export class HallOfFameFootball extends PureComponent {
         <View style={styles.table}>
           <Text style={styles.subtext}>Top 5 Highest Scoring Single Weeks</Text>
           <Text style={styles.subtext}>
-            In 2017, scoring changed from standard to 0.5 PPR.{"\n"}In 2020,
+            *In 2017, scoring changed from standard to 0.5 PPR.{"\n"}**In 2020,
             additional FLEX starting lineup spot added.{"\n"}Highest single week
             scores from previous scoring formats are also recorded below.
           </Text>
@@ -480,12 +475,8 @@ export class HallOfFameFootball extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const {
-    getAllTimeRecords,
-    getPastChampions,
-    getBestH2H,
-    getBestWeeks,
-  } = getFootballHallOfFameStateSelectors(state);
+  const { getAllTimeRecords, getPastChampions, getBestH2H, getBestWeeks } =
+    getFootballHallOfFameStateSelectors(state);
 
   return {
     allTimeRecords: getAllTimeRecords(),
