@@ -64,6 +64,9 @@ const HallOfFameHomeScreen = ({ navigation }) => {
           <Text style={styles.championText}>
             Season 5: 2020{"\n"}Wesley Chipeco - 56.5 points
           </Text>
+          <Text style={styles.championText}>
+            Season 6: 2021{"\n"}Joshua Apostol {"&"} Wesley Chipeco - 51 points
+          </Text>
         </View>
       </View>
     </View>
