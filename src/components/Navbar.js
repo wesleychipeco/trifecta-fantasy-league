@@ -15,7 +15,7 @@ export class Navbar extends PureComponent {
           touchableStyles={styles.button}
           textStyles={styles.text}
         />
-        <MyButton
+        {/* <MyButton
           title="2022 Basketball Standings"
           onPress={() =>
             navigation.navigate("BasketballStandings", { year: "2022" })
@@ -27,8 +27,8 @@ export class Navbar extends PureComponent {
             padding: 5,
           }}
           textStyles={{ color: "#FFFFFF" }}
-        />
-        <StandingsDropdownPost2019 year="2021" navigation={navigation} />
+        /> */}
+        <StandingsDropdownPost2019 year="2022" navigation={navigation} />
         <MyButton
           title="Trifecta Standings"
           onPress={() => navigation.navigate("StandingsHomeScreen")}
