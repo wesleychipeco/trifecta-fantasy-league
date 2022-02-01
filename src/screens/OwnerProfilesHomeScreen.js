@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
-import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { OwnerProfilesDropdown } from "../components/OwnerProfilesDropdown";
 import { returnMongoCollection } from "../databaseManagement";
@@ -55,7 +54,6 @@ export class OwnerProfilesHomeScreen extends PureComponent {
 
     return (
       <View style={styles.container}>
-        <Navbar navigation={navigation} />
         <View style={styles.header}>
           <Text style={styles.welcome}>Owner Profiles</Text>
         </View>

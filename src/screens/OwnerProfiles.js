@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
-import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { getOwnerProfilesStateSelectors } from "../store/ownerProfiles/ownerProfilesReducer";
 import { displaySeasonsRecap } from "../store/ownerProfiles/ownerProfilesActions";
@@ -168,7 +167,6 @@ export class OwnerProfiles extends PureComponent {
 
     return (
       <View style={styles.container}>
-        <Navbar navigation={navigation} />
         <View style={styles.headerSection}>
           <Text style={styles.title}>{title}</Text>
         </View>

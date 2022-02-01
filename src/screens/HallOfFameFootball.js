@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
-import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { getFootballHallOfFameStateSelectors } from "../store/hallOfFame/footballHallOfFameReducer";
 import {
@@ -379,7 +378,6 @@ export class HallOfFameFootball extends PureComponent {
 
     return (
       <View style={styles.container}>
-        <Navbar navigation={navigation} />
         <View style={styles.headerSection}>
           <Text style={styles.title}>{title}</Text>
         </View>

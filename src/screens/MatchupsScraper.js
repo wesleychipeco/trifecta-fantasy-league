@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { connect } from "react-redux";
-import { Navbar } from "../components/Navbar";
 import { scrapeMatchups } from "../store/matchups/matchupsActions";
 
 class MatchupsScraper extends React.Component {
@@ -15,7 +14,6 @@ class MatchupsScraper extends React.Component {
     const { year } = this.props.match.params;
     return (
       <View style={styles.container}>
-        <Navbar navigation={navigation} />
         <Text
           style={styles.welcome}
         >{`Name of the matchups scrape: ${year}`}</Text>

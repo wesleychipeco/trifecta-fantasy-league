@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
-import { Navbar } from "../components/Navbar";
 import { MyButton } from "../components/MyButton";
 import Iframe from "react-iframe";
 import { homeScreenStyles as styles } from "../styles/globalStyles";
@@ -8,7 +7,6 @@ import { homeScreenStyles as styles } from "../styles/globalStyles";
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Navbar navigation={navigation} />
       <Image
         style={styles.trifectaBanner}
         source={require("../resources/images/trifecta_banner.jpg")}

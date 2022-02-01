@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
-import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { MatchupsDropdown } from "../components/MatchupsDropdown";
 import { returnMongoCollection } from "../databaseManagement";
@@ -53,7 +52,6 @@ export class MatchupsHomeScreen extends PureComponent {
 
     return (
       <View style={styles.container}>
-        <Navbar navigation={navigation} />
         <View style={styles.header}>
           <Text style={styles.welcome}>
             Historical Head-to-Head Owner Matchups

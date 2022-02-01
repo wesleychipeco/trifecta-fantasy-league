@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { Navbar } from "../components/Navbar";
 import { homeScreenStyles as styles } from "../styles/globalStyles";
 import { MyButton } from "../components/MyButton";
 import { StandingsDropdownPre2019 } from "../components/StandingsDropdownPre2019";
@@ -9,10 +8,8 @@ import { StandingsDropdownPost2019 } from "../components/StandingsDropdownPost20
 const homeText = "All-time Trifecta & Individual Sports Standings";
 
 const StandingsHomeScreen = ({ navigation }) => {
-  console.log("HIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
   return (
     <View style={styles.container}>
-      <Navbar navigation={navigation} />
       <View style={styles.header}>
         <Text style={styles.welcome}>Trifecta Fantasy League Standings</Text>
         <Text style={styles.caption}>{homeText}</Text>

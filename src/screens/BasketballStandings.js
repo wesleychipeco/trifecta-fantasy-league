@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
-import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { StandingsDropdownPre2019 } from "../components/StandingsDropdownPre2019";
 import { StandingsDropdownPost2019 } from "../components/StandingsDropdownPost2019";

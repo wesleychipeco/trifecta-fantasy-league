@@ -3,7 +3,6 @@ import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
 import { LinkText } from "../components/LinkText";
-import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { MatchupsDropdown } from "../components/MatchupsDropdown";
 import { getMatchupsStateSelectors } from "../store/matchups/matchupsReducer";
@@ -468,7 +467,6 @@ class Matchups extends PureComponent {
 
     return (
       <View style={styles.container}>
-        <Navbar navigation={navigation} />
         <View style={styles.headerSection}>
           <View>
             <Text style={styles.title}>{title}</Text>

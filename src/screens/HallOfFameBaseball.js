@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { Row, Rows } from "../components/Row";
-import { Navbar } from "../components/Navbar";
 import { LoadingIndicator } from "../components/LoadingIndicator";
 import { getBaseballHallOfFameStateSelectors } from "../store/hallOfFame/baseballHallOfFameReducer";
 import {
@@ -184,13 +183,8 @@ export class HallOfFameBaseball extends PureComponent {
   };
 
   render() {
-    const {
-      navigation,
-      allTimeRecords,
-      pastChampions,
-      bestH2H,
-      bestRoto,
-    } = this.props;
+    const { navigation, allTimeRecords, pastChampions, bestH2H, bestRoto } =
+      this.props;
 
     const emptyCheck =
       isEmptyArray(allTimeRecords) ||
@@ -312,7 +306,6 @@ export class HallOfFameBaseball extends PureComponent {
 
     return (
       <View style={styles.container}>
-        <Navbar navigation={navigation} />
         <View style={styles.headerSection}>
           <Text style={styles.title}>{title}</Text>
         </View>
@@ -398,12 +391,8 @@ export class HallOfFameBaseball extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const {
-    getAllTimeRecords,
-    getPastChampions,
-    getBestH2H,
-    getBestRoto,
-  } = getBaseballHallOfFameStateSelectors(state);
+  const { getAllTimeRecords, getPastChampions, getBestH2H, getBestRoto } =
+    getBaseballHallOfFameStateSelectors(state);
 
   return {
     allTimeRecords: getAllTimeRecords(),

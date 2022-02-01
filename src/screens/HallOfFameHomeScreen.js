@@ -1,13 +1,11 @@
 import React from "react";
 import { View, Text, Image } from "react-native";
-import { Navbar } from "../components/Navbar";
 import { hallOfFameStyles as styles } from "../styles/globalStyles";
 import { MyButton } from "../components/MyButton";
 
 const HallOfFameHomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Navbar navigation={navigation} />
       <View style={styles.header}>
         <Text style={styles.welcome}>Trifecta Fantasy League Hall of Fame</Text>
       </View>

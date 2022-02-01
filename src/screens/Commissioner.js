@@ -1,7 +1,6 @@
 import React, { PureComponent, Fragment } from "react";
 import { View, Text } from "react-native";
 
-import { Navbar } from "../components/Navbar";
 import { commissionerStyles as styles } from "../styles/globalStyles";
 import { returnMongoCollection } from "../databaseManagement";
 import { MyButton } from "../components/MyButton";
@@ -61,11 +60,8 @@ class Commissioner extends PureComponent {
 
   renderYearMatchupsScrapeOverlay = () => {
     const { matchupsSuccesses, matchupsFailures } = this.props;
-    const {
-      completedYear,
-      showYearMatchupsScrapeOverlay,
-      alreadyScraped,
-    } = this.state;
+    const { completedYear, showYearMatchupsScrapeOverlay, alreadyScraped } =
+      this.state;
 
     if (showYearMatchupsScrapeOverlay && !alreadyScraped) {
       const title = `${completedYear} Matchups Scrape Complete`;
@@ -126,7 +122,6 @@ class Commissioner extends PureComponent {
 
     return (
       <View style={styles.container}>
-        <Navbar navigation={navigation} />
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtext}>{captionText}</Text>
         {this.shouldRenderCommissionerOptions()}
