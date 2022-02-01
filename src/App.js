@@ -27,6 +27,7 @@ import HallOfFameBasketball from "./screens/HallOfFameBasketball";
 import HallOfFameBaseball from "./screens/HallOfFameBaseball";
 import HallOfFameFootball from "./screens/HallOfFameFootball";
 import MatchupsScraper from "./screens/MatchupsScraper";
+import { AppRouter } from "./AppRouter";
 
 const routeMap = {
   Home: {
@@ -175,7 +176,8 @@ class App extends Component {
 
     return (
       <View style={{ height: "100vh", width: "100vw" }}>
-        {WebRoutesGenerator({ routeMap })}
+        {/* {WebRoutesGenerator({ routeMap })} */}
+        <AppRouter />
         <ModalContainer />
       </View>
     );

@@ -1,8 +1,10 @@
 import React, { PureComponent } from "react";
 import { View } from "react-native";
+import { Link } from "react-router-dom";
 import { StandingsDropdownPost2019 } from "./StandingsDropdownPost2019";
 import { MyButton } from "./MyButton";
 import { navbarStyles as styles } from "../styles/globalStyles";
+import { BASE_ROUTES, ROUTES } from "../Routes";
 
 export class Navbar extends PureComponent {
   render() {
@@ -15,6 +17,10 @@ export class Navbar extends PureComponent {
           touchableStyles={styles.button}
           textStyles={styles.text}
         />
+        <Link to={ROUTES.StandingsHomeScreen}>Standings Link</Link>
+        <Link to={`${BASE_ROUTES.BasketballStandings}/2022`}>
+          2022 Basketball Standings Link
+        </Link>
         {/* <MyButton
           title="2022 Basketball Standings"
           onPress={() =>

@@ -57,7 +57,9 @@ class BasketballStandings extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const year = this.props.navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
+
+    // const year = this.props.navigation.getParam("year", "No year was defined!");
     this.setState({
       year,
     });
@@ -68,8 +70,10 @@ class BasketballStandings extends PureComponent {
   }
 
   retrieveData = async () => {
-    const { lastScraped, navigation } = this.props;
-    const year = navigation.getParam("year");
+    const { lastScraped, navigation, match } = this.props;
+    const { year } = match.params;
+
+    // const year = navigation.getParam("year");
 
     const seasonVariablesCollection = await returnMongoCollection(
       "seasonVariables"
@@ -385,8 +389,9 @@ class BasketballStandings extends PureComponent {
   };
 
   renderStandingsDropdown = () => {
-    const { navigation } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { navigation, match } = this.props;
+    const { year } = match.params;
+    // const year = navigation.getParam("year", "No year was defined!");
 
     if (isYear1BeforeYear2(year, "2019")) {
       const year1 = (Number(year) - 1).toString();
@@ -416,10 +421,13 @@ class BasketballStandings extends PureComponent {
       rotoStandings,
       rotoStats,
       basketballStandings,
+      match,
     } = this.props;
     const { seasonStarted, inSeason, basketballAhead, currentYear } =
       this.state;
-    const year = navigation.getParam("year", "No year was defined!");
+    console.log("N", navigation, match);
+    const { year } = match.params;
+    // const year = navigation.getParam("year", "No year was defined!");
 
     if (seasonStarted === false) {
       return (
