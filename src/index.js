@@ -7,6 +7,7 @@ import registerServiceWorker from "./registerServiceWorker";
 import { Provider } from "react-redux";
 import { MenuProvider } from "react-native-popup-menu";
 import store from "./store";
+import "./icons/icons";
 
 ReactDOM.render(
   <Provider store={store}>
