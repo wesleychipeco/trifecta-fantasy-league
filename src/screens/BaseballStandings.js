@@ -51,7 +51,7 @@ class BaseballStandings extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const year = this.props.navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
     this.setState({
       year,
     });
@@ -62,8 +62,8 @@ class BaseballStandings extends PureComponent {
   }
 
   retrieveData = async () => {
-    const { lastScraped, navigation } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { lastScraped, match } = this.props;
+    const { year } = match.params;
 
     const seasonVariablesCollection = await returnMongoCollection(
       "seasonVariables"
@@ -74,10 +74,8 @@ class BaseballStandings extends PureComponent {
       .then((seasonVariables) => {
         const { currentYear } = seasonVariables[0];
         const { seasonStarted, inSeason } = seasonVariables[0].baseball;
-        const {
-          scrapeBaseballStandings,
-          displayBaseballStandings,
-        } = this.props;
+        const { scrapeBaseballStandings, displayBaseballStandings } =
+          this.props;
 
         if (isYear1BeforeYear2(year, currentYear)) {
           displayBaseballStandings(year);
@@ -362,27 +360,27 @@ class BaseballStandings extends PureComponent {
   };
 
   renderStandingsDropdown = () => {
-    const { navigation } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
+    return null;
 
-    if (isYear1BeforeYear2(year, "2019")) {
-      const year1 = (Number(year) - 1).toString();
-      return (
-        <StandingsDropdownPre2019
-          navigation={navigation}
-          year1={year1}
-          year2={year.toString()}
-        />
-      );
-    }
+    // if (isYear1BeforeYear2(year, "2019")) {
+    //   const year1 = (Number(year) - 1).toString();
+    //   return (
+    //     <StandingsDropdownPre2019
+    //       navigation={navigation}
+    //       year1={year1}
+    //       year2={year.toString()}
+    //     />
+    //   );
+    // }
 
-    return (
-      <StandingsDropdownPost2019
-        navigation={navigation}
-        year={year}
-        currentYear={this.state.currentYear}
-      />
-    );
+    // return (
+    //   <StandingsDropdownPost2019
+    //     navigation={navigation}
+    //     year={year}
+    //     currentYear={this.state.currentYear}
+    //   />
+    // );
   };
 
   render() {
@@ -392,6 +390,7 @@ class BaseballStandings extends PureComponent {
       h2hStandings,
       rotoStandings,
       rotoStats,
+      match,
     } = this.props;
     const { seasonStarted, inSeason } = this.state;
 
@@ -496,21 +495,7 @@ class BaseballStandings extends PureComponent {
     const rotoStandingsTotalHeight = 500;
     const rotoStandingsTotalWidth = 1250;
     const rotoStandingsWidthArray = [
-      200,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
+      200, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75,
     ];
     const rotoStandingsObjectKeys = [
       "teamName",
@@ -559,19 +544,7 @@ class BaseballStandings extends PureComponent {
     const rotoStatsTotalHeight = 500;
     const rotoStatsTotalWidth = 1100;
     const rotoStatsWidthArray = [
-      200,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
-      75,
+      200, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75,
     ];
     const rotoStatsObjectKeys = [
       "teamName",
@@ -606,12 +579,11 @@ class BaseballStandings extends PureComponent {
     const rotoStatsHeaderRow = rotoStatsHeaderRowMap.map(
       this.renderHeaderRowColumn
     );
-    const year = navigation.getParam("year", "No year was defined!");
+    const { year } = match.params;
     const title = `${year} Baseball Standings!`;
 
     return (
       <View style={styles.container}>
-        <Navbar navigation={navigation} />
         <View style={styles.headerSection}>
           <View>
             <Text style={styles.title}>{title}</Text>

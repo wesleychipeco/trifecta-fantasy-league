@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import React from "react";
+import { Navbar } from "./components/Navbar";
 import { ROUTES } from "./Routes";
 import HomeScreen from "./screens/HomeScreen";
 import StandingsHomeScreen from "./screens/StandingsHomeScreen";
@@ -22,6 +23,7 @@ import MatchupsScraper from "./screens/MatchupsScraper";
 export const AppRouter = () => {
   return (
     <BrowserRouter>
+      <Navbar />
       <Switch>
         <Route path={ROUTES.Home} component={HomeScreen} exact />
         <Route
@@ -54,7 +56,7 @@ export const AppRouter = () => {
           exact
         />
         <Route path={ROUTES.Matchups} component={Matchups} exact />
-        <Route path={ROUTES.TradeHistory} component={TradeHistory} />
+        <Route path={ROUTES.TradeHistory} component={TradeHistory} exact />
         <Route path={ROUTES.Commissioner} component={Commissioner} exact />
         <Route
           path={ROUTES.OwnerProfilesHomeScreen}

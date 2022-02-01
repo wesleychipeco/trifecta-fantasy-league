@@ -6,15 +6,13 @@ import { scrapeMatchups } from "../store/matchups/matchupsActions";
 
 class MatchupsScraper extends React.Component {
   async componentDidMount() {
-    const { navigation, scrapeMatchups } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
-
+    const { match, scrapeMatchups } = this.props;
+    const { year } = match.params;
     scrapeMatchups(year);
   }
 
   render() {
-    const { navigation } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
     return (
       <View style={styles.container}>
         <Navbar navigation={navigation} />

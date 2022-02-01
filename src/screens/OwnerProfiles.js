@@ -23,12 +23,7 @@ export class OwnerProfiles extends PureComponent {
   }
 
   retrieveData = () => {
-    const { navigation } = this.props;
-
-    const teamNumber = navigation.getParam(
-      "teamNumber",
-      "No team number defined!"
-    );
+    const { teamNumber } = this.props.match.params;
     this.props.displaySeasonsRecap(teamNumber);
   };
 

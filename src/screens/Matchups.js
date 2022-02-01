@@ -51,7 +51,7 @@ class Matchups extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const year = this.props.navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
     this.setState({
       year,
     });
@@ -67,12 +67,8 @@ class Matchups extends PureComponent {
   };
 
   retrieveData = async (prevOwnerNames) => {
-    const { navigation, displayMatchups } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
-    const teamNumber = navigation.getParam(
-      "teamNumber",
-      "No teamNumber was defined!"
-    );
+    const { match, displayMatchups } = this.props;
+    const { year, teamNumber } = match.params;
 
     const teamOwnerNamesCollection = await returnMongoCollection(
       "allTimeTeams"
@@ -239,8 +235,7 @@ class Matchups extends PureComponent {
   };
 
   shouldRenderCaption = () => {
-    const { navigation } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match;
 
     if (year === "all") {
       return (
@@ -375,13 +370,10 @@ class Matchups extends PureComponent {
       basketballMatchups,
       baseballMatchups,
       footballMatchups,
+      match,
     } = this.props;
     const { ownerNames } = this.state;
-    const year = navigation.getParam("year", "No year was defined!");
-    const teamNumber = navigation.getParam(
-      "teamNumber",
-      "No teamNumber was defined!"
-    );
+    const { year, teamNumber } = match.params;
 
     if (
       isEmptyArray(basketballMatchups) &&

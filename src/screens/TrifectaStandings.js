@@ -41,7 +41,7 @@ class TrifectaStandings extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const year = this.props.navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
     this.setState({
       year,
     });
@@ -57,8 +57,9 @@ class TrifectaStandings extends PureComponent {
       navigation,
       calculateTrifectaStandings,
       displayTrifectaStandings,
+      match,
     } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { year } = match.params;
 
     const seasonVariablesCollection = await returnMongoCollection(
       "seasonVariables"
@@ -188,32 +189,32 @@ class TrifectaStandings extends PureComponent {
   };
 
   renderStandingsDropdown = () => {
-    const { navigation } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
+    return null;
 
-    if (isYear1BeforeYear2(year, "2019")) {
-      const year1 = Number(year) - 1;
-      return (
-        <StandingsDropdownPre2019
-          navigation={navigation}
-          year1={year1}
-          year2={year.toString()}
-        />
-      );
-    }
+    // if (isYear1BeforeYear2(year, "2019")) {
+    //   const year1 = Number(year) - 1;
+    //   return (
+    //     <StandingsDropdownPre2019
+    //       navigation={navigation}
+    //       year1={year1}
+    //       year2={year.toString()}
+    //     />
+    //   );
+    // }
 
-    return (
-      <StandingsDropdownPost2019
-        navigation={navigation}
-        year={year}
-        currentYear={this.state.currentYear}
-      />
-    );
+    // return (
+    //   <StandingsDropdownPost2019
+    //     navigation={navigation}
+    //     year={year}
+    //     currentYear={this.state.currentYear}
+    //   />
+    // );
   };
 
   render() {
-    const { navigation, trifectaStandings } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { match, trifectaStandings } = this.props;
+    const { year } = match.params;
 
     if (isEmptyArray(trifectaStandings)) {
       return <LoadingIndicator />;
@@ -293,10 +294,8 @@ class TrifectaStandings extends PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const {
-    getTrifectaStandings,
-    getLastScraped,
-  } = getTrifectaStandingsStateSelectors(state);
+  const { getTrifectaStandings, getLastScraped } =
+    getTrifectaStandingsStateSelectors(state);
 
   return {
     trifectaStandings: getTrifectaStandings(),

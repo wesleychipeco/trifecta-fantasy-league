@@ -7,6 +7,7 @@ import { BASE_ROUTES, ROUTES } from "../Routes";
 
 export class Navbar extends PureComponent {
   render() {
+    console.log("hi");
     return (
       <View style={styles.container}>
         <Link to={ROUTES.Home}>Home Link</Link>

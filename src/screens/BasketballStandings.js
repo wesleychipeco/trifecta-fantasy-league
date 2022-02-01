@@ -58,8 +58,6 @@ class BasketballStandings extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     const { year } = this.props.match.params;
-
-    // const year = this.props.navigation.getParam("year", "No year was defined!");
     this.setState({
       year,
     });
@@ -70,10 +68,8 @@ class BasketballStandings extends PureComponent {
   }
 
   retrieveData = async () => {
-    const { lastScraped, navigation, match } = this.props;
+    const { lastScraped, match } = this.props;
     const { year } = match.params;
-
-    // const year = navigation.getParam("year");
 
     const seasonVariablesCollection = await returnMongoCollection(
       "seasonVariables"
@@ -389,28 +385,27 @@ class BasketballStandings extends PureComponent {
   };
 
   renderStandingsDropdown = () => {
-    const { navigation, match } = this.props;
-    const { year } = match.params;
-    // const year = navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
+    return null;
 
-    if (isYear1BeforeYear2(year, "2019")) {
-      const year1 = (Number(year) - 1).toString();
-      return (
-        <StandingsDropdownPre2019
-          navigation={navigation}
-          year1={year1}
-          year2={year.toString()}
-        />
-      );
-    }
+    // if (isYear1BeforeYear2(year, "2019")) {
+    //   const year1 = (Number(year) - 1).toString();
+    //   return (
+    //     <StandingsDropdownPre2019
+    //       navigation={navigation}
+    //       year1={year1}
+    //       year2={year.toString()}
+    //     />
+    //   );
+    // }
 
-    return (
-      <StandingsDropdownPost2019
-        navigation={navigation}
-        year={year}
-        currentYear={this.state.currentYear}
-      />
-    );
+    // return (
+    //   <StandingsDropdownPost2019
+    //     navigation={navigation}
+    //     year={year}
+    //     currentYear={this.state.currentYear}
+    //   />
+    // );
   };
 
   render() {
@@ -425,9 +420,7 @@ class BasketballStandings extends PureComponent {
     } = this.props;
     const { seasonStarted, inSeason, basketballAhead, currentYear } =
       this.state;
-    console.log("N", navigation, match);
     const { year } = match.params;
-    // const year = navigation.getParam("year", "No year was defined!");
 
     if (seasonStarted === false) {
       return (
@@ -616,7 +609,6 @@ class BasketballStandings extends PureComponent {
 
       return (
         <View style={styles.container}>
-          <Navbar navigation={navigation} />
           <View style={styles.headerSection}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.dropdown}>
@@ -743,7 +735,6 @@ class BasketballStandings extends PureComponent {
 
       return (
         <View style={styles.container}>
-          <Navbar navigation={navigation} />
           <View style={styles.headerSection}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.dropdown}>

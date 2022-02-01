@@ -57,7 +57,7 @@ class FootballStandings extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const year = this.props.navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match;
     this.setState({
       year,
     });
@@ -68,8 +68,8 @@ class FootballStandings extends PureComponent {
   }
 
   retrieveData = async () => {
-    const { lastScraped, navigation } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { lastScraped, match } = this.props;
+    const { year } = match.params;
 
     const seasonVariablesCollection = await returnMongoCollection(
       "seasonVariables"
@@ -479,8 +479,7 @@ class FootballStandings extends PureComponent {
   };
 
   shouldRenderSubtext = () => {
-    const { navigation } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
 
     const subtext2018 =
       "Due to sport re-arrangement in the Trifecta cycle, 2018 Football is not part of any Trifecta season and for variety, was an auction draft";
@@ -502,27 +501,27 @@ class FootballStandings extends PureComponent {
   };
 
   renderStandingsDropdown = () => {
-    const { navigation } = this.props;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { year } = this.props.match.params;
+    return null;
 
-    if (isYear1BeforeYear2(year, "2019")) {
-      const year2 = (Number(year) + 1).toString();
-      return (
-        <StandingsDropdownPre2019
-          navigation={navigation}
-          year1={year.toString()}
-          year2={year2}
-        />
-      );
-    }
+    // if (isYear1BeforeYear2(year, "2019")) {
+    //   const year2 = (Number(year) + 1).toString();
+    //   return (
+    //     <StandingsDropdownPre2019
+    //       navigation={navigation}
+    //       year1={year.toString()}
+    //       year2={year2}
+    //     />
+    //   );
+    // }
 
-    return (
-      <StandingsDropdownPost2019
-        navigation={navigation}
-        year={year}
-        currentYear={this.state.currentYear}
-      />
-    );
+    // return (
+    //   <StandingsDropdownPost2019
+    //     navigation={navigation}
+    //     year={year}
+    //     currentYear={this.state.currentYear}
+    //   />
+    // );
   };
 
   render() {
@@ -532,9 +531,10 @@ class FootballStandings extends PureComponent {
       h2hStandings,
       top5Bottom5Standings,
       footballStandings,
+      match,
     } = this.props;
     const { seasonStarted, inSeason } = this.state;
-    const year = navigation.getParam("year", "No year was defined!");
+    const { year } = match.params;
     const title = `${year} Football Standings!`;
 
     if (seasonStarted === false) {
@@ -711,7 +711,6 @@ class FootballStandings extends PureComponent {
 
       return (
         <View style={styles.container}>
-          <Navbar navigation={navigation} />
           <View style={styles.headerSection}>
             <Text style={styles.title}>{title}</Text>
             <View style={styles.dropdown}>
