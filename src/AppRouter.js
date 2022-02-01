@@ -1,10 +1,7 @@
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-
+import { ROUTES } from "./Routes";
 import HomeScreen from "./screens/HomeScreen";
-import SecondScreen from "./screens/SecondScreen";
-import UserScreen from "./screens/UserScreen";
-import DasModalScreen from "./screens/DasModalScreen";
 import StandingsHomeScreen from "./screens/StandingsHomeScreen";
 import BaseballStandings from "./screens/BaseballStandings";
 import BasketballStandings from "./screens/BasketballStandings";
@@ -22,37 +19,73 @@ import HallOfFameBaseball from "./screens/HallOfFameBaseball";
 import HallOfFameFootball from "./screens/HallOfFameFootball";
 import MatchupsScraper from "./screens/MatchupsScraper";
 
-import { ROUTES } from "./Routes";
-
 export const AppRouter = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path={ROUTES.Home} exact component={HomeScreen} />
+        <Route path={ROUTES.Home} component={HomeScreen} exact />
         <Route
           path={ROUTES.StandingsHomeScreen}
-          exact
           component={StandingsHomeScreen}
-        />
-        <Route
-          path={ROUTES.BasketballStandings}
           exact
-          component={BasketballStandings}
         />
         <Route
           path={ROUTES.BaseballStandings}
-          exact
           component={BaseballStandings}
+          exact
+        />
+        <Route
+          path={ROUTES.BasketballStandings}
+          component={BasketballStandings}
         />
         <Route
           path={ROUTES.FootballStandings}
-          exact
           component={FootballStandings}
+          exact
         />
         <Route
           path={ROUTES.TrifectaStandings}
-          exact
           component={TrifectaStandings}
+          exact
+        />
+        <Route
+          path={ROUTES.MatchupsHomeScreen}
+          component={MatchupsHomeScreen}
+          exact
+        />
+        <Route path={ROUTES.Matchups} component={Matchups} exact />
+        <Route path={ROUTES.TradeHistory} component={TradeHistory} />
+        <Route path={ROUTES.Commissioner} component={Commissioner} exact />
+        <Route
+          path={ROUTES.OwnerProfilesHomeScreen}
+          component={OwnerProfilesHomeScreen}
+          exact
+        />
+        <Route path={ROUTES.OwnerProfiles} component={OwnerProfiles} exact />
+        <Route
+          path={ROUTES.HallOfFameHomeScreen}
+          component={HallOfFameHomeScreen}
+          exact
+        />
+        <Route
+          path={ROUTES.HallOfFameBasketball}
+          component={HallOfFameBasketball}
+          exact
+        />
+        <Route
+          path={ROUTES.HallOfFameBaseball}
+          component={HallOfFameBaseball}
+          exact
+        />
+        <Route
+          path={ROUTES.HallOfFameFootball}
+          component={HallOfFameFootball}
+          exact
+        />
+        <Route
+          path={ROUTES.MatchupsScraper}
+          component={MatchupsScraper}
+          exact
         />
       </Switch>
     </BrowserRouter>

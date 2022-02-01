@@ -1,23 +1,30 @@
-export const ROUTES = {
+export const BASE_ROUTES = {
   Home: "/",
   StandingsHomeScreen: "/standingshome",
-  BaseballStandings: "/standings/baseball/:year?",
-  BasketballStandings: "/standings/basketball/:year?",
-  FootballStandings: "/standings/football/:year?",
-  TrifectaStandings: "/standings/trifecta/:year?",
+  BaseballStandings: "/standings/baseball",
+  BasketballStandings: "/standings/basketball",
+  FootballStandings: "/standings/football",
+  TrifectaStandings: "/standings/trifecta",
   MatchupsHomeScreen: "/matchupshome",
-  Matchups: "/matchups/:teamNumber?/:year?",
+  Matchups: "/matchups",
   TradeHistory: "/tradehistory",
   Commissioner: "/commissioner/wesley",
   OwnerProfilesHomeScreen: "/ownerprofileshome",
-  OwnerProfiles: "/ownerprofiles/:teamNumber?",
+  OwnerProfiles: "/ownerprofiles",
   HallOfFameHomeScreen: "/halloffamehome",
   HallOfFameBasketball: "/halloffame/basketball",
   HallOfFameBaseball: "/halloffame/baseball",
   HallOfFameFootball: "/halloffame/football",
-  MatchupsScraper: "/matchupsscraper/:year?",
+  MatchupsScraper: "/matchupsscraper",
 };
 
-export const BASE_ROUTES = {
-  BasketballStandings: "/standings/basketball",
+export const ROUTES = {
+  ...BASE_ROUTES,
+  BaseballStandings: "/standings/baseball/:year?",
+  BasketballStandings: "/standings/basketball/:year?",
+  FootballStandings: "/standings/football/:year?",
+  TrifectaStandings: "/standings/trifecta/:year?",
+  Matchups: "/matchups/:teamNumber?/:year?",
+  OwnerProfiles: "/ownerprofiles/:teamNumber?",
+  MatchupsScraper: "/matchupsscraper/:year?",
 };

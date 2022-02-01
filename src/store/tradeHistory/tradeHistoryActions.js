@@ -16,7 +16,6 @@ const actions = {
 const displayTradeHistory = () => {
   return async function (dispatch) {
     const tradeHistoryCollection = await returnMongoCollection("tradeHistory");
-    console.log("TRADE", tradeHistoryCollection);
     simpleFindFromMongoSaveToRedux(
       dispatch,
       actions.saveExistingTradeHistory,
