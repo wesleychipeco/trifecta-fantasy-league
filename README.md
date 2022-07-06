@@ -71,7 +71,8 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
 - In November, renew trifectafantasyleague domain
 - Create SSL termination in Amazon Certificate Manager (ACM)
   - Request a certificate for: *.trifectafantasyleague.com
-  - Use DNS validation to validate ownership of domain (login via NameCheap)
+  - Use DNS validation to validate ownership of domain 
+    -  Use given ACM CNAME name (just the pre-domain part) and ACM CNAME value and copy into NameCheap advanced DNS records
 - Create Application Load Balancer
   - Internet-facing
   - ipv4
