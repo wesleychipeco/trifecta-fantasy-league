@@ -61,7 +61,7 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
 
 ## AWS Architecture
 
-- NameCheap Domain -> ELB with SSL termination -> EC2 instance running yarn server (in AutoScaling Group)
+- NameCheap Domain -> ELB with SSL termination -> EC2 instance running yarn server (in AutoScaling Group launched using Launch Template)
 - To make changes to production website, after merging PR to master, terminate running EC2 instance. This will trigger the ASG to start new EC2 instance with most-up-to-date master branch
 
 ## Each year reboot
@@ -72,26 +72,47 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
 - Create SSL termination in Amazon Certificate Manager (ACM)
   - Request a certificate for: *.trifectafantasyleague.com
   - Use DNS validation to validate ownership of domain 
-    -  Use given ACM CNAME name (just the pre-domain part) and ACM CNAME value and copy into NameCheap advanced DNS records
+    -  Use given ACM CNAME name (just the pre-domain (ie. pre-dot) part) and ACM CNAME value and copy into NameCheap advanced DNS records
+- Create Security Groups (To make traffic rules dependent on the other SG, you'll have to go back and add the rule after both SGs are created)
+  - ALB Security Group:
+    - Inbound Traffic Rules: Allow TCP protocol connections:
+      - HTTP on port 80 (source: 0.0.0.0/0)
+      - HTTPS on port 443 (source: 0.0.0.0/0)
+    - Outbound Traffic Rules: Allow ALL traffic connections on all ports to EC2 SG
+  - EC2 Security Group: 
+    - Inbound Traffic Rules: Allow TCP protocol connections:
+      - TCP on port 3000
+      - SSH on port 22
+    - Outbound Traffic Rules: Allow ALL traffic connections on all ports to 0.0.0.0/0 destination
+- Create Launch Template
+  - Check box "Provide guidance to set up a template that can use EC2 Auto Scaling"
+  - Use Amazon Linux AMI (image)
+  - Choose free-tier eligible instance type (t2.micro)
+  - Create new key-pair for logging in
+  - Select created EC2 security group
+  - Add Storage: EBS Volume (up to 30GB free. Don't need more than 4 honestly though)
+- Create Auto Scaling Group
+  - Select created Launch Template and set desired, min, and max # of instances at 1
+  - Connect Application Load Balancer to Auto Scaling Group (will have to be done after ALB is created)
+- Due to Auto Scaling Group, EC2 instance launch with Launch Template should start up (if doesn't start, do so manually)
+- Check that user data script is run and webserver is active
+  - After connecting to EC2 instance, "ls /" and see that "trifecta-fantasy-league" repo is copied to the root directory
+  - After connecting to EC2 instance, curl localhost:3000 
+  - Also: To check if user-data.sh script has run, right-click on instance, then select "Monitor and troubleshoot", then "Get system log"
 - Create Application Load Balancer
-  - Internet-facing
-  - ipv4
+  - Attributes:
+    - Internet-facing
+    - ipv4
+    - Make available in all AZs
+    - Use ALB security Group
+  - Attach ACM SSL termination certificate to ALB
+  - Use ALB Security Group
   - 2 Listeners: 1) HTTP on Port 80 and 2) HTTPS on Port 443
-  - Make available in all AZs
-  - Attach ACM SSL termination certificate to ELB
-  - Create new Security Group
-    - Allow all traffic into ELB only on ports 80 and 443
-  - Create Target Group for routing traffic target
+    - Assign ACM certificate for SSL termination on HTTPS on port 443
+  - Create Target Group for FORWARD traffic (After EC2 instance is launched)
     - Webserver Target Group receiving only HTTP traffic on port 3000
     - Register Target EC2 instance to the Target Group (After create EC2 instance)
-- Create Auto Scaling Group
-  - First create Launch Template
-    - Specify AMI, instance type, key pair, desired capacity, minimum and maximum capacity
-    - Create new EC2-specific security group, only allowing SSH access and TCP connections on Port 3000 from ELB SG
-    - Under "Advanced Details" copy and paste in `user-data.sh` bash script in this repo
-  - Next create Auto Scaling Group
-    - Configure settings, scaling policies, and namely, attaching to an existing load balancer
-  - EC2 instance should be launched
-  - Check that user data script is run and webserver is active and reachable at localhost:3000
-  - Check that website is reachable via load balancer public IP DNS name
+- Check that website is reachable via load balancer public IP DNS name
+  - Put DNS name of ALB into browser URL bar to test
 - Register public DNS name of ELB to trifectafantasyleague.com DNS resolution (on NameCheap)
+- Finally, test http and https connections to wwww.trifectafantasyleague.com
