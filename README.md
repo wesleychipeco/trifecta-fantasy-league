@@ -116,3 +116,4 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
   - Put DNS name of ALB into browser URL bar to test
 - Register public DNS name of ELB to trifectafantasyleague.com DNS resolution (on NameCheap)
 - Finally, test http and https connections to wwww.trifectafantasyleague.com
+- Create a budget threshold  of $0.01 monthly forecasted budget and email to notify when forecasted to surpass
