@@ -24,11 +24,11 @@ Code looks for "seasonStarted" = `true` and "inSeason" = `false` to decide to lo
 
 ## START NEW TRIFECTA SEASON
 
-Update `seasonVariables` collection with new "currentYear", each sport's variables (set "basketball": "seasonStarted" and "inSeason" to true, set everything else to false)
-Set `basektballAhead` to true, which will allow basketball of next trifecta season plus football of previous season to be updated
+When Basketball starts, while previous Trifecta season is still happening, simply add a new "2023 Basketball Standings" button to the navbar and update `seasonVariables` "basketballAhead" to true
 Update `teamNumbersPerSport` collection for new Trifecta Season (per Trifecta season, maps "teamNumber" to "ownerNames") - used in Matchups  
 Update `teamLists` collection for new Trifecta Season (per Trifecta Season, array of participating "ownerIds") - used in Trifecta Standings
-Then to update "ALL" matchups to include the just completed Trifecta season, ~~go to the commissioner page and scrape~~ have to do manually as of now 
+When previous Football season ends, new Trifecta season transition will officially occur. Update `seasonVariables` collection with new "currentYear", each sport's variables (set "basketball": "seasonStarted" and "inSeason" to true, set everything else to false)
+After trifecta season has ended, need to update Hall of Fame and each owner's all-time records (profiles). Then to update "ALL" matchups to include the just completed Trifecta season, ~~go to the commissioner page and scrape~~ have to do manually as of now
 
 ## ADD NEW TRIFECTA OWNER
 
@@ -56,7 +56,6 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
 - Individual standings of sports that are in-season (only regular season standings)
 - Trifecta standings of completely finished (regular season and playoffs) sports
 
-
 ### Website Development and AWS Stuff
 
 ## AWS Architecture
@@ -70,16 +69,16 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
 - Sign up for free AWS tier
 - In November, renew trifectafantasyleague domain
 - Create SSL termination in Amazon Certificate Manager (ACM)
-  - Request a certificate for: *.trifectafantasyleague.com
-  - Use DNS validation to validate ownership of domain 
-    -  Use given ACM CNAME name (just the pre-domain (ie. pre-dot) part) and ACM CNAME value and copy into NameCheap advanced DNS records
+  - Request a certificate for: \*.trifectafantasyleague.com
+  - Use DNS validation to validate ownership of domain
+    - Use given ACM CNAME name (just the pre-domain (ie. pre-dot) part) and ACM CNAME value and copy into NameCheap advanced DNS records
 - Create Security Groups (To make traffic rules dependent on the other SG, you'll have to go back and add the rule after both SGs are created)
   - ALB Security Group:
     - Inbound Traffic Rules: Allow TCP protocol connections:
       - HTTP on port 80 (source: 0.0.0.0/0)
       - HTTPS on port 443 (source: 0.0.0.0/0)
     - Outbound Traffic Rules: Allow ALL traffic connections on all ports to EC2 SG
-  - EC2 Security Group: 
+  - EC2 Security Group:
     - Inbound Traffic Rules: Allow TCP protocol connections:
       - TCP on port 3000
       - SSH on port 22
@@ -97,7 +96,7 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
 - Due to Auto Scaling Group, EC2 instance launch with Launch Template should start up (if doesn't start, do so manually)
 - Check that user data script is run and webserver is active
   - After connecting to EC2 instance, "ls /" and see that "trifecta-fantasy-league" repo is copied to the root directory
-  - After connecting to EC2 instance, curl localhost:3000 
+  - After connecting to EC2 instance, curl localhost:3000
   - Also: To check if user-data.sh script has run, right-click on instance, then select "Monitor and troubleshoot", then "Get system log"
 - Create Application Load Balancer
   - Attributes:
@@ -116,4 +115,4 @@ If not already updated, update `teamLists` collection (per Trifecta Season, arra
   - Put DNS name of ALB into browser URL bar to test
 - Register public DNS name of ELB to trifectafantasyleague.com DNS resolution (on NameCheap)
 - Finally, test http and https connections to wwww.trifectafantasyleague.com
-- Create a budget threshold  of $0.01 monthly forecasted budget and email to notify when forecasted to surpass
+- Create a budget threshold of $0.01 monthly forecasted budget and email to notify when forecasted to surpass
