@@ -447,7 +447,7 @@ class BasketballStandings extends PureComponent {
       const trifectaStandingsHeaderRowHeight = 75;
       const trifectaStandingsTotalHeight = 500;
       const trifectaStandingsTotalWidth =
-        inSeason && year === currentYear ? 700 : 900;
+        !inSeason && year === currentYear && !inSeason ? 900 : 700;
       const trifectaStandingsWidthArray = [200, 200, 100, 100, 100];
       const trifectaStandingsObjectKeys = [
         "teamName",
@@ -478,7 +478,7 @@ class BasketballStandings extends PureComponent {
       console.log("one", !inSeason);
       console.log("two", !basketballAhead);
       console.log("three", year === currentYear);
-      if (!inSeason && year === currentYear) {
+      if (!inSeason && year === currentYear && !inSeason) {
         trifectaStandingsWidthArray.push(100, 100);
         trifectaStandingsObjectKeys.push(
           "playoffPoints",
