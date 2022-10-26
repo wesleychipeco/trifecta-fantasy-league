@@ -8,8 +8,8 @@ sudo yum install git -y
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-nvm install --lts
-nvm use --lts
+nvm install 16
+nvm use 16
 node -e "console.log('Running Node.js ' + process.version)"
 npm install --global yarn
 
