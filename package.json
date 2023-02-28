@@ -17,7 +17,7 @@
     "react-art": "^16.5.1",
     "react-dom": "^16.4.1",
     "react-iframe": "^1.8.0",
-    "react-native": "0.56.0",
+    "react-native": "0.71.3",
     "react-native-popup-menu": "^0.15.6",
     "react-native-table-component": "^1.2.0",
     "react-native-web": "^0.9.0",
